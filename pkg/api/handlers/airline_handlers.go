@@ -3,12 +3,15 @@ package handlers
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	k "github.com/raedmajeed/admin-servcie/kafkas"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 	utils "github.com/raedmajeed/admin-servcie/pkg/utils"
+	"google.golang.org/grpc/metadata"
 )
 
 //* METHODS BELOW THIS IS TO HANDLE AIRLINE COMPANY
@@ -54,8 +57,20 @@ func (handler *AdminAirlineHandler) RegisterAirlineSeat(ctx context.Context, p *
 		log.Println("deadline passed, aborting gRPC call")
 		return nil, errors.New("deadline passed, aborting gRPC call")
 	}
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		log.Println("not able to get the metadata from url")
+		return nil, errors.New("Not able to get the metada from context")
+	}
 
-	response, err := handler.svc.CreateAirlineSeats(p)
+	airline_id := md.Get("airline_id")[0]
+	id, err := strconv.Atoi(airline_id)
+	if err != nil {
+		log.Println("error converting into int")
+		return nil, err
+	}
+
+	response, err := handler.svc.CreateAirlineSeats(p, id)
 	if err != nil {
 		log.Printf("Unable to create airline seats, err: %v", err.Error())
 		return nil, err
@@ -82,18 +97,32 @@ func (H *AdminAirlineHandler) DeleteAirlineSeat(context.Context, *pb.IDRequest) 
 //* METHODS BELOW THIS IS TO HANDLE AIRLINE BAGGAGE
 
 func (handler *AdminAirlineHandler) RegisterAirlineBaggage(ctx context.Context, p *pb.AirlineBaggageRequest) (*pb.AirlineBaggageResponse, error) {
-	// deadline, ok := ctx.Deadline()
-	// if ok && deadline.Before(time.Now()) {
-	// 	log.Println("deadline passed, aborting gRPC call")
-	// 	return nil, errors.New("deadline passed, aborting gRPC call")
-	// }
-	// response, err := handler.svc.CreateAirlineBaggagePolicy(p)
-	// if err != nil {
-	// 	log.Printf("Unable to create airline baggage policy, err: %v", err.Error())
-	// 	return nil, err
-	// }
-	// airlineBaggagePolicyResponse := utils.ConvertAirlineBaggagePolicyToResponse(response)
-	return nil, nil
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		log.Println("deadline passed, aborting gRPC call")
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		log.Println("not able to get the metadata from url")
+		return nil, errors.New("Not able to get the metada from context")
+	}
+
+	airline_id := md.Get("airline_id")[0]
+	id, err := strconv.Atoi(airline_id)
+	if err != nil {
+		log.Println("error converting into int")
+		return nil, err
+	}
+
+	response, err := handler.svc.CreateAirlineBaggagePolicy(p, id)
+	if err != nil {
+		log.Printf("Unable to create airline baggage policy, err: %v", err.Error())
+		return nil, err
+	}
+	airlineBaggagePolicyResponse := utils.ConvertAirlineBaggagePolicyToResponse(response)
+	return airlineBaggagePolicyResponse, nil
 }
 
 func (H *AdminAirlineHandler) FetchAllAirlineBaggages(context.Context, *pb.EmptyRequest) (*pb.AirlineBaggagesResponse, error) {
@@ -115,18 +144,33 @@ func (H *AdminAirlineHandler) DeleteAirlineBaggage(context.Context, *pb.IDReques
 //* METHODS BELOW THIS IS TO HANDLE AIRLINE CANCELLATION
 
 func (handler *AdminAirlineHandler) RegisterAirlineCancellation(ctx context.Context, p *pb.AirlineCancellationRequest) (*pb.AirlineCancellationResponse, error) {
-	// deadline, ok := ctx.Deadline()
-	// if ok && deadline.Before(time.Now()) {
-	// 	log.Println("deadline passed, aborting gRPC call")
-	// 	return nil, errors.New("deadline passed, aborting gRPC call")
-	// }
-	// response, err := handler.svc.CreateAirlineCancellationPolicy(p)
-	// if err != nil {
-	// 	log.Printf("Unable to create airline cancellation policy, err: %v", err.Error())
-	// 	return nil, err
-	// }
-	// airlineCancellationPolicyResponse := utils.ConvertAirlineCancellationPolicyToResponse(response)
-	return nil, nil
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		log.Println("deadline passed, aborting gRPC call")
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		log.Println("not able to get the metadata from url")
+		return nil, errors.New("Not able to get the metada from context")
+	}
+
+	airline_id := md.Get("airline_id")
+	fmt.Println(airline_id)
+	id, err := strconv.Atoi(airline_id[0])
+	if err != nil {
+		log.Println("error converting into int")
+		return nil, err
+	}
+
+	response, err := handler.svc.CreateAirlineCancellationPolicy(p, id)
+	if err != nil {
+		log.Printf("Unable to create airline baggage policy, err: %v", err.Error())
+		return nil, err
+	}
+	airlineCancellationPolicyResponse := utils.ConvertAirlineCancellationPolicyToResponse(response)
+	return airlineCancellationPolicyResponse, nil
 }
 
 func (H *AdminAirlineHandler) FetchAllAirlineCancellations(context.Context, *pb.EmptyRequest) (*pb.AirlineCancellationsResponse, error) {

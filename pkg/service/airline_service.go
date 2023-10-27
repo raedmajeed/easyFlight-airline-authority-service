@@ -134,11 +134,12 @@ func (svc *AdminAirlineServiceStruct) RegisterFlight(p *pb.AirlineRequest) (*dom
 // * METHODS TO EVERYTHING AIRLINE SEATS
 type Layout struct{ Rows [][]bool }
 
-func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest) (*dom.AirlineSeat, error) {
-	_, err := svc.repo.FindAirlineById(p.AirlineId)
+func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest, id int) (*dom.AirlineSeat, error) {
+	_, err := svc.repo.FindAirlineById(int32(id))
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("No existing record found  of airline %v", p.AirlineId)
+			return nil, err
 		} else {
 			log.Printf("Flight Type not create of model %v, err: %v", p.AirlineId, err.Error())
 			return nil, err
@@ -204,51 +205,53 @@ func createBuisinessSeatsJSONLayout(seats, sprow int32) *Layout {
 }
 
 // * METHODS TO EVERYTHING AIRLINE BAGGAGE POLICY
-func (svc *AdminAirlineServiceStruct) CreateAirlineBaggagePolicy(p *pb.AirlineBaggageRequest) (*dom.AirlineBaggage, error) {
-	// flightType, err := svc.repo.FindFligh(p.AirlineId)
-	// if err != nil {
-	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
-	// 		log.Printf("No existing record found  of model %v", p.FlightModel)
-	// 	} else {
-	// 		log.Printf("Flight Type not create of model %v, err: %v", p.FlightModel, err.Error())
-	// 		return flightType, err
-	// 	}
-	// }
+func (svc *AdminAirlineServiceStruct) CreateAirlineBaggagePolicy(p *pb.AirlineBaggageRequest, id int) (*dom.AirlineBaggage, error) {
+	_, err := svc.repo.FindAirlineById(int32(id))
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("No existing record found  of airline %v", p.AirlineId)
+			return nil, err
+		} else {
+			log.Printf("Baggage Policy not create of model %v, err: %v", p.AirlineId, err.Error())
+			return nil, err
+		}
+	}
 
-	// flightType, err = svc.repo.CreateFlightType(p)
-	// if err != nil {
-	// 	if errors.Is(err, gorm.ErrDuplicatedKey) {
-	// 		log.Printf("Flight Type not created of model %v, err: %v",
-	// 			p.FlightModel, err.Error())
-	// 		return nil, err
-	// 	} else {
-	// 		return nil, err
-	// 	}
-	// }
-	return nil, nil
+	airlineBaggagePolicy, err := svc.repo.CreateAirlineBaggagePolicy(p, id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			log.Printf("Flight Type not created of model %v, err: %v",
+				id, err.Error())
+			return nil, err
+		} else {
+			return nil, err
+		}
+	}
+	return airlineBaggagePolicy, nil
 }
 
 // * METHODS TO EVERYTHING AIRLINE CANCELATION POLICY
-func (svc *AdminAirlineServiceStruct) CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest) (*dom.AirlineCancellation, error) {
-	// flightType, err := svc.repo.FindFlightTypeByModel(p.FlightModel)
-	// if err != nil {
-	// 	if errors.Is(err, gorm.ErrRecordNotFound) {
-	// 		log.Printf("No existing record found  of model %v", p.FlightModel)
-	// 	} else {
-	// 		log.Printf("Flight Type not create of model %v, err: %v", p.FlightModel, err.Error())
-	// 		return flightType, err
-	// 	}
-	// }
+func (svc *AdminAirlineServiceStruct) CreateAirlineCancellationPolicy(p *pb.AirlineCancellationRequest, id int) (*dom.AirlineCancellation, error) {
+	_, err := svc.repo.FindAirlineById(int32(id))
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("No existing record found  of airline %v", p.AirlineId)
+			return nil, err
+		} else {
+			log.Printf("Cancellation policy not create of model %v, err: %v", p.AirlineId, err.Error())
+			return nil, err
+		}
+	}
 
-	// flightType, err = svc.repo.CreateFlightType(p)
-	// if err != nil {
-	// 	if errors.Is(err, gorm.ErrDuplicatedKey) {
-	// 		log.Printf("Flight Type not created of model %v, err: %v",
-	// 			p.FlightModel, err.Error())
-	// 		return nil, err
-	// 	} else {
-	// 		return nil, err
-	// 	}
-	// }
-	return nil, nil
+	airlineCancellationPolicy, err := svc.repo.CreateAirlineCancellationPolicy(p, id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			log.Printf("Flight Type not created of model %v, err: %v",
+				id, err.Error())
+			return nil, err
+		} else {
+			return nil, err
+		}
+	}
+	return airlineCancellationPolicy, nil
 }

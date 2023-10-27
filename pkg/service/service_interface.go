@@ -19,13 +19,13 @@ type AdminAirlineService interface {
 	RegisterFlight(*pb.AirlineRequest) (*dom.Airline, error)
 
 	//*Methods to add airline seats to db
-	CreateAirlineSeats(*pb.AirlineSeatRequest) (*dom.AirlineSeat, error)
+	CreateAirlineSeats(*pb.AirlineSeatRequest, int) (*dom.AirlineSeat, error)
 
 	//*Methods to add airline baggage policy to db
-	CreateAirlineBaggagePolicy(*pb.AirlineBaggageRequest) (*dom.AirlineBaggage, error)
+	CreateAirlineBaggagePolicy(*pb.AirlineBaggageRequest, int) (*dom.AirlineBaggage, error)
 
 	//*Methods to add airline cancellation policy to db
-	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest) (*dom.AirlineCancellation, error)
+	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
 }
 
 type AdminAirlineServiceStruct struct {

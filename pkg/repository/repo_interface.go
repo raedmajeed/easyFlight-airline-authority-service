@@ -19,6 +19,12 @@ type AdminAirlineRepostory interface {
 
 	//* Methods to Do repo operation on airline seats
 	CreateAirlineSeatType(*pb.AirlineSeatRequest, []byte, []byte) (*dom.AirlineSeat, error)
+
+	//* Methods to Do repo operation on airline baggage policy
+	CreateAirlineBaggagePolicy(*pb.AirlineBaggageRequest, int) (*dom.AirlineBaggage, error)
+
+	//* Methods to Do repo operation on airline cancellation policy
+	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
 }
 
 type AdminAirlineRepositoryStruct struct {

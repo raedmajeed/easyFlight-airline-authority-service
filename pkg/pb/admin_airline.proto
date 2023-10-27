@@ -155,12 +155,16 @@ message AirlineBaggageRequest {
   int32 airline_id = 1;
   Class class = 2;
   int32 cabin_allowed_weight = 3;
-  int32 cabin_allowed_dimension = 4;
-  int32 hand_allowed_weight = 5;
-  int32 hand_allowed_dimension = 6;
-  int32 fee_for_extra_kg_cabin = 7;
-  int32 fee_for_extra_kg_hand = 8;
-  string restrictions = 9;
+  int32 cabin_allowed_length = 4;
+  int32 cabin_allowed_breadth = 5;
+  int32 cabin_allowed_height = 6;
+  int32 hand_allowed_weight = 7;
+  int32 hand_allowed_length = 8;
+  int32 hand_allowed_breadth = 9;
+  int32 hand_allowed_height = 10;
+  int32 fee_for_extra_kg_cabin = 11;
+  int32 fee_for_extra_kg_hand = 12;
+  string restrictions = 13;
 }
 
 message AirlineBaggageResponse {
