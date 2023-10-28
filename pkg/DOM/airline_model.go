@@ -68,3 +68,11 @@ type OtpData struct {
 	Email   string  `json:"email"`
 	Airline Airline `json:"airline"`
 }
+
+type FlightFleetRequest struct {
+	SeatId             int `json:"seat_id" validate:"required,foreign_key:seats"`
+	FlightType         int `json:"flight_type" validate:"required,foreign_key:flight_types"`
+	BaggagePolicy      int `json:"baggage_policy" validate:"required,foreign_key:baggage_policies"`
+	CancellationPolicy int `json:"cancellation_policy" validate:"required,foreign_key:cancellation_policies"`
+	FlightCount        int `json:"flight_count" validate:"numeric"`
+}
