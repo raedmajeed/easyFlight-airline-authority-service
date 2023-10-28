@@ -1,10 +1,8 @@
-package service
+package interfaces
 
 import (
-	"github.com/go-redis/redis/v8"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
-	"github.com/raedmajeed/admin-servcie/pkg/repository"
 )
 
 type AdminAirlineService interface {
@@ -26,16 +24,4 @@ type AdminAirlineService interface {
 
 	//*Methods to add airline cancellation policy to db
 	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
-}
-
-type AdminAirlineServiceStruct struct {
-	repo  repository.AdminAirlineRepostory
-	redis *redis.Client
-}
-
-func NewAdminAirlineService(repo repository.AdminAirlineRepostory, redis *redis.Client) AdminAirlineService {
-	return &AdminAirlineServiceStruct{
-		repo:  repo,
-		redis: redis,
-	}
 }

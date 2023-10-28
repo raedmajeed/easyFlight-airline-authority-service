@@ -1,17 +1,31 @@
 package service
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"log"
 	"time"
 
+	"github.com/go-redis/redis"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
+	inter "github.com/raedmajeed/admin-servcie/pkg/repository/interfaces"
+	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	utils "github.com/raedmajeed/admin-servcie/pkg/utils"
 	"gorm.io/gorm"
 )
+
+type AdminAirlineServiceStruct struct {
+	repo  inter.AdminAirlineRepostory
+	redis *redis.Client
+}
+
+func NewAdminAirlineService(repo inter.AdminAirlineRepostory, redis *redis.Client) interfaces.AdminAirlineService {
+	return &AdminAirlineServiceStruct{
+		repo:  repo,
+		redis: redis,
+	}
+}
 
 //* METHODS TO EVERYTHING FLIGHT TYPES
 
@@ -127,7 +141,7 @@ func (svc *AdminAirlineServiceStruct) RegisterFlight(p *pb.AirlineRequest) (*dom
 		return nil, err
 	}
 
-	svc.redis.Set(context.Background(), "airline_data", otpJson, time.Minute*10)
+	svc.redis.Set("airline_data", otpJson, time.Second*10000)
 	return airline, nil
 }
 
