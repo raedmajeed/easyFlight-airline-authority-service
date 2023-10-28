@@ -1,26 +1,25 @@
 package repository
 
 import (
+	"errors"
 	"fmt"
+	"log"
 
-	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
-	"github.com/raedmajeed/admin-servcie/pkg/repository/interfaces"
-	// interfaces "github.com/raedmajeed/admin-servcie/pkg/repository/interfaces"
+	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	"gorm.io/gorm"
 )
 
-func (a *AdminAirlineRepositoryStruct) AddFlightType(p *pb.FlightTypeRequest) {
-	fmt.Println("REACHED REPO")
-	fmt.Println(p.Description)
-	// a.DB.Create()
-}
-
-type AdminAirlineRepositoryStruct struct {
-	DB *gorm.DB
-}
-
-func NewAdminAirlineRepository(db *gorm.DB) interfaces.AdminAirlineRepostory {
-	return &AdminAirlineRepositoryStruct{
-		DB: db,
+func (repo *AdminAirlineRepositoryStruct) FindAirlineById(id int32) (*dom.Airline, error) {
+	var airline dom.Airline
+	result := repo.DB.Where("id = ?", int(id)).First(&airline)
+	fmt.Println(result)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Printf("Record not found of airline %v", id)
+			return nil, gorm.ErrRecordNotFound
+		} else {
+			return nil, result.Error
+		}
 	}
+	return &airline, nil
 }

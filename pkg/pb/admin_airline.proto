@@ -40,6 +40,9 @@ service AdminAirline {
   rpc FetchAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
   rpc UpdateAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
   rpc DeleteAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
+
+  // gRPC methods for all actions on Airport
+  rpc RegisterAirportRequest(Airport) returns (AirportResponse);
 }
 
 message Error {
@@ -198,4 +201,26 @@ message AirlineCancellationsResponse {
   int32 code = 2;
   string message = 3;
   Error error = 4;
+}
+
+// AIRPORT REQUEST
+
+message Airport {
+  string airport_code = 1;
+  string airport_name = 2;
+  string city = 3;
+  string country = 4;
+  string region = 5;
+  double latitude = 6;
+  double longitude = 7;
+  string iata_fcs_code = 8;
+  string icao_code = 9;
+  string website = 10;
+  string contact_email = 11;
+  string contact_phone = 12;
+}
+
+
+message AirportResponse {
+  Airport airline = 1;
 }

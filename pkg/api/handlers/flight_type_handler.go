@@ -8,23 +8,9 @@ import (
 	"time"
 
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
-	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"github.com/raedmajeed/admin-servcie/pkg/utils"
 	"google.golang.org/grpc/metadata"
 )
-
-type AdminAirlineHandler struct {
-	// need service here
-	// need jwt utils token generatore here
-	svc interfaces.AdminAirlineService
-	pb.AdminAirlineServer
-}
-
-func NewAdminAirlineHandler(svc interfaces.AdminAirlineService) *AdminAirlineHandler {
-	return &AdminAirlineHandler{
-		svc: svc,
-	}
-}
 
 //* METHODS BELOW THIS IS TO HANDLE FLIGHT TYPES
 
