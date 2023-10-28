@@ -137,3 +137,36 @@ func convertTypeClass(typeStr int) pb.Class {
 		return pb.Class_ECONOMY
 	}
 }
+
+func ConvertAirportToResponse(model *dom.Airport) *pb.AirportResponse {
+	airportReq := &pb.Airport{
+		AirportCode:  model.AirportCode,
+		AirportName:  model.AirportName,
+		City:         model.City,
+		Country:      model.Country,
+		Region:       model.Region,
+		Latitude:     model.Latitude,
+		Longitude:    model.Longitude,
+		IataFcsCode:  model.IATAFCSCode,
+		IcaoCode:     model.ICAOCode,
+		Website:      model.Website,
+		ContactEmail: model.ContactEmail,
+		ContactPhone: model.ContactPhone,
+	}
+	return &pb.AirportResponse{
+		Airport: airportReq,
+	}
+}
+
+func ConvertSchedulesToResponse(model *dom.Schedule) *pb.ScheduleResponse {
+	schedule := &pb.ScheduleRequest{
+		DepartureAirport: model.DepartureAirport,
+		ArrivalAirport:   model.ArrivalAirport,
+		DepartureTime:    model.DepartureTime,
+		ArrivalTime:      model.ArrivalTime,
+	}
+
+	return &pb.ScheduleResponse{
+		Schedule: schedule,
+	}
+}

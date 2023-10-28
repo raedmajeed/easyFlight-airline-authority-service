@@ -24,4 +24,10 @@ type AdminAirlineService interface {
 
 	//*Methods to add airline cancellation policy to db
 	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
+
+	//*Methods to add airport to db
+	CreateAirport(*pb.Airport) (*dom.Airport, error)
+
+	//*Methods to add schedule to db
+	CreateSchedules(*pb.ScheduleRequest) (*dom.Schedule, error)
 }

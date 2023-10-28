@@ -24,4 +24,11 @@ type AdminAirlineRepostory interface {
 
 	//* Methods to Do repo operation on airline cancellation policy
 	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
+
+	//* Methods to Do repo operation on airport
+	FindAirportByAirportCode(string) (*dom.Airport, error)
+	CreateAirport(*pb.Airport) (*dom.Airport, error)
+
+	//* Methods to Do repo operation on schedules
+	CreateSchedules(*pb.ScheduleRequest) (*dom.Schedule, error)
 }

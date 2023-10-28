@@ -46,6 +46,7 @@ const (
 	AdminAirline_UpdateAirlineCancellation_FullMethodName    = "/pb.AdminAirline/UpdateAirlineCancellation"
 	AdminAirline_DeleteAirlineCancellation_FullMethodName    = "/pb.AdminAirline/DeleteAirlineCancellation"
 	AdminAirline_RegisterAirportRequest_FullMethodName       = "/pb.AdminAirline/RegisterAirportRequest"
+	AdminAirline_RegisterScheduleRequest_FullMethodName      = "/pb.AdminAirline/RegisterScheduleRequest"
 )
 
 // AdminAirlineClient is the client API for AdminAirline service.
@@ -85,6 +86,8 @@ type AdminAirlineClient interface {
 	DeleteAirlineCancellation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
 	// gRPC methods for all actions on Airport
 	RegisterAirportRequest(ctx context.Context, in *Airport, opts ...grpc.CallOption) (*AirportResponse, error)
+	// gRPC methods for all actions on Schedules
+	RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
 }
 
 type adminAirlineClient struct {
@@ -338,6 +341,15 @@ func (c *adminAirlineClient) RegisterAirportRequest(ctx context.Context, in *Air
 	return out, nil
 }
 
+func (c *adminAirlineClient) RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
+	out := new(ScheduleResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterScheduleRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminAirlineServer is the server API for AdminAirline service.
 // All implementations must embed UnimplementedAdminAirlineServer
 // for forward compatibility
@@ -375,6 +387,8 @@ type AdminAirlineServer interface {
 	DeleteAirlineCancellation(context.Context, *IDRequest) (*AirlineCancellationResponse, error)
 	// gRPC methods for all actions on Airport
 	RegisterAirportRequest(context.Context, *Airport) (*AirportResponse, error)
+	// gRPC methods for all actions on Schedules
+	RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
 	mustEmbedUnimplementedAdminAirlineServer()
 }
 
@@ -462,6 +476,9 @@ func (UnimplementedAdminAirlineServer) DeleteAirlineCancellation(context.Context
 }
 func (UnimplementedAdminAirlineServer) RegisterAirportRequest(context.Context, *Airport) (*AirportResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirportRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterScheduleRequest not implemented")
 }
 func (UnimplementedAdminAirlineServer) mustEmbedUnimplementedAdminAirlineServer() {}
 
@@ -962,6 +979,24 @@ func _AdminAirline_RegisterAirportRequest_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminAirline_RegisterScheduleRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ScheduleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterScheduleRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterScheduleRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterScheduleRequest(ctx, req.(*ScheduleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminAirline_ServiceDesc is the grpc.ServiceDesc for AdminAirline service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1076,6 +1111,10 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterAirportRequest",
 			Handler:    _AdminAirline_RegisterAirportRequest_Handler,
+		},
+		{
+			MethodName: "RegisterScheduleRequest",
+			Handler:    _AdminAirline_RegisterScheduleRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
