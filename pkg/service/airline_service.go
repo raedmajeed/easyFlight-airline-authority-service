@@ -1,12 +1,13 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
 	"time"
 
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 	inter "github.com/raedmajeed/admin-servcie/pkg/repository/interfaces"
@@ -141,7 +142,7 @@ func (svc *AdminAirlineServiceStruct) RegisterFlight(p *pb.AirlineRequest) (*dom
 		return nil, err
 	}
 
-	svc.redis.Set("airline_data", otpJson, time.Second*10000)
+	svc.redis.Set(context.Background(), "airline_data", otpJson, time.Second*10000)
 	return airline, nil
 }
 

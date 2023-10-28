@@ -8,7 +8,7 @@ import (
 	"time"
 
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
-	"github.com/raedmajeed/admin-servcie/pkg/service"
+	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"github.com/raedmajeed/admin-servcie/pkg/utils"
 	"google.golang.org/grpc/metadata"
 )
@@ -16,11 +16,11 @@ import (
 type AdminAirlineHandler struct {
 	// need service here
 	// need jwt utils token generatore here
-	svc service.AdminAirlineService
+	svc interfaces.AdminAirlineService
 	pb.AdminAirlineServer
 }
 
-func NewAdminAirlineHandler(svc service.AdminAirlineService) *AdminAirlineHandler {
+func NewAdminAirlineHandler(svc interfaces.AdminAirlineService) *AdminAirlineHandler {
 	return &AdminAirlineHandler{
 		svc: svc,
 	}
