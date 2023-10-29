@@ -26,3 +26,10 @@ type Schedule struct {
 	ArrivalAirport   string `json:"arrival_airport"`
 	Scheduled        bool   `json:"scheduled" gorm:"default:false"`
 }
+
+type AdminTable struct {
+	gorm.Model
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Phone    string `json:"phone"`
+}

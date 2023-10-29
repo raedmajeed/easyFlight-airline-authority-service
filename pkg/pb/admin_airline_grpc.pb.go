@@ -19,34 +19,38 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	AdminAirline_RegisterFlightType_FullMethodName           = "/pb.AdminAirline/RegisterFlightType"
-	AdminAirline_FetchAllFlightTypes_FullMethodName          = "/pb.AdminAirline/FetchAllFlightTypes"
-	AdminAirline_FetchFlightType_FullMethodName              = "/pb.AdminAirline/FetchFlightType"
-	AdminAirline_UpdateFlightType_FullMethodName             = "/pb.AdminAirline/UpdateFlightType"
-	AdminAirline_DeleteFlightType_FullMethodName             = "/pb.AdminAirline/DeleteFlightType"
-	AdminAirline_RegisterAirline_FullMethodName              = "/pb.AdminAirline/RegisterAirline"
-	AdminAirline_FetchAllAirlines_FullMethodName             = "/pb.AdminAirline/FetchAllAirlines"
-	AdminAirline_FetchAirline_FullMethodName                 = "/pb.AdminAirline/FetchAirline"
-	AdminAirline_UpdateAirline_FullMethodName                = "/pb.AdminAirline/UpdateAirline"
-	AdminAirline_DeleteAirline_FullMethodName                = "/pb.AdminAirline/DeleteAirline"
-	AdminAirline_VerifyAirline_FullMethodName                = "/pb.AdminAirline/VerifyAirline"
-	AdminAirline_RegisterAirlineSeat_FullMethodName          = "/pb.AdminAirline/RegisterAirlineSeat"
-	AdminAirline_FetchAllAirlineSeats_FullMethodName         = "/pb.AdminAirline/FetchAllAirlineSeats"
-	AdminAirline_FetchAirlineSeat_FullMethodName             = "/pb.AdminAirline/FetchAirlineSeat"
-	AdminAirline_UpdateAirlineSeat_FullMethodName            = "/pb.AdminAirline/UpdateAirlineSeat"
-	AdminAirline_DeleteAirlineSeat_FullMethodName            = "/pb.AdminAirline/DeleteAirlineSeat"
-	AdminAirline_RegisterAirlineBaggage_FullMethodName       = "/pb.AdminAirline/RegisterAirlineBaggage"
-	AdminAirline_FetchAllAirlineBaggages_FullMethodName      = "/pb.AdminAirline/FetchAllAirlineBaggages"
-	AdminAirline_FetchAirlineBaggage_FullMethodName          = "/pb.AdminAirline/FetchAirlineBaggage"
-	AdminAirline_UpdateAirlineBaggage_FullMethodName         = "/pb.AdminAirline/UpdateAirlineBaggage"
-	AdminAirline_DeleteAirlineBaggage_FullMethodName         = "/pb.AdminAirline/DeleteAirlineBaggage"
-	AdminAirline_RegisterAirlineCancellation_FullMethodName  = "/pb.AdminAirline/RegisterAirlineCancellation"
-	AdminAirline_FetchAllAirlineCancellations_FullMethodName = "/pb.AdminAirline/FetchAllAirlineCancellations"
-	AdminAirline_FetchAirlineCancellation_FullMethodName     = "/pb.AdminAirline/FetchAirlineCancellation"
-	AdminAirline_UpdateAirlineCancellation_FullMethodName    = "/pb.AdminAirline/UpdateAirlineCancellation"
-	AdminAirline_DeleteAirlineCancellation_FullMethodName    = "/pb.AdminAirline/DeleteAirlineCancellation"
-	AdminAirline_RegisterAirportRequest_FullMethodName       = "/pb.AdminAirline/RegisterAirportRequest"
-	AdminAirline_RegisterScheduleRequest_FullMethodName      = "/pb.AdminAirline/RegisterScheduleRequest"
+	AdminAirline_RegisterFlightType_FullMethodName             = "/pb.AdminAirline/RegisterFlightType"
+	AdminAirline_FetchAllFlightTypes_FullMethodName            = "/pb.AdminAirline/FetchAllFlightTypes"
+	AdminAirline_FetchFlightType_FullMethodName                = "/pb.AdminAirline/FetchFlightType"
+	AdminAirline_UpdateFlightType_FullMethodName               = "/pb.AdminAirline/UpdateFlightType"
+	AdminAirline_DeleteFlightType_FullMethodName               = "/pb.AdminAirline/DeleteFlightType"
+	AdminAirline_RegisterAirline_FullMethodName                = "/pb.AdminAirline/RegisterAirline"
+	AdminAirline_FetchAllAirlines_FullMethodName               = "/pb.AdminAirline/FetchAllAirlines"
+	AdminAirline_FetchAirline_FullMethodName                   = "/pb.AdminAirline/FetchAirline"
+	AdminAirline_UpdateAirline_FullMethodName                  = "/pb.AdminAirline/UpdateAirline"
+	AdminAirline_DeleteAirline_FullMethodName                  = "/pb.AdminAirline/DeleteAirline"
+	AdminAirline_VerifyAirline_FullMethodName                  = "/pb.AdminAirline/VerifyAirline"
+	AdminAirline_RegisterAirlineSeat_FullMethodName            = "/pb.AdminAirline/RegisterAirlineSeat"
+	AdminAirline_FetchAllAirlineSeats_FullMethodName           = "/pb.AdminAirline/FetchAllAirlineSeats"
+	AdminAirline_FetchAirlineSeat_FullMethodName               = "/pb.AdminAirline/FetchAirlineSeat"
+	AdminAirline_UpdateAirlineSeat_FullMethodName              = "/pb.AdminAirline/UpdateAirlineSeat"
+	AdminAirline_DeleteAirlineSeat_FullMethodName              = "/pb.AdminAirline/DeleteAirlineSeat"
+	AdminAirline_RegisterAirlineBaggage_FullMethodName         = "/pb.AdminAirline/RegisterAirlineBaggage"
+	AdminAirline_FetchAllAirlineBaggages_FullMethodName        = "/pb.AdminAirline/FetchAllAirlineBaggages"
+	AdminAirline_FetchAirlineBaggage_FullMethodName            = "/pb.AdminAirline/FetchAirlineBaggage"
+	AdminAirline_UpdateAirlineBaggage_FullMethodName           = "/pb.AdminAirline/UpdateAirlineBaggage"
+	AdminAirline_DeleteAirlineBaggage_FullMethodName           = "/pb.AdminAirline/DeleteAirlineBaggage"
+	AdminAirline_RegisterAirlineCancellation_FullMethodName    = "/pb.AdminAirline/RegisterAirlineCancellation"
+	AdminAirline_FetchAllAirlineCancellations_FullMethodName   = "/pb.AdminAirline/FetchAllAirlineCancellations"
+	AdminAirline_FetchAirlineCancellation_FullMethodName       = "/pb.AdminAirline/FetchAirlineCancellation"
+	AdminAirline_UpdateAirlineCancellation_FullMethodName      = "/pb.AdminAirline/UpdateAirlineCancellation"
+	AdminAirline_DeleteAirlineCancellation_FullMethodName      = "/pb.AdminAirline/DeleteAirlineCancellation"
+	AdminAirline_RegisterAirportRequest_FullMethodName         = "/pb.AdminAirline/RegisterAirportRequest"
+	AdminAirline_RegisterScheduleRequest_FullMethodName        = "/pb.AdminAirline/RegisterScheduleRequest"
+	AdminAirline_RegisterLoginRequest_FullMethodName           = "/pb.AdminAirline/RegisterLoginRequest"
+	AdminAirline_RegisterForgotPasswordRequest_FullMethodName  = "/pb.AdminAirline/RegisterForgotPasswordRequest"
+	AdminAirline_RegisterVerifyOTPRequest_FullMethodName       = "/pb.AdminAirline/RegisterVerifyOTPRequest"
+	AdminAirline_RegisterConfirmPasswordRequest_FullMethodName = "/pb.AdminAirline/RegisterConfirmPasswordRequest"
 )
 
 // AdminAirlineClient is the client API for AdminAirline service.
@@ -88,6 +92,11 @@ type AdminAirlineClient interface {
 	RegisterAirportRequest(ctx context.Context, in *Airport, opts ...grpc.CallOption) (*AirportResponse, error)
 	// gRPC methods for all actions on Schedules
 	RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
+	// gRPC methods for all auth actions
+	RegisterLoginRequest(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
+	RegisterVerifyOTPRequest(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	RegisterConfirmPasswordRequest(ctx context.Context, in *ConfirmPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
 }
 
 type adminAirlineClient struct {
@@ -350,6 +359,42 @@ func (c *adminAirlineClient) RegisterScheduleRequest(ctx context.Context, in *Sc
 	return out, nil
 }
 
+func (c *adminAirlineClient) RegisterLoginRequest(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterLoginRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error) {
+	out := new(EmailResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterForgotPasswordRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) RegisterVerifyOTPRequest(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterVerifyOTPRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) RegisterConfirmPasswordRequest(ctx context.Context, in *ConfirmPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error) {
+	out := new(EmailResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterConfirmPasswordRequest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminAirlineServer is the server API for AdminAirline service.
 // All implementations must embed UnimplementedAdminAirlineServer
 // for forward compatibility
@@ -389,6 +434,11 @@ type AdminAirlineServer interface {
 	RegisterAirportRequest(context.Context, *Airport) (*AirportResponse, error)
 	// gRPC methods for all actions on Schedules
 	RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
+	// gRPC methods for all auth actions
+	RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error)
+	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*EmailResponse, error)
+	RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error)
+	RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error)
 	mustEmbedUnimplementedAdminAirlineServer()
 }
 
@@ -479,6 +529,18 @@ func (UnimplementedAdminAirlineServer) RegisterAirportRequest(context.Context, *
 }
 func (UnimplementedAdminAirlineServer) RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterScheduleRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterLoginRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*EmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterForgotPasswordRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterVerifyOTPRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterConfirmPasswordRequest not implemented")
 }
 func (UnimplementedAdminAirlineServer) mustEmbedUnimplementedAdminAirlineServer() {}
 
@@ -997,6 +1059,78 @@ func _AdminAirline_RegisterScheduleRequest_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminAirline_RegisterLoginRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterLoginRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterLoginRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterLoginRequest(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_RegisterForgotPasswordRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ForgotPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterForgotPasswordRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterForgotPasswordRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterForgotPasswordRequest(ctx, req.(*ForgotPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_RegisterVerifyOTPRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OTPRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterVerifyOTPRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterVerifyOTPRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterVerifyOTPRequest(ctx, req.(*OTPRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_RegisterConfirmPasswordRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterConfirmPasswordRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterConfirmPasswordRequest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterConfirmPasswordRequest(ctx, req.(*ConfirmPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminAirline_ServiceDesc is the grpc.ServiceDesc for AdminAirline service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1115,6 +1249,22 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterScheduleRequest",
 			Handler:    _AdminAirline_RegisterScheduleRequest_Handler,
+		},
+		{
+			MethodName: "RegisterLoginRequest",
+			Handler:    _AdminAirline_RegisterLoginRequest_Handler,
+		},
+		{
+			MethodName: "RegisterForgotPasswordRequest",
+			Handler:    _AdminAirline_RegisterForgotPasswordRequest_Handler,
+		},
+		{
+			MethodName: "RegisterVerifyOTPRequest",
+			Handler:    _AdminAirline_RegisterVerifyOTPRequest_Handler,
+		},
+		{
+			MethodName: "RegisterConfirmPasswordRequest",
+			Handler:    _AdminAirline_RegisterConfirmPasswordRequest_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

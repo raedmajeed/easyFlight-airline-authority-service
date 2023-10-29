@@ -31,4 +31,11 @@ type AdminAirlineRepostory interface {
 
 	//* Methods to Do repo operation on schedules
 	CreateSchedules(*pb.ScheduleRequest) (*dom.Schedule, error)
+
+	//* Methods to do repo operation on airline
+	FindAirlineByEmail(string) (*dom.Airline, error)
+	FindAirlinePassword(*pb.LoginRequest) (*dom.Airline, error)
+	FindAdminByEmail(p *pb.LoginRequest) (*dom.AdminTable, error)
+	FindAdminPassword(p *pb.LoginRequest) (*dom.AdminTable, error)
+	UpdateAirlinePassword(airline *dom.Airline) (string, error)
 }

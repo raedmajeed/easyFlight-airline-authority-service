@@ -170,3 +170,10 @@ func ConvertSchedulesToResponse(model *dom.Schedule) *pb.ScheduleResponse {
 		Schedule: schedule,
 	}
 }
+
+func ConvertLoginRequestToResponse(token string, p *pb.LoginRequest) *pb.LoginResponse {
+	return &pb.LoginResponse{
+		Email: p.Email,
+		Token: token,
+	}
+}

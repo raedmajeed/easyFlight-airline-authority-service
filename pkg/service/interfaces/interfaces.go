@@ -30,4 +30,11 @@ type AdminAirlineService interface {
 
 	//*Methods to add schedule to db
 	CreateSchedules(*pb.ScheduleRequest) (*dom.Schedule, error)
+
+	//*Methods to do authentication
+	AirlineLogin(*pb.LoginRequest) (string, error)
+	AdminLogin(*pb.LoginRequest) (string, error)
+	AirlineForgotPassword(*pb.ForgotPasswordRequest) (string, error)
+	VerifyOTP(*pb.OTPRequest) (*dom.LoginReponse, error)
+	UpdateAirlinePassword(*pb.ConfirmPasswordRequest, string) (string, error)
 }

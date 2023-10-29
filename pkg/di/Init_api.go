@@ -19,7 +19,7 @@ func InitApi(cfg *config.ConfigParams, redis *redis.Client) (*pkg.Server, error)
 		return nil, err
 	}
 	repo := repository.NewAdminAirlineRepository(DB)
-	svc := service.NewAdminAirlineService(repo, redis)
+	svc := service.NewAdminAirlineService(repo, redis, cfg)
 	hdlr := handlers.NewAdminAirlineHandler(svc)
 	server, err := api.NewServer(cfg, hdlr)
 	if err != nil {

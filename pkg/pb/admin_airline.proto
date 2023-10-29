@@ -46,6 +46,12 @@ service AdminAirline {
 
   // gRPC methods for all actions on Schedules
   rpc RegisterScheduleRequest(ScheduleRequest) returns (ScheduleResponse);
+
+  // gRPC methods for all auth actions
+  rpc RegisterLoginRequest(LoginRequest) returns (LoginResponse);
+  rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (EmailResponse);
+  rpc RegisterVerifyOTPRequest(OTPRequest) returns(LoginResponse);
+  rpc RegisterConfirmPasswordRequest(ConfirmPasswordRequest) returns (EmailResponse);
 }
 
 message Error {
@@ -55,13 +61,37 @@ message Error {
 
 message EmptyRequest {}
 
+message EmailResponse {
+  string email = 1;
+}
+
 message IDRequest {
   int32 id = 1;
 }
 
 message OTPRequest {
-  int32 OTP = 1;
+  int32 otp = 1;
   string email = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  string role = 3;
+}
+
+message ConfirmPasswordRequest {
+  string password = 1;
+  string confirm_password = 2;
+}
+
+message ForgotPasswordRequest {
+  string email =1 ;
+}
+
+message LoginResponse {
+  string email = 1;
+  string token = 2;
 }
 
 // Flight Request, Values are passed through context
@@ -236,7 +266,6 @@ message ScheduleRequest {
   string departure_airport = 3;
   string arrival_airport = 4;
 }
-
 
 message ScheduleResponse {
   ScheduleRequest schedule = 1;

@@ -1,8 +1,17 @@
 package model
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
+
+type AirTable struct {
+	gorm.Model
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Phone    string `json:"phone"`
+}
 
 type FlightTypeModel struct {
 	gorm.Model
@@ -17,10 +26,11 @@ type FlightTypeModel struct {
 
 type Airline struct {
 	gorm.Model
+	Email               string `json:"email" gorm:"not null;unique"`
+	Password            string `json:"password"`
 	AirlineName         string `json:"name"`
 	CompanyAddress      string `json:"company_address"`
 	PhoneNumber         string `json:"phone_number"`
-	Email               string `json:"email" gorm:"not null;unique"`
 	AirlineCode         string `json:"airline_code" gorm:"not null;unique"`
 	AirlineLogoLink     string `json:"airline_logo_link"`
 	SupportDocumentLink string `json:"support_documents_link"`
@@ -64,9 +74,9 @@ type AirlineCancellation struct {
 }
 
 type OtpData struct {
-	Otp     int     `json:"otp"`
-	Email   string  `json:"email"`
-	Airline Airline `json:"airline"`
+	Otp        int       `json:"otp"`
+	Email      string    `json:"email"`
+	ExpireTime time.Time `json:"time"`
 }
 
 type FlightFleetRequest struct {
@@ -75,4 +85,16 @@ type FlightFleetRequest struct {
 	BaggagePolicy      int `json:"baggage_policy" validate:"required,foreign_key:baggage_policies"`
 	CancellationPolicy int `json:"cancellation_policy" validate:"required,foreign_key:cancellation_policies"`
 	FlightCount        int `json:"flight_count" validate:"numeric"`
+}
+
+type LoginReponse struct {
+	Token string `json:"token"`
+	Email string `json:"email"`
+}
+
+type RegisterAirlineOtpData struct {
+	Otp        int       `json:"otp"`
+	Email      string    `json:"email"`
+	ExpireTime time.Time `json:"time"`
+	Airline    Airline   `json:"airline"`
 }

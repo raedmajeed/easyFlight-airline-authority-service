@@ -24,7 +24,7 @@ func (svc *AdminAirlineServiceStruct) RegisterFlight(p *pb.AirlineRequest) (*dom
 		SupportDocumentLink: p.SupportDocumentsLink,
 	}
 	otp := utils.GenerateOTP()
-	otpData := dom.OtpData{
+	otpData := dom.RegisterAirlineOtpData{
 		Otp:     otp,
 		Email:   airline.Email,
 		Airline: *airline,
