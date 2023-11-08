@@ -34,6 +34,7 @@ type Airline struct {
 	AirlineCode         string `json:"airline_code" gorm:"not null;unique"`
 	AirlineLogoLink     string `json:"airline_logo_link"`
 	SupportDocumentLink string `json:"support_documents_link"`
+	IsAccountLocked			bool 	 `json:"is_account_locked" gorm:"default:true"`
 }
 
 type AirlineSeat struct {

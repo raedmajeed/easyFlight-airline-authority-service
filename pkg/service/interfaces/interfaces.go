@@ -9,12 +9,14 @@ type AdminAirlineService interface {
 	//* Methods to Do service operation on flight type
 	CreateFlightType(*pb.FlightTypeRequest) (*dom.FlightTypeModel, error)
 	UpdateFlightType(*pb.FlightTypeRequest, int) (*dom.FlightTypeModel, error)
-	// DeleteFlightType()
+	DeleteFlightType(id int) (*dom.FlightTypeModel, error)
 	GetFlightType(int32) (*dom.FlightTypeModel, error)
 	GetAllFlightTypes() ([]dom.FlightTypeModel, error)
 
 	//* Methods to add airline to db
-	RegisterFlight(*pb.AirlineRequest) (*dom.Airline, error)
+	RegisterAirlineSvc(*pb.AirlineRequest) (*dom.RegisterAirlineOtpData, error)
+	VerifyAirlineRequest(*pb.OTPRequest) (*dom.Airline, error)
+	AdminVerifyAirlineRequest(int) (*dom.Airline, error)
 
 	//*Methods to add airline seats to db
 	CreateAirlineSeats(*pb.AirlineSeatRequest, int) (*dom.AirlineSeat, error)
@@ -34,7 +36,7 @@ type AdminAirlineService interface {
 	//*Methods to do authentication
 	AirlineLogin(*pb.LoginRequest) (string, error)
 	AdminLogin(*pb.LoginRequest) (string, error)
-	AirlineForgotPassword(*pb.ForgotPasswordRequest) (string, error)
+	AirlineForgotPassword(*pb.ForgotPasswordRequest) (*dom.OtpData, error)
 	VerifyOTP(*pb.OTPRequest) (*dom.LoginReponse, error)
 	UpdateAirlinePassword(*pb.ConfirmPasswordRequest, string) (string, error)
 }

@@ -26,7 +26,7 @@ func (repo *AdminAirlineRepositoryStruct) FindFlightTypeByModel(model string) (*
 
 func (repo *AdminAirlineRepositoryStruct) FindFlightTypeByID(id int32) (*dom.FlightTypeModel, error) {
 	var flightType dom.FlightTypeModel
-	result := repo.DB.Where("flight_model = ?", id).First(&flightType)
+	result := repo.DB.Where("id = ?", id).First(&flightType)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			log.Printf("Record not found of flight type %v", id)
@@ -70,11 +70,15 @@ func (repo *AdminAirlineRepositoryStruct) FindAllFlightTypes() ([]dom.FlightType
 	return flightTypes, nil
 }
 
-func (repo *AdminAirlineRepositoryStruct) UpdateFlightType(d *dom.FlightTypeModel) (*dom.FlightTypeModel, error) {
-	result := repo.DB.Save(&d)
+func (repo *AdminAirlineRepositoryStruct) UpdateFlightType(flightType *dom.FlightTypeModel, id int) (*dom.FlightTypeModel, error) {
+	result := repo.DB.Model(&dom.FlightTypeModel{}).Where("id = ?", id).Updates(flightType)
 	if result.Error != nil {
-		log.Println("Unable to Update the flight types")
 		return nil, result.Error
 	}
-	return d, nil
+	return flightType, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) DeleteFlightType(id int) error {
+	result := repo.DB.Delete(&dom.FlightTypeModel{}, id)
+	return result.Error
 }

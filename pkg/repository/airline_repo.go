@@ -7,6 +7,7 @@ import (
 
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
+	"github.com/raedmajeed/admin-servcie/pkg/utils"
 	"gorm.io/gorm"
 )
 
@@ -54,11 +55,42 @@ func (repo *AdminAirlineRepositoryStruct) FindAirlinePassword(p *pb.LoginRequest
 	return &user, nil
 }
 
-func (repo *AdminAirlineRepositoryStruct) UpdateAirlinePassword(airline *dom.Airline) (string, error) {
-	result := repo.DB.Save(&airline)
+func (repo *AdminAirlineRepositoryStruct) InitialAirlinePassword(airline *dom.Airline) (string, error) {
+	pswrd, err := utils.HashPassword(airline.AirlineCode)
+	if err != nil {
+		return "", err
+	}
+	result := repo.DB.Model(&dom.Airline{}).Where("id = ?", airline.ID).Update("Password", pswrd)
 	if result.Error != nil {
-		log.Println("Unable to Update the flight types")
+		log.Println("Unable to Update the airline password")
 		return "", result.Error
 	}
 	return airline.Email, nil
+}
+
+
+func (repo *AdminAirlineRepositoryStruct) UpdateAirlinePassword(airline *dom.Airline) (string, error) {
+	result := repo.DB.Model(&dom.Airline{}).Where("id = ?", airline.ID).Update("Password", airline.Password)
+	if result.Error != nil {
+		log.Println("Unable to Update the airline password")
+		return "", result.Error
+	}
+	return airline.Email, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) CreateAirline(airline *dom.Airline) (*dom.Airline, error) {
+	result := repo.DB.Create(airline)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+			log.Println("duplicate key found")
+			return nil, result.Error
+		} else {
+			return nil, result.Error
+		}
+	}
+	return airline, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) UnlockAirlineAccount(airlineID int) (error) {
+	return repo.DB.Model(&dom.Airline{}).Where("id = ?", airlineID).Update("IsAccountLocked", false).Error
 }

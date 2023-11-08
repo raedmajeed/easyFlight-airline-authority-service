@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"log"
 	"strconv"
 	"time"
@@ -29,7 +28,6 @@ func (handler *AdminAirlineHandler) RegisterAirlineCancellation(ctx context.Cont
 	}
 
 	airline_id := md.Get("airline_id")
-	fmt.Println(airline_id)
 	id, err := strconv.Atoi(airline_id[0])
 	if err != nil {
 		log.Println("error converting into int")

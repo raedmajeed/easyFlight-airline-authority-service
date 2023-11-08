@@ -24,7 +24,7 @@ func (repo *AdminAirlineRepositoryStruct) FindAirportByAirportCode(airportCode s
 }
 
 func (repo *AdminAirlineRepositoryStruct) CreateAirport(p *pb.Airport) (*dom.Airport, error) {
-	airport := dom.Airport{
+	airport := dom.Airport {
 		AirportCode:  p.AirportCode,
 		AirportName:  p.AirportName,
 		City:         p.City,

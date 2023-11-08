@@ -11,10 +11,15 @@ type AdminAirlineRepostory interface {
 	FindFlightTypeByModel(model string) (*dom.FlightTypeModel, error)
 	FindAllFlightTypes() ([]dom.FlightTypeModel, error)
 	FindFlightTypeByID(id int32) (*dom.FlightTypeModel, error)
-	UpdateFlightType(*dom.FlightTypeModel) (*dom.FlightTypeModel, error)
+	UpdateFlightType(*dom.FlightTypeModel, int) (*dom.FlightTypeModel, error)
+	DeleteFlightType(id int) error
 
 	//* Methods to Do repo operation on airline type
 	FindAirlineById(id int32) (*dom.Airline, error)
+	CreateAirline(airline *dom.Airline) (*dom.Airline, error)
+
+	//* Methods to Do repo operation on admin
+	FindAdminByEmail(p *pb.LoginRequest) (*dom.AdminTable, error)
 
 	//* Methods to Do repo operation on airline seats
 	CreateAirlineSeatType(*pb.AirlineSeatRequest, []byte, []byte) (*dom.AirlineSeat, error)
@@ -35,7 +40,7 @@ type AdminAirlineRepostory interface {
 	//* Methods to do repo operation on airline
 	FindAirlineByEmail(string) (*dom.Airline, error)
 	FindAirlinePassword(*pb.LoginRequest) (*dom.Airline, error)
-	FindAdminByEmail(p *pb.LoginRequest) (*dom.AdminTable, error)
-	FindAdminPassword(p *pb.LoginRequest) (*dom.AdminTable, error)
+	InitialAirlinePassword(airline *dom.Airline) (string, error)
 	UpdateAirlinePassword(airline *dom.Airline) (string, error)
+	UnlockAirlineAccount(int) (error)
 }

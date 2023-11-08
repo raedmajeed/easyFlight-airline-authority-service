@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -16,6 +17,7 @@ type Claims struct {
 
 func GenerateToken(email, role string, cfg *config.ConfigParams) (string, error) {
 	expireTime := time.Now().Add(time.Minute * 20).Unix()
+	fmt.Println(email, role)
 	claims := &Claims{
 		Email: email,
 		Role:  role,
@@ -26,7 +28,7 @@ func GenerateToken(email, role string, cfg *config.ConfigParams) (string, error)
 		},
 	}
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := jwtToken.SignedString(cfg.SECRETKEY)
+	signedToken, err := jwtToken.SignedString([]byte(cfg.SECRETKEY))
 	if err != nil {
 		log.Printf("unable to generate jwt token for user %v, err: %v", email, err.Error())
 		return "", err

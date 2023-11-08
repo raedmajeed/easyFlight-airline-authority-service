@@ -9,6 +9,7 @@ import (
 
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 	"github.com/raedmajeed/admin-servcie/pkg/utils"
+	"google.golang.org/grpc/metadata"
 )
 
 func (handler *AdminAirlineHandler) RegisterLoginRequest(ctx context.Context, p *pb.LoginRequest) (*pb.LoginResponse, error) {
@@ -25,17 +26,17 @@ func (handler *AdminAirlineHandler) RegisterLoginRequest(ctx context.Context, p 
 		token, err = handler.svc.AdminLogin(p)
 	}
 	if err != nil {
-		log.Printf("Unable to login %v of email %v, err: %v", p.Role, p.Email, err.Error())
+		log.Printf("Unable to login %v of email == %v, err: %v", p.Role, p.Email, err.Error())
 		return nil, err
 	}
 	if token == "" {
-		log.Printf("Unable to login %v of email %v, err: %v", p.Role, p.Email, err.Error())
+		log.Printf("Unable to login %v of email ++ %v, err: %v", p.Role, p.Email, err.Error())
 		return nil, err
 	}
 	return utils.ConvertLoginRequestToResponse(token, p), nil
 }
 
-func (handler *AdminAirlineHandler) RegisterForgotPasswordRequest(ctx context.Context, p *pb.ForgotPasswordRequest) (*pb.EmailResponse, error) {
+func (handler *AdminAirlineHandler) RegisterForgotPasswordRequest(ctx context.Context, p *pb.ForgotPasswordRequest) (*pb.OtpResponse, error) {
 	deadline, ok := ctx.Deadline()
 	if ok && deadline.Before(time.Now()) {
 		log.Println("deadline passed, aborting gRPC call")
@@ -46,8 +47,15 @@ func (handler *AdminAirlineHandler) RegisterForgotPasswordRequest(ctx context.Co
 	if err != nil {
 		log.Printf("unable to send otp, please try again")
 	}
-	return &pb.EmailResponse{
-		Email: response,
+
+	if err != nil {
+		log.Println("unable to parse duration:", err.Error())
+    return nil, err
+	}
+
+	return &pb.OtpResponse{
+		Email:          response.Email,
+		ExpirationTime: fmt.Sprintf("%v seconds", response.ExpireTime),
 	}, nil
 }
 
@@ -77,8 +85,15 @@ func (handler *AdminAirlineHandler) RegisterConfirmPasswordRequest(ctx context.C
 		return nil, errors.New("deadline passed, aborting gRPC call")
 	}
 
-	registered_email := ctx.Value("registered_email")
-	response, err := handler.svc.UpdateAirlinePassword(p, fmt.Sprintf("%d", registered_email))
+	md, check := metadata.FromIncomingContext(ctx)
+	if !check {
+		log.Println("unable to read metadata from context")
+		return nil, errors.New("unable to read metadata from context")
+	}
+
+	emails := md.Get("registered_email")
+	email := emails[0]
+	response, err := handler.svc.UpdateAirlinePassword(p, email)
 	if err != nil {
 		log.Printf("unable to send otp, please try again")
 		return nil, err

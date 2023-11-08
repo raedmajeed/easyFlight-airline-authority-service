@@ -24,17 +24,3 @@ func (repo *AdminAirlineRepositoryStruct) FindAdminByEmail(p *pb.LoginRequest) (
 	}
 	return &admin, nil
 }
-
-func (repo *AdminAirlineRepositoryStruct) FindAdminPassword(p *pb.LoginRequest) (*dom.AdminTable, error) {
-	var user dom.AdminTable
-	result := repo.DB.Where("email = ? AND password = ?", p.Email, p.Password).First(&user)
-	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			log.Printf("Password Mismatch %v", p.Email)
-			return nil, gorm.ErrRecordNotFound
-		} else {
-			return nil, result.Error
-		}
-	}
-	return &user, nil
-}

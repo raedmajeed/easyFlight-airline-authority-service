@@ -6,8 +6,6 @@ import (
 )
 
 type AdminAirlineHandler struct {
-	// need service here
-	// need jwt utils token generatore here
 	svc interfaces.AdminAirlineService
 	pb.AdminAirlineServer
 }

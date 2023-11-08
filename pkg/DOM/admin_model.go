@@ -22,6 +22,8 @@ type Airport struct {
 type Schedule struct {
 	DepartureTime    string `json:"departure_time"`
 	ArrivalTime      string `json:"arrival_time"`
+	DepartureDate	   string	`json:"departure_date"`
+	ArrivalDate 		 string `json:"arrival_date"`
 	DepartureAirport string `json:"departure_airport"`
 	ArrivalAirport   string `json:"arrival_airport"`
 	Scheduled        bool   `json:"scheduled" gorm:"default:false"`

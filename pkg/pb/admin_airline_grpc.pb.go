@@ -29,7 +29,8 @@ const (
 	AdminAirline_FetchAirline_FullMethodName                   = "/pb.AdminAirline/FetchAirline"
 	AdminAirline_UpdateAirline_FullMethodName                  = "/pb.AdminAirline/UpdateAirline"
 	AdminAirline_DeleteAirline_FullMethodName                  = "/pb.AdminAirline/DeleteAirline"
-	AdminAirline_VerifyAirline_FullMethodName                  = "/pb.AdminAirline/VerifyAirline"
+	AdminAirline_VerifyAirlineRegistration_FullMethodName      = "/pb.AdminAirline/VerifyAirlineRegistration"
+	AdminAirline_AdminVerifyAirline_FullMethodName             = "/pb.AdminAirline/AdminVerifyAirline"
 	AdminAirline_RegisterAirlineSeat_FullMethodName            = "/pb.AdminAirline/RegisterAirlineSeat"
 	AdminAirline_FetchAllAirlineSeats_FullMethodName           = "/pb.AdminAirline/FetchAllAirlineSeats"
 	AdminAirline_FetchAirlineSeat_FullMethodName               = "/pb.AdminAirline/FetchAirlineSeat"
@@ -64,12 +65,13 @@ type AdminAirlineClient interface {
 	UpdateFlightType(ctx context.Context, in *FlightTypeRequest, opts ...grpc.CallOption) (*FlightTypeResponse, error)
 	DeleteFlightType(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*FlightTypeResponse, error)
 	// gRPC methods for all actions on Airline
-	RegisterAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
+	RegisterAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*OtpResponse, error)
 	FetchAllAirlines(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlinesResponse, error)
 	FetchAirline(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	UpdateAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	DeleteAirline(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
-	VerifyAirline(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
+	VerifyAirlineRegistration(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
+	AdminVerifyAirline(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	// gRPC methods for all actions on Airline Seats
 	RegisterAirlineSeat(ctx context.Context, in *AirlineSeatRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
 	FetchAllAirlineSeats(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineSeatsResponse, error)
@@ -94,7 +96,7 @@ type AdminAirlineClient interface {
 	RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
 	// gRPC methods for all auth actions
 	RegisterLoginRequest(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
+	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*OtpResponse, error)
 	RegisterVerifyOTPRequest(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	RegisterConfirmPasswordRequest(ctx context.Context, in *ConfirmPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
 }
@@ -152,8 +154,8 @@ func (c *adminAirlineClient) DeleteFlightType(ctx context.Context, in *IDRequest
 	return out, nil
 }
 
-func (c *adminAirlineClient) RegisterAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*AirlineResponse, error) {
-	out := new(AirlineResponse)
+func (c *adminAirlineClient) RegisterAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*OtpResponse, error) {
+	out := new(OtpResponse)
 	err := c.cc.Invoke(ctx, AdminAirline_RegisterAirline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -197,9 +199,18 @@ func (c *adminAirlineClient) DeleteAirline(ctx context.Context, in *IDRequest, o
 	return out, nil
 }
 
-func (c *adminAirlineClient) VerifyAirline(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*AirlineResponse, error) {
+func (c *adminAirlineClient) VerifyAirlineRegistration(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*AirlineResponse, error) {
 	out := new(AirlineResponse)
-	err := c.cc.Invoke(ctx, AdminAirline_VerifyAirline_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, AdminAirline_VerifyAirlineRegistration_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) AdminVerifyAirline(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineResponse, error) {
+	out := new(AirlineResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_AdminVerifyAirline_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -368,8 +379,8 @@ func (c *adminAirlineClient) RegisterLoginRequest(ctx context.Context, in *Login
 	return out, nil
 }
 
-func (c *adminAirlineClient) RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error) {
-	out := new(EmailResponse)
+func (c *adminAirlineClient) RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*OtpResponse, error) {
+	out := new(OtpResponse)
 	err := c.cc.Invoke(ctx, AdminAirline_RegisterForgotPasswordRequest_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -406,12 +417,13 @@ type AdminAirlineServer interface {
 	UpdateFlightType(context.Context, *FlightTypeRequest) (*FlightTypeResponse, error)
 	DeleteFlightType(context.Context, *IDRequest) (*FlightTypeResponse, error)
 	// gRPC methods for all actions on Airline
-	RegisterAirline(context.Context, *AirlineRequest) (*AirlineResponse, error)
+	RegisterAirline(context.Context, *AirlineRequest) (*OtpResponse, error)
 	FetchAllAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error)
 	FetchAirline(context.Context, *IDRequest) (*AirlineResponse, error)
 	UpdateAirline(context.Context, *AirlineRequest) (*AirlineResponse, error)
 	DeleteAirline(context.Context, *IDRequest) (*AirlineResponse, error)
-	VerifyAirline(context.Context, *OTPRequest) (*AirlineResponse, error)
+	VerifyAirlineRegistration(context.Context, *OTPRequest) (*AirlineResponse, error)
+	AdminVerifyAirline(context.Context, *EmptyRequest) (*AirlineResponse, error)
 	// gRPC methods for all actions on Airline Seats
 	RegisterAirlineSeat(context.Context, *AirlineSeatRequest) (*AirlineSeatResponse, error)
 	FetchAllAirlineSeats(context.Context, *EmptyRequest) (*AirlineSeatsResponse, error)
@@ -436,7 +448,7 @@ type AdminAirlineServer interface {
 	RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
 	// gRPC methods for all auth actions
 	RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error)
-	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*EmailResponse, error)
+	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*OtpResponse, error)
 	RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error)
 	RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error)
 	mustEmbedUnimplementedAdminAirlineServer()
@@ -461,7 +473,7 @@ func (UnimplementedAdminAirlineServer) UpdateFlightType(context.Context, *Flight
 func (UnimplementedAdminAirlineServer) DeleteFlightType(context.Context, *IDRequest) (*FlightTypeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteFlightType not implemented")
 }
-func (UnimplementedAdminAirlineServer) RegisterAirline(context.Context, *AirlineRequest) (*AirlineResponse, error) {
+func (UnimplementedAdminAirlineServer) RegisterAirline(context.Context, *AirlineRequest) (*OtpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirline not implemented")
 }
 func (UnimplementedAdminAirlineServer) FetchAllAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error) {
@@ -476,8 +488,11 @@ func (UnimplementedAdminAirlineServer) UpdateAirline(context.Context, *AirlineRe
 func (UnimplementedAdminAirlineServer) DeleteAirline(context.Context, *IDRequest) (*AirlineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAirline not implemented")
 }
-func (UnimplementedAdminAirlineServer) VerifyAirline(context.Context, *OTPRequest) (*AirlineResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyAirline not implemented")
+func (UnimplementedAdminAirlineServer) VerifyAirlineRegistration(context.Context, *OTPRequest) (*AirlineResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyAirlineRegistration not implemented")
+}
+func (UnimplementedAdminAirlineServer) AdminVerifyAirline(context.Context, *EmptyRequest) (*AirlineResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminVerifyAirline not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterAirlineSeat(context.Context, *AirlineSeatRequest) (*AirlineSeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirlineSeat not implemented")
@@ -533,7 +548,7 @@ func (UnimplementedAdminAirlineServer) RegisterScheduleRequest(context.Context, 
 func (UnimplementedAdminAirlineServer) RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterLoginRequest not implemented")
 }
-func (UnimplementedAdminAirlineServer) RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*EmailResponse, error) {
+func (UnimplementedAdminAirlineServer) RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*OtpResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterForgotPasswordRequest not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error) {
@@ -735,20 +750,38 @@ func _AdminAirline_DeleteAirline_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminAirline_VerifyAirline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AdminAirline_VerifyAirlineRegistration_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(OTPRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AdminAirlineServer).VerifyAirline(ctx, in)
+		return srv.(AdminAirlineServer).VerifyAirlineRegistration(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AdminAirline_VerifyAirline_FullMethodName,
+		FullMethod: AdminAirline_VerifyAirlineRegistration_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).VerifyAirline(ctx, req.(*OTPRequest))
+		return srv.(AdminAirlineServer).VerifyAirlineRegistration(ctx, req.(*OTPRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_AdminVerifyAirline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).AdminVerifyAirline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_AdminVerifyAirline_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).AdminVerifyAirline(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1179,8 +1212,12 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminAirline_DeleteAirline_Handler,
 		},
 		{
-			MethodName: "VerifyAirline",
-			Handler:    _AdminAirline_VerifyAirline_Handler,
+			MethodName: "VerifyAirlineRegistration",
+			Handler:    _AdminAirline_VerifyAirlineRegistration_Handler,
+		},
+		{
+			MethodName: "AdminVerifyAirline",
+			Handler:    _AdminAirline_AdminVerifyAirline_Handler,
 		},
 		{
 			MethodName: "RegisterAirlineSeat",

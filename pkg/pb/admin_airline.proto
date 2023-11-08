@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package pb;
 
+
 option go_package = ".";
 
 service AdminAirline {
@@ -13,12 +14,13 @@ service AdminAirline {
   rpc DeleteFlightType(IDRequest) returns (FlightTypeResponse);
 
   // gRPC methods for all actions on Airline
-  rpc RegisterAirline(AirlineRequest) returns (AirlineResponse);
+  rpc RegisterAirline(AirlineRequest) returns (OtpResponse);
   rpc FetchAllAirlines(EmptyRequest) returns (AirlinesResponse);
   rpc FetchAirline(IDRequest) returns (AirlineResponse);
   rpc UpdateAirline(AirlineRequest) returns (AirlineResponse);
   rpc DeleteAirline(IDRequest) returns (AirlineResponse);
-  rpc VerifyAirline(OTPRequest) returns (AirlineResponse);
+  rpc VerifyAirlineRegistration(OTPRequest) returns (AirlineResponse);
+  rpc AdminVerifyAirline(EmptyRequest) returns (AirlineResponse);
 
   // gRPC methods for all actions on Airline Seats
   rpc RegisterAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
@@ -49,7 +51,7 @@ service AdminAirline {
 
   // gRPC methods for all auth actions
   rpc RegisterLoginRequest(LoginRequest) returns (LoginResponse);
-  rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (EmailResponse);
+  rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (OtpResponse);
   rpc RegisterVerifyOTPRequest(OTPRequest) returns(LoginResponse);
   rpc RegisterConfirmPasswordRequest(ConfirmPasswordRequest) returns (EmailResponse);
 }
@@ -63,6 +65,11 @@ message EmptyRequest {}
 
 message EmailResponse {
   string email = 1;
+}
+
+message OtpResponse {
+  string email = 1;
+  string expiration_time = 2;
 }
 
 message IDRequest {
@@ -86,7 +93,7 @@ message ConfirmPasswordRequest {
 }
 
 message ForgotPasswordRequest {
-  string email =1 ;
+  string email = 1;
 }
 
 message LoginResponse {
@@ -265,6 +272,8 @@ message ScheduleRequest {
   string arrival_time = 2;
   string departure_airport = 3;
   string arrival_airport = 4;
+  string departure_date = 5;
+  string arrival_date = 6;
 }
 
 message ScheduleResponse {
