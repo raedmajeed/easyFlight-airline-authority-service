@@ -4,21 +4,23 @@ import (
 	"log"
 
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
-	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 )
 
-func (repo *AdminAirlineRepositoryStruct) CreateSchedules(p *pb.ScheduleRequest) (*dom.Schedule, error) {
-	schedule := &dom.Schedule{
-		DepartureAirport: p.DepartureAirport,
-		ArrivalAirport:   p.ArrivalAirport,
-		DepartureTime:    p.DepartureTime,
-		ArrivalTime:      p.ArrivalTime,
+func (repo *AdminAirlineRepositoryStruct) CreateSchedules(schedule *dom.Schedule) error {
+	result := repo.DB.Create(schedule)
+	if result.Error != nil {
+		log.Println("unable to create schedule in db at repo folder")
+		return result.Error
 	}
+	return nil
+}
 
-	result := repo.DB.Create(&schedule)
+func (repo *AdminAirlineRepositoryStruct) FindScheduleByID(id int) (*dom.Schedule, error) {
+	var schedule dom.Schedule
+	result := repo.DB.First(&schedule).Where("id = ?", id)
 	if result.Error != nil {
 		log.Println("unable to create schedule in db at repo folder")
 		return nil, result.Error
 	}
-	return schedule, nil
+	return &schedule, nil
 }

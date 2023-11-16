@@ -1,13 +1,16 @@
 package service
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
+	"github.com/raedmajeed/admin-servcie/pkg/utils"
+	"github.com/segmentio/kafka-go"
 	"log"
 
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	"gorm.io/gorm"
 )
-
 
 func (svc *AdminAirlineServiceStruct) AdminVerifyAirlineRequest(airlineId int) (*dom.Airline, error) {
 	airline, err := svc.repo.FindAirlineById(int32(airlineId))
@@ -33,9 +36,15 @@ func (svc *AdminAirlineServiceStruct) AdminVerifyAirlineRequest(airlineId int) (
 		return nil, err
 	}
 
-	//! logic to send email and password to airline password, airline will have the provision to channge pswrd using forgot pswrd
-	// email := airline.Email
-	// passwrod := airline.AirlineCode
+	data := utils.SendAirlinePasswordEmail(airline.Email, airline.AirlineCode)
+	byteData, err := json.Marshal(data)
 
+	err = svc.kfk.EmailWriter.WriteMessages(context.Background(), kafka.Message{
+		Value: byteData,
+	})
+
+	if err != nil {
+		return nil, err
+	}
 	return airline, nil
 }

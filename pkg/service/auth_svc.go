@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	kafka "github.com/segmentio/kafka-go"
 	"log"
 	"time"
 
@@ -32,7 +33,7 @@ func (svc *AdminAirlineServiceStruct) AirlineLogin(p *pb.LoginRequest) (string, 
 		log.Printf("airline account of user %v is locked, please contact dgca for further enquiry", airline.Email)
 		return "", fmt.Errorf("airline account of user %v is locked, please contact dgca for further enquiry", airline.Email)
 	}
-	
+
 	check := utils.CheckPasswordMatch([]byte(airline.Password), p.Password)
 	if !check {
 		log.Printf("password mismatch for user %v", p.Email)
@@ -58,7 +59,7 @@ func (svc *AdminAirlineServiceStruct) AdminLogin(p *pb.LoginRequest) (string, er
 			return "", err
 		}
 	}
-	
+
 	check := utils.CheckPasswordMatch([]byte(admin.Password), p.Password)
 	if !check {
 		log.Printf("password mismatch for user %v", p.Email)
@@ -85,30 +86,39 @@ func (svc *AdminAirlineServiceStruct) AirlineForgotPassword(p *pb.ForgotPassword
 		}
 	}
 	otp := utils.GenerateOTP()
+	data := utils.WriteMessageToEmail(fmt.Sprintf("%v", otp), p.Email)
+	byteData, err := json.Marshal(data)
+
 	fmt.Println(otp)
-	//! send otp to mail here
+	err = svc.kfk.EmailWriter.WriteMessages(context.Background(), kafka.Message{
+		Value: byteData,
+	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	expireTime := time.Now().Add(time.Second * 60)
-	forgot_email_id := fmt.Sprintf("forgot_password_%v", airline.ID)
+	forgotEmailId := fmt.Sprintf("forgot_password_%v", airline.ID)
 
-	redis_otp := dom.OtpData{
+	redisOtp := dom.OtpData{
 		Otp:        otp,
 		Email:      p.Email,
 		ExpireTime: expireTime,
 	}
-	redisJSON, err := json.Marshal(redis_otp)
+	redisJSON, err := json.Marshal(redisOtp)
 	if err != nil {
 		log.Println("error parsing to json")
 		return nil, err
 	}
-	svc.redis.Set(context.Background(), forgot_email_id, redisJSON, time.Second * 60)
+	svc.redis.Set(context.Background(), forgotEmailId, redisJSON, time.Second*60)
 	return &dom.OtpData{
 		Email:      p.Email,
 		ExpireTime: expireTime,
 	}, nil
 }
 
-func (svc *AdminAirlineServiceStruct) VerifyOTP(p *pb.OTPRequest) (*dom.LoginReponse, error) {
+func (svc *AdminAirlineServiceStruct) VerifyOTP(p *pb.OTPRequest) (*dom.LoginResponse, error) {
 	airline, err := svc.repo.FindAirlineByEmail(p.Email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -143,7 +153,7 @@ func (svc *AdminAirlineServiceStruct) VerifyOTP(p *pb.OTPRequest) (*dom.LoginRep
 		return nil, err
 	}
 
-	return &dom.LoginReponse{
+	return &dom.LoginResponse{
 		Email: p.Email,
 		Token: token,
 	}, nil

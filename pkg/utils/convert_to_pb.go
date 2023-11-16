@@ -80,7 +80,7 @@ func ConvertAirlineSeatsToResponse(model *dom.AirlineSeat) *pb.AirlineSeatRespon
 	airlineRequest := &pb.AirlineSeatRequest{
 		AirlineId:           int32(model.AirlineId),
 		EconomySeatNo:       int32(model.EconomySeatNumber),
-		BuisinesSeatNo:      int32(model.BuisinesSeatNumber),
+		BuisinesSeatNo:      int32(model.BusinessSeatNumber),
 		EconomySeatsPerRow:  int32(model.EconomySeatsPerRow),
 		BuisinesSeatsPerRow: int32(model.EconomySeatsPerRow),
 	}
@@ -175,5 +175,15 @@ func ConvertLoginRequestToResponse(token string, p *pb.LoginRequest) *pb.LoginRe
 	return &pb.LoginResponse{
 		Email: p.Email,
 		Token: token,
+	}
+}
+
+func ConvertFlightFleetToResponse(d *dom.FlightFleetResponse) *pb.FlightFleetResponse {
+	return &pb.FlightFleetResponse{
+		FlightNumber:         d.FlightNumber,
+		FlightTypeModel:      d.FlightTypeModel,
+		AirlineName:          d.AirlineName,
+		EconomySeatNumber:    int32(d.EconomySeatNumber),
+		BusisinessSeatNumber: int32(d.BusinessSeatNumber),
 	}
 }

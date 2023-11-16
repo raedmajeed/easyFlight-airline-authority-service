@@ -1,6 +1,9 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Airport struct {
 	gorm.Model
@@ -20,13 +23,16 @@ type Airport struct {
 }
 
 type Schedule struct {
-	DepartureTime    string `json:"departure_time"`
-	ArrivalTime      string `json:"arrival_time"`
-	DepartureDate	   string	`json:"departure_date"`
-	ArrivalDate 		 string `json:"arrival_date"`
-	DepartureAirport string `json:"departure_airport"`
-	ArrivalAirport   string `json:"arrival_airport"`
-	Scheduled        bool   `json:"scheduled" gorm:"default:false"`
+	gorm.Model
+	DepartureTime     string    `json:"departure_time"`
+	ArrivalTime       string    `json:"arrival_time"`
+	DepartureDate     string    `json:"departure_date"`
+	ArrivalDate       string    `json:"arrival_date"`
+	DepartureAirport  string    `json:"departure_airport"`
+	ArrivalAirport    string    `json:"arrival_airport"`
+	DepartureDateTime time.Time `json:"departure_date_time"`
+	ArrivalDateTime   time.Time `json:"arrival_date_time"`
+	Scheduled         bool      `json:"scheduled" gorm:"default:false"`
 }
 
 type AdminTable struct {
@@ -34,4 +40,38 @@ type AdminTable struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Phone    string `json:"phone"`
+}
+
+type BookedSeat struct {
+	gorm.Model
+	FlightChartNo      int
+	AirlineId          int    `json:"airline_id"`
+	EconomySeatTotal   int    `json:"economy_seat_total_no"`
+	BusinessSeatTotal  int    `json:"business_seat_total"`
+	EconomySeatBooked  int    `json:"economy_seat_no"`
+	BusinessSeatBooked int    `json:"business_seat_no"`
+	EconomySeatLayout  []byte `json:"economy_seat_layout"`
+	BusinessSeatLayout []byte `json:"business_seat_layout"`
+	EconomySeatFare    float32
+	BusinessSeatFare   float32
+}
+
+type Status int
+
+const (
+	CONFIRMED Status = iota
+	DELAYED
+	SCHEDULED
+)
+
+type FlightChart struct {
+	gorm.Model
+	FlightNumber string       `gorm:"not null"`
+	FlightID     uint         `gorm:"not null"`
+	Flight       FlightFleets `gorm:"foreignKey:FlightID"`
+	Status       Status       `gorm:"default:0"`
+	ScheduleID   uint         `gorm:"not null"`
+	Schedule     Schedule     `gorm:"foreignKey:ScheduleID"`
+	BookedSeatID uint         `gorm:"not null; foreignKey:BookedSeat"`
+	//SeatBooked   BookedSeat   `gorm:"foreignKey:BookedSeatID"`
 }

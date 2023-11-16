@@ -28,3 +28,13 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineCancellationPolicy(p *pb.
 	}
 	return cancellation, nil
 }
+
+func (repo *AdminAirlineRepositoryStruct) FindAirlineCancellationByid(id int32) (*dom.AirlineCancellation, error) {
+	var cancellation dom.AirlineCancellation
+	result := repo.DB.Where("id = ?", id).First(&cancellation)
+	if result.Error != nil {
+		log.Println("Unable to fetch the flight types")
+		return nil, result.Error
+	}
+	return &cancellation, nil
+}

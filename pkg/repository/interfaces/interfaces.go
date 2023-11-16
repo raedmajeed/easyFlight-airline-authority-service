@@ -23,24 +23,39 @@ type AdminAirlineRepostory interface {
 
 	//* Methods to Do repo operation on airline seats
 	CreateAirlineSeatType(*pb.AirlineSeatRequest, []byte, []byte) (*dom.AirlineSeat, error)
+	FindAirlineSeatByid(id int32) (*dom.AirlineSeat, error)
 
 	//* Methods to Do repo operation on airline baggage policy
 	CreateAirlineBaggagePolicy(*pb.AirlineBaggageRequest, int) (*dom.AirlineBaggage, error)
+	FindAirlineBaggageByid(id int32) (*dom.AirlineBaggage, error)
 
 	//* Methods to Do repo operation on airline cancellation policy
 	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
+	FindAirlineCancellationByid(id int32) (*dom.AirlineCancellation, error)
 
 	//* Methods to Do repo operation on airport
 	FindAirportByAirportCode(string) (*dom.Airport, error)
 	CreateAirport(*pb.Airport) (*dom.Airport, error)
 
 	//* Methods to Do repo operation on schedules
-	CreateSchedules(*pb.ScheduleRequest) (*dom.Schedule, error)
+	CreateSchedules(schedule *dom.Schedule) error
+	FindScheduleByID(id int) (*dom.Schedule, error)
 
 	//* Methods to do repo operation on airline
 	FindAirlineByEmail(string) (*dom.Airline, error)
 	FindAirlinePassword(*pb.LoginRequest) (*dom.Airline, error)
 	InitialAirlinePassword(airline *dom.Airline) (string, error)
 	UpdateAirlinePassword(airline *dom.Airline) (string, error)
-	UnlockAirlineAccount(int) (error)
+	UnlockAirlineAccount(int) error
+
+	//* Methods to do repo operation on flight fleet
+	FindLastFlightInDB() int
+	CreateFlightFleet(fl *dom.FlightFleets) error
+	FindFlightFleetById(id int) (*dom.FlightFleets, error)
+
+	//* Methods to do repo operation on flight chart
+	FindFlightSeatByID(id int) (*dom.FlightFleets, error)
+	FindLastArrivedAirport(flightNumber string) (*dom.FlightChart, error)
+	FindFlightScheduleID(id int) (*dom.FlightChart, error)
+	CreateFlightChart(flightChart *dom.FlightChart) error
 }

@@ -17,11 +17,11 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineSeatType(p *pb.AirlineSea
 	airlineSeat := dom.AirlineSeat{
 		AirlineId:           int(p.AirlineId),
 		EconomySeatNumber:   int(p.EconomySeatNo),
-		BuisinesSeatNumber:  int(p.BuisinesSeatNo),
+		BusinessSeatNumber:  int(p.BuisinesSeatNo),
 		EconomySeatsPerRow:  int(p.EconomySeatsPerRow),
-		BuisinesSeatsPerRow: int(p.BuisinesSeatsPerRow),
+		BusinessSeatsPerRow: int(p.BuisinesSeatsPerRow),
 		EconomySeatLayout:   economyLayout,
-		BuisinessSeatLayout: buisLayout,
+		BusinessSeatLayout:  buisLayout,
 	}
 	result := repo.DB.Create(&airlineSeat)
 	if result.Error != nil {
@@ -41,4 +41,14 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineSeatType(p *pb.AirlineSea
 	fmt.Println(l.Rows[0])
 
 	return &airlineSeat, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) FindAirlineSeatByid(id int32) (*dom.AirlineSeat, error) {
+	var seats dom.AirlineSeat
+	result := repo.DB.Where("id = ?", id).First(&seats)
+	if result.Error != nil {
+		log.Println("Unable to fetch the flight types")
+		return nil, result.Error
+	}
+	return &seats, nil
 }

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -11,10 +12,6 @@ import (
 
 func (svc *AdminAirlineServiceStruct) CreateSchedules(p *pb.ScheduleRequest) (*dom.Schedule, error) {
 	//! implement go routines here
-	if !checkAirportExists(p.DepartureAirport, svc) && !checkAirportExists(p.ArrivalAirport, svc) {
-		log.Printf("depature and airport airport does not exist airport code: %v %v", p.DepartureAirport, p.ArrivalAirport)
-		return nil, fmt.Errorf("depature and arrival airport does not exist airport code: %v %v", p.DepartureAirport, p.ArrivalAirport)
-	}
 	if !checkAirportExists(p.DepartureAirport, svc) {
 		log.Printf("depature airport does not exist airport code: %v", p.DepartureAirport)
 		return nil, fmt.Errorf("depature airport does not exist airport code: %v", p.DepartureAirport)
@@ -36,31 +33,39 @@ func (svc *AdminAirlineServiceStruct) CreateSchedules(p *pb.ScheduleRequest) (*d
 		return nil, err
 	}
 
-	fmt.Println(departureTime, arrivalTime) //~ delete after
 	if arrivalTime.Before(departureTime) {
 		log.Println("Arrival time is behind departure time")
-		return nil, fmt.Errorf("Arrival time is behind departure time")
+		return nil, errors.New("arrival time is behind departure time")
 	}
 
-	schedules, err := svc.repo.CreateSchedules(p)
+	scheduled := dom.Schedule{
+		DepartureTime:     p.DepartureTime,
+		ArrivalTime:       p.ArrivalTime,
+		DepartureDate:     p.DepartureDate,
+		ArrivalDate:       p.ArrivalDate,
+		DepartureAirport:  p.DepartureAirport,
+		ArrivalAirport:    p.ArrivalAirport,
+		DepartureDateTime: departureTime,
+		ArrivalDateTime:   arrivalTime,
+	}
+
+	fmt.Println(scheduled)
+	err = svc.repo.CreateSchedules(&scheduled)
 	if err != nil {
 		log.Printf("unable to create schedule, err: %v", err.Error())
 		return nil, err
 	}
-	return schedules, nil
+	return &scheduled, nil
 }
 
 func checkAirportExists(airport string, svc *AdminAirlineServiceStruct) bool {
 	_, err := svc.repo.FindAirportByAirportCode(airport)
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }
 
 func convertScheduleTimeToGo(date, dtime string) (time.Time, error) {
 	concTime := date + " " + dtime
-	t, err := time.Parse( "02/01/2006 15:04", concTime)
+	t, err := time.Parse("02/01/2006 15:04", concTime)
 	if err != nil {
 		return time.Time{}, err
 	}

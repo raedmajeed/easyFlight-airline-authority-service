@@ -52,6 +52,8 @@ const (
 	AdminAirline_RegisterForgotPasswordRequest_FullMethodName  = "/pb.AdminAirline/RegisterForgotPasswordRequest"
 	AdminAirline_RegisterVerifyOTPRequest_FullMethodName       = "/pb.AdminAirline/RegisterVerifyOTPRequest"
 	AdminAirline_RegisterConfirmPasswordRequest_FullMethodName = "/pb.AdminAirline/RegisterConfirmPasswordRequest"
+	AdminAirline_RegisterFlightFleets_FullMethodName           = "/pb.AdminAirline/RegisterFlightFleets"
+	AdminAirline_RegisterFlightChart_FullMethodName            = "/pb.AdminAirline/RegisterFlightChart"
 )
 
 // AdminAirlineClient is the client API for AdminAirline service.
@@ -99,6 +101,10 @@ type AdminAirlineClient interface {
 	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*OtpResponse, error)
 	RegisterVerifyOTPRequest(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	RegisterConfirmPasswordRequest(ctx context.Context, in *ConfirmPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
+	// gRPC methods for all flight fleet
+	RegisterFlightFleets(ctx context.Context, in *FlightFleetRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error)
+	// gRPC methods for all flight chart
+	RegisterFlightChart(ctx context.Context, in *FlightChartRequest, opts ...grpc.CallOption) (*FlightChartResponse, error)
 }
 
 type adminAirlineClient struct {
@@ -406,6 +412,24 @@ func (c *adminAirlineClient) RegisterConfirmPasswordRequest(ctx context.Context,
 	return out, nil
 }
 
+func (c *adminAirlineClient) RegisterFlightFleets(ctx context.Context, in *FlightFleetRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error) {
+	out := new(FlightFleetResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterFlightFleets_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) RegisterFlightChart(ctx context.Context, in *FlightChartRequest, opts ...grpc.CallOption) (*FlightChartResponse, error) {
+	out := new(FlightChartResponse)
+	err := c.cc.Invoke(ctx, AdminAirline_RegisterFlightChart_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AdminAirlineServer is the server API for AdminAirline service.
 // All implementations must embed UnimplementedAdminAirlineServer
 // for forward compatibility
@@ -451,6 +475,10 @@ type AdminAirlineServer interface {
 	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*OtpResponse, error)
 	RegisterVerifyOTPRequest(context.Context, *OTPRequest) (*LoginResponse, error)
 	RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error)
+	// gRPC methods for all flight fleet
+	RegisterFlightFleets(context.Context, *FlightFleetRequest) (*FlightFleetResponse, error)
+	// gRPC methods for all flight chart
+	RegisterFlightChart(context.Context, *FlightChartRequest) (*FlightChartResponse, error)
 	mustEmbedUnimplementedAdminAirlineServer()
 }
 
@@ -556,6 +584,12 @@ func (UnimplementedAdminAirlineServer) RegisterVerifyOTPRequest(context.Context,
 }
 func (UnimplementedAdminAirlineServer) RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterConfirmPasswordRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterFlightFleets(context.Context, *FlightFleetRequest) (*FlightFleetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterFlightFleets not implemented")
+}
+func (UnimplementedAdminAirlineServer) RegisterFlightChart(context.Context, *FlightChartRequest) (*FlightChartResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterFlightChart not implemented")
 }
 func (UnimplementedAdminAirlineServer) mustEmbedUnimplementedAdminAirlineServer() {}
 
@@ -1164,6 +1198,42 @@ func _AdminAirline_RegisterConfirmPasswordRequest_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminAirline_RegisterFlightFleets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FlightFleetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterFlightFleets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterFlightFleets_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterFlightFleets(ctx, req.(*FlightFleetRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_RegisterFlightChart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FlightChartRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).RegisterFlightChart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminAirline_RegisterFlightChart_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).RegisterFlightChart(ctx, req.(*FlightChartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminAirline_ServiceDesc is the grpc.ServiceDesc for AdminAirline service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1302,6 +1372,14 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterConfirmPasswordRequest",
 			Handler:    _AdminAirline_RegisterConfirmPasswordRequest_Handler,
+		},
+		{
+			MethodName: "RegisterFlightFleets",
+			Handler:    _AdminAirline_RegisterFlightFleets_Handler,
+		},
+		{
+			MethodName: "RegisterFlightChart",
+			Handler:    _AdminAirline_RegisterFlightChart_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

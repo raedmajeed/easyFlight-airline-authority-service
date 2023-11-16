@@ -32,6 +32,9 @@ func NewDBConnect(cfg *config.ConfigParams) (*gorm.DB, error) {
 		&dom.Airport{},
 		&dom.AdminTable{},
 		&dom.Schedule{},
+		&dom.FlightFleets{},
+		&dom.FlightChart{},
+		&dom.BookedSeat{},
 	)
 
 	if err != nil {

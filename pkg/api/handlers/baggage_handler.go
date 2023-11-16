@@ -43,18 +43,18 @@ func (handler *AdminAirlineHandler) RegisterAirlineBaggage(ctx context.Context, 
 	return airlineBaggagePolicyResponse, nil
 }
 
-func (H *AdminAirlineHandler) FetchAllAirlineBaggages(context.Context, *pb.EmptyRequest) (*pb.AirlineBaggagesResponse, error) {
+func (handler *AdminAirlineHandler) FetchAllAirlineBaggages(context.Context, *pb.EmptyRequest) (*pb.AirlineBaggagesResponse, error) {
 	return &pb.AirlineBaggagesResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) FetchAirlineBaggage(context.Context, *pb.IDRequest) (*pb.AirlineBaggageResponse, error) {
+func (handler *AdminAirlineHandler) FetchAirlineBaggage(context.Context, *pb.IDRequest) (*pb.AirlineBaggageResponse, error) {
 	return &pb.AirlineBaggageResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) UpdateAirlineBaggage(context.Context, *pb.AirlineBaggageRequest) (*pb.AirlineBaggageResponse, error) {
+func (handler *AdminAirlineHandler) UpdateAirlineBaggage(context.Context, *pb.AirlineBaggageRequest) (*pb.AirlineBaggageResponse, error) {
 	return &pb.AirlineBaggageResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) DeleteAirlineBaggage(context.Context, *pb.IDRequest) (*pb.AirlineBaggageResponse, error) {
+func (handler *AdminAirlineHandler) DeleteAirlineBaggage(context.Context, *pb.IDRequest) (*pb.AirlineBaggageResponse, error) {
 	return &pb.AirlineBaggageResponse{}, nil
 }

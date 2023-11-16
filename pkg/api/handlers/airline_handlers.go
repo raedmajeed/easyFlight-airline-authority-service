@@ -20,7 +20,7 @@ func (handler *AdminAirlineHandler) RegisterAirline(ctx context.Context, p *pb.A
 		log.Println("deadline passed, aborting gRPC call")
 		return nil, errors.New("deadline passed, aborting gRPC call")
 	}
-	
+
 	response, err := handler.svc.RegisterAirlineSvc(p)
 	if err != nil {
 		log.Printf("Unable to create, err: %v", err.Error())
@@ -32,9 +32,9 @@ func (handler *AdminAirlineHandler) RegisterAirline(ctx context.Context, p *pb.A
 	// k.SetupKafka()
 	//! send otp to mail logic here using kafka
 
-	return &pb.OtpResponse {
+	return &pb.OtpResponse{
 		Email:          response.Email,
-		ExpirationTime: fmt.Sprintf("%v seconds",response.ExpireTime),
+		ExpirationTime: fmt.Sprintf("%v seconds", response.ExpireTime),
 	}, nil
 }
 
@@ -59,18 +59,18 @@ func (handler *AdminAirlineHandler) VerifyAirlineRegistration(ctx context.Contex
 	return utils.ConvertAirlineToResponse(response), nil
 }
 
-func (H *AdminAirlineHandler) FetchAllAirlines(context.Context, *pb.EmptyRequest) (*pb.AirlinesResponse, error) {
+func (handler *AdminAirlineHandler) FetchAllAirlines(context.Context, *pb.EmptyRequest) (*pb.AirlinesResponse, error) {
 	return &pb.AirlinesResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) FetchAirline(context.Context, *pb.IDRequest) (*pb.AirlineResponse, error) {
+func (handler *AdminAirlineHandler) FetchAirline(context.Context, *pb.IDRequest) (*pb.AirlineResponse, error) {
 	return &pb.AirlineResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) UpdateAirline(context.Context, *pb.AirlineRequest) (*pb.AirlineResponse, error) {
+func (handler *AdminAirlineHandler) UpdateAirline(context.Context, *pb.AirlineRequest) (*pb.AirlineResponse, error) {
 	return &pb.AirlineResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) DeleteAirline(context.Context, *pb.IDRequest) (*pb.AirlineResponse, error) {
+func (handler *AdminAirlineHandler) DeleteAirline(context.Context, *pb.IDRequest) (*pb.AirlineResponse, error) {
 	return &pb.AirlineResponse{}, nil
 }

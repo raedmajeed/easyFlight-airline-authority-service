@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/segmentio/kafka-go"
 	"log"
 	"time"
 
@@ -28,11 +29,17 @@ func (svc *AdminAirlineServiceStruct) RegisterAirlineSvc(p *pb.AirlineRequest) (
 	}
 
 	otp := utils.GenerateOTP()
+	data := utils.WriteMessageToEmail(fmt.Sprintf("%v", otp), p.Email)
+	byteData, err := json.Marshal(data)
+	err = svc.kfk.EmailWriter.WriteMessages(context.Background(), kafka.Message{
+		Value: byteData,
+	})
+
 	otpData := &dom.RegisterAirlineOtpData{
 		Otp:        otp,
 		Email:      airline.Email,
 		ExpireTime: time.Now().Add(time.Minute * 2),
-		Airline: *airline,
+		Airline:    *airline,
 	}
 
 	otpJson, err := json.Marshal(&otpData)
@@ -42,7 +49,7 @@ func (svc *AdminAirlineServiceStruct) RegisterAirlineSvc(p *pb.AirlineRequest) (
 	}
 
 	register_airline := fmt.Sprintf("register_airline_%v", p.Email)
-	svc.redis.Set(context.Background(), register_airline, otpJson, time.Minute * 2)
+	svc.redis.Set(context.Background(), register_airline, otpJson, time.Minute*2)
 
 	return otpData, nil
 }

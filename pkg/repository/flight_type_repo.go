@@ -26,7 +26,7 @@ func (repo *AdminAirlineRepositoryStruct) FindFlightTypeByModel(model string) (*
 
 func (repo *AdminAirlineRepositoryStruct) FindFlightTypeByID(id int32) (*dom.FlightTypeModel, error) {
 	var flightType dom.FlightTypeModel
-	result := repo.DB.Where("id = ?", id).First(&flightType)
+	result := repo.DB.Find(&flightType).Where("id = ?", id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			log.Printf("Record not found of flight type %v", id)

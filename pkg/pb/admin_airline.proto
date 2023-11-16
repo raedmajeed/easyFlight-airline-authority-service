@@ -54,6 +54,12 @@ service AdminAirline {
   rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (OtpResponse);
   rpc RegisterVerifyOTPRequest(OTPRequest) returns(LoginResponse);
   rpc RegisterConfirmPasswordRequest(ConfirmPasswordRequest) returns (EmailResponse);
+
+  // gRPC methods for all flight fleet
+  rpc RegisterFlightFleets(FlightFleetRequest) returns (FlightFleetResponse);
+
+  // gRPC methods for all flight chart
+  rpc RegisterFlightChart(FlightChartRequest) returns (FlightChartResponse);
 }
 
 message Error {
@@ -278,4 +284,38 @@ message ScheduleRequest {
 
 message ScheduleResponse {
   ScheduleRequest schedule = 1;
+}
+
+// FLIGHT FLEET
+
+message FlightFleetRequest {
+  string airline_email = 1;
+  int32 seat_id = 2;
+  int32 flight_type_id = 3;
+  int32 baggage_policy_id = 4;
+  int32 cancellation_policy_id = 5;
+}
+
+message FlightFleetResponse {
+  string flight_number = 1;
+  string flight_type_model = 2;
+  string airline_name = 3;
+  int32 economy_seat_number = 4;
+  int32 busisiness_seat_number = 5;
+}
+
+// FLIGHT CHART
+
+message FlightChartRequest {
+  string airline_email = 1;
+  int32 flight_fleet_id = 2;
+  int32 schedule_id = 3;
+}
+
+message FlightChartResponse {
+  string departure_airport = 1;
+  string arrival_airport = 2;
+  string flight_number = 3;
+  string flight_type_model = 4;
+  string airline_name = 5;
 }

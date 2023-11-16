@@ -37,3 +37,13 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineBaggagePolicy(p *pb.Airli
 	}
 	return baggage, nil
 }
+
+func (repo *AdminAirlineRepositoryStruct) FindAirlineBaggageByid(id int32) (*dom.AirlineBaggage, error) {
+	var baggage dom.AirlineBaggage
+	result := repo.DB.Where("id = ?", id).First(&baggage)
+	if result.Error != nil {
+		log.Println("Unable to fetch the flight types")
+		return nil, result.Error
+	}
+	return &baggage, nil
+}

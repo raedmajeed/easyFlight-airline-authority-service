@@ -43,18 +43,18 @@ func (handler *AdminAirlineHandler) RegisterAirlineCancellation(ctx context.Cont
 	return airlineCancellationPolicyResponse, nil
 }
 
-func (H *AdminAirlineHandler) FetchAllAirlineCancellations(context.Context, *pb.EmptyRequest) (*pb.AirlineCancellationsResponse, error) {
+func (handler *AdminAirlineHandler) FetchAllAirlineCancellations(context.Context, *pb.EmptyRequest) (*pb.AirlineCancellationsResponse, error) {
 	return &pb.AirlineCancellationsResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) FetchAirlineCancellation(context.Context, *pb.IDRequest) (*pb.AirlineCancellationResponse, error) {
+func (handler *AdminAirlineHandler) FetchAirlineCancellation(context.Context, *pb.IDRequest) (*pb.AirlineCancellationResponse, error) {
 	return &pb.AirlineCancellationResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) UpdateAirlineCancellation(context.Context, *pb.AirlineCancellationRequest) (*pb.AirlineCancellationResponse, error) {
+func (handler *AdminAirlineHandler) UpdateAirlineCancellation(context.Context, *pb.AirlineCancellationRequest) (*pb.AirlineCancellationResponse, error) {
 	return &pb.AirlineCancellationResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) DeleteAirlineCancellation(context.Context, *pb.IDRequest) (*pb.AirlineCancellationResponse, error) {
+func (handler *AdminAirlineHandler) DeleteAirlineCancellation(context.Context, *pb.IDRequest) (*pb.AirlineCancellationResponse, error) {
 	return &pb.AirlineCancellationResponse{}, nil
 }

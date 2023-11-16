@@ -37,6 +37,12 @@ type AdminAirlineService interface {
 	AirlineLogin(*pb.LoginRequest) (string, error)
 	AdminLogin(*pb.LoginRequest) (string, error)
 	AirlineForgotPassword(*pb.ForgotPasswordRequest) (*dom.OtpData, error)
-	VerifyOTP(*pb.OTPRequest) (*dom.LoginReponse, error)
+	VerifyOTP(*pb.OTPRequest) (*dom.LoginResponse, error)
 	UpdateAirlinePassword(*pb.ConfirmPasswordRequest, string) (string, error)
+
+	//*Methods to do flight fleet
+	CreateFlightFleet(*pb.FlightFleetRequest) (*dom.FlightFleetResponse, error)
+
+	//*Methods to do flight chart
+	AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChart, error)
 }

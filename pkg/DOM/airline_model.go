@@ -18,7 +18,7 @@ type FlightTypeModel struct {
 	Type                string `json:"type" gorm:"not null"`
 	FlightModel         string `json:"flight_model" gorm:"not null;unique"`
 	Description         string `json:"description" gorm:"not null"`
-	ManufacturerName    string `json:"maunufacturer_name" gorm:"not null"`
+	ManufacturerName    string `json:"manufacturer_name" gorm:"not null"`
 	ManufacturerCountry string `json:"manufacturer_country" gorm:"not null"`
 	MaxDistance         int32  `json:"max_distance" gorm:"not null"`
 	CruiseSpeed         int32  `json:"cruise_speed" gorm:"not null"`
@@ -34,18 +34,18 @@ type Airline struct {
 	AirlineCode         string `json:"airline_code" gorm:"not null;unique"`
 	AirlineLogoLink     string `json:"airline_logo_link"`
 	SupportDocumentLink string `json:"support_documents_link"`
-	IsAccountLocked			bool 	 `json:"is_account_locked" gorm:"default:true"`
+	IsAccountLocked     bool   `json:"is_account_locked" gorm:"default:true"`
 }
 
 type AirlineSeat struct {
 	gorm.Model
 	AirlineId           int    `json:"airline_id"`
 	EconomySeatNumber   int    `json:"economy_seat_no"`
-	BuisinesSeatNumber  int    `json:"buisines_seat_no"`
+	BusinessSeatNumber  int    `json:"business_seat_no"`
 	EconomySeatsPerRow  int    `json:"economy_seats_per_row"`
-	BuisinesSeatsPerRow int    `json:"buisines_seats_per_row"`
+	BusinessSeatsPerRow int    `json:"business_seats_per_row"`
 	EconomySeatLayout   []byte `json:"economy_seat_layout"`
-	BuisinessSeatLayout []byte `json:"buisiness_seat_layout"`
+	BusinessSeatLayout  []byte `json:"business_seat_layout"`
 }
 
 type AirlineBaggage struct {
@@ -80,15 +80,24 @@ type OtpData struct {
 	ExpireTime time.Time `json:"time"`
 }
 
-type FlightFleetRequest struct {
-	SeatId             int `json:"seat_id" validate:"required,foreign_key:seats"`
-	FlightType         int `json:"flight_type" validate:"required,foreign_key:flight_types"`
-	BaggagePolicy      int `json:"baggage_policy" validate:"required,foreign_key:baggage_policies"`
-	CancellationPolicy int `json:"cancellation_policy" validate:"required,foreign_key:cancellation_policies"`
-	FlightCount        int `json:"flight_count" validate:"numeric"`
+type FlightFleets struct {
+	gorm.Model
+	FlightNumber         string              `gorm:"not null;unique"`
+	AirlineID            uint                `gorm:"not null"`
+	Airline              Airline             `gorm:"foreignKey:AirlineID"`
+	SeatID               uint                `gorm:"not null"`
+	Seat                 AirlineSeat         `gorm:"foreignKey:SeatID"`
+	FlightTypeID         uint                `gorm:"not null"`
+	FlightType           FlightTypeModel     `gorm:"foreignKey:FlightTypeID"`
+	BaggagePolicyID      uint                `gorm:"not null"`
+	Baggage              AirlineBaggage      `gorm:"foreignKey:BaggagePolicyID"`
+	CancellationPolicyID uint                `gorm:"not null"`
+	Cancellation         AirlineCancellation `gorm:"foreignKey:CancellationPolicyID"`
+	Maintenance          bool                `gorm:"default:false"`
+	IsInService          bool                `gorm:"default:true"`
 }
 
-type LoginReponse struct {
+type LoginResponse struct {
 	Token string `json:"token"`
 	Email string `json:"email"`
 }
@@ -98,4 +107,12 @@ type RegisterAirlineOtpData struct {
 	Email      string    `json:"email"`
 	ExpireTime time.Time `json:"time"`
 	Airline    Airline   `json:"airline"`
+}
+
+type FlightFleetResponse struct {
+	FlightNumber       string `json:"flight_number"`
+	FlightTypeModel    string `json:"flight_model"`
+	AirlineName        string `json:"airline_name"`
+	EconomySeatNumber  int    `json:"economy_seat_no"`
+	BusinessSeatNumber int    `json:"business_seat_no"`
 }

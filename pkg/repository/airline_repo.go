@@ -68,7 +68,6 @@ func (repo *AdminAirlineRepositoryStruct) InitialAirlinePassword(airline *dom.Ai
 	return airline.Email, nil
 }
 
-
 func (repo *AdminAirlineRepositoryStruct) UpdateAirlinePassword(airline *dom.Airline) (string, error) {
 	result := repo.DB.Model(&dom.Airline{}).Where("id = ?", airline.ID).Update("Password", airline.Password)
 	if result.Error != nil {
@@ -91,6 +90,6 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirline(airline *dom.Airline) (*
 	return airline, nil
 }
 
-func (repo *AdminAirlineRepositoryStruct) UnlockAirlineAccount(airlineID int) (error) {
+func (repo *AdminAirlineRepositoryStruct) UnlockAirlineAccount(airlineID int) error {
 	return repo.DB.Model(&dom.Airline{}).Where("id = ?", airlineID).Update("IsAccountLocked", false).Error
 }

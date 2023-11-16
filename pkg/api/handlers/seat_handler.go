@@ -42,18 +42,18 @@ func (handler *AdminAirlineHandler) RegisterAirlineSeat(ctx context.Context, p *
 	return utils.ConvertAirlineSeatsToResponse(response), nil
 }
 
-func (H *AdminAirlineHandler) FetchAllAirlineSeats(context.Context, *pb.EmptyRequest) (*pb.AirlineSeatsResponse, error) {
+func (handler *AdminAirlineHandler) FetchAllAirlineSeats(context.Context, *pb.EmptyRequest) (*pb.AirlineSeatsResponse, error) {
 	return &pb.AirlineSeatsResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) FetchAirlineSeat(context.Context, *pb.IDRequest) (*pb.AirlineSeatResponse, error) {
+func (handler *AdminAirlineHandler) FetchAirlineSeat(context.Context, *pb.IDRequest) (*pb.AirlineSeatResponse, error) {
 	return &pb.AirlineSeatResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) UpdateAirlineSeat(context.Context, *pb.AirlineSeatRequest) (*pb.AirlineSeatResponse, error) {
+func (handler *AdminAirlineHandler) UpdateAirlineSeat(context.Context, *pb.AirlineSeatRequest) (*pb.AirlineSeatResponse, error) {
 	return &pb.AirlineSeatResponse{}, nil
 }
 
-func (H *AdminAirlineHandler) DeleteAirlineSeat(context.Context, *pb.IDRequest) (*pb.AirlineSeatResponse, error) {
+func (handler *AdminAirlineHandler) DeleteAirlineSeat(context.Context, *pb.IDRequest) (*pb.AirlineSeatResponse, error) {
 	return &pb.AirlineSeatResponse{}, nil
 }
