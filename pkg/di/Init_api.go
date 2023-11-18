@@ -11,16 +11,17 @@ import (
 	"github.com/raedmajeed/admin-servcie/pkg/service"
 )
 
-func InitApi(cfg *config.ConfigParams, redis *redis.Client, kafkaMeth *config.KafkaReadWrite) (*pkg.Server, error) {
+func InitApi(cfg *config.ConfigParams, redis *redis.Client) (*pkg.Server, error) {
 	// db connection
 	DB, err := db.NewDBConnect(cfg)
 	if err != nil {
 		return nil, err
 	}
+	kfWrite := config.NewKafkaWriterConnect()
 	repo := repository.NewAdminAirlineRepository(DB)
-	svc := service.NewAdminAirlineService(repo, redis, cfg, kafkaMeth)
+	svc := service.NewAdminAirlineService(repo, redis, cfg, *kfWrite)
 	hdl := handlers.NewAdminAirlineHandler(svc)
-	server, err := api.NewServer(cfg, hdl)
+	server, err := api.NewServer(cfg, hdl, svc)
 	if err != nil {
 		return nil, err
 	}

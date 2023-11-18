@@ -12,7 +12,7 @@ import (
 func (repo *AdminAirlineRepositoryStruct) CreateAirlineBaggagePolicy(p *pb.AirlineBaggageRequest, id int) (*dom.AirlineBaggage, error) {
 	baggage := &dom.AirlineBaggage{
 		AirlineId:           id,
-		FareClass:           int(p.Class),
+		FareClass:           string(pb.Class(p.Class)),
 		CabinAllowedWeight:  int(p.CabinAllowedWeight),
 		CabinAllowedLength:  int(p.CabinAllowedLength),
 		CabinAllowedBreadth: int(p.CabinAllowedBreadth),
@@ -29,7 +29,7 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineBaggagePolicy(p *pb.Airli
 	result := repo.DB.Create(&baggage)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-			log.Printf("Duplicate Key found of flight type %v", p.AirlineId)
+			log.Printf("Duplicate Key found of flight type %v", id)
 			return nil, gorm.ErrDuplicatedKey
 		} else {
 			return nil, result.Error

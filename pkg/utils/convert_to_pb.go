@@ -78,7 +78,6 @@ func ConvertAirlineToResponse(model *dom.Airline) *pb.AirlineResponse {
 
 func ConvertAirlineSeatsToResponse(model *dom.AirlineSeat) *pb.AirlineSeatResponse {
 	airlineRequest := &pb.AirlineSeatRequest{
-		AirlineId:           int32(model.AirlineId),
 		EconomySeatNo:       int32(model.EconomySeatNumber),
 		BuisinesSeatNo:      int32(model.BusinessSeatNumber),
 		EconomySeatsPerRow:  int32(model.EconomySeatsPerRow),
@@ -94,8 +93,7 @@ func ConvertAirlineSeatsToResponse(model *dom.AirlineSeat) *pb.AirlineSeatRespon
 
 func ConvertAirlineBaggagePolicyToResponse(model *dom.AirlineBaggage) *pb.AirlineBaggageResponse {
 	baggageReq := &pb.AirlineBaggageRequest{
-		AirlineId:           int32(model.AirlineId),
-		Class:               convertTypeClass(model.FareClass),
+		Class:               int32(convertTypeClass(model.FareClass)),
 		CabinAllowedWeight:  int32(model.CabinAllowedWeight),
 		CabinAllowedLength:  int32(model.CabinAllowedLength),
 		CabinAllowedBreadth: int32(model.CabinAllowedBreadth),
@@ -115,7 +113,6 @@ func ConvertAirlineBaggagePolicyToResponse(model *dom.AirlineBaggage) *pb.Airlin
 
 func ConvertAirlineCancellationPolicyToResponse(model *dom.AirlineCancellation) *pb.AirlineCancellationResponse {
 	cancellation := &pb.AirlineCancellationRequest{
-		AirlineId:                       int32(model.AirlineId),
 		Class:                           convertTypeClass(model.FareClass),
 		CancellationDeadlineBeforeHours: uint32(model.CancellationDeadlineBefore),
 		CancellationPercentage:          int32(model.CancellationPercentage),
@@ -127,11 +124,11 @@ func ConvertAirlineCancellationPolicyToResponse(model *dom.AirlineCancellation) 
 	}
 }
 
-func convertTypeClass(typeStr int) pb.Class {
+func convertTypeClass(typeStr string) pb.Class {
 	switch typeStr {
-	case 0:
+	case "0":
 		return pb.Class_ECONOMY
-	case 1:
+	case "1":
 		return pb.Class_BUSINESS
 	default:
 		return pb.Class_ECONOMY
@@ -185,5 +182,16 @@ func ConvertFlightFleetToResponse(d *dom.FlightFleetResponse) *pb.FlightFleetRes
 		AirlineName:          d.AirlineName,
 		EconomySeatNumber:    int32(d.EconomySeatNumber),
 		BusisinessSeatNumber: int32(d.BusinessSeatNumber),
+	}
+}
+
+func ConvertFlightChartToResponse(chart *dom.FlightChartResponse) *pb.FlightChartResponse {
+	return &pb.FlightChartResponse{
+		DepartureAirport:  chart.DepartureAirport,
+		ArrivalAirport:    chart.ArrivalAirport,
+		FlightNumber:      chart.FlightNumber,
+		AirlineName:       chart.AirlineName,
+		DepartureDateTime: chart.DepartureDateTime.String(),
+		ArrivalDateTime:   chart.ArrivalDateTime.String(),
 	}
 }

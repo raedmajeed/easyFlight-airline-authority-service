@@ -12,7 +12,7 @@ import (
 func (repo *AdminAirlineRepositoryStruct) CreateAirlineCancellationPolicy(p *pb.AirlineCancellationRequest, id int) (*dom.AirlineCancellation, error) {
 	cancellation := &dom.AirlineCancellation{
 		AirlineId:                  id,
-		FareClass:                  int(p.Class),
+		FareClass:                  string(pb.Class(p.Class)),
 		CancellationDeadlineBefore: int(p.CancellationDeadlineBeforeHours),
 		CancellationPercentage:     int(p.CancellationPercentage),
 		Refundable:                 p.Refundable,
@@ -20,7 +20,7 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineCancellationPolicy(p *pb.
 	result := repo.DB.Create(&cancellation)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-			log.Printf("Duplicate Key found of flight type %v", p.AirlineId)
+			log.Printf("Duplicate Key found of flight type %v", id)
 			return nil, gorm.ErrDuplicatedKey
 		} else {
 			return nil, result.Error

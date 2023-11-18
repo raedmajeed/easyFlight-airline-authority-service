@@ -13,9 +13,9 @@ import (
 
 type Layout struct{ Rows [][]bool }
 
-func (repo *AdminAirlineRepositoryStruct) CreateAirlineSeatType(p *pb.AirlineSeatRequest, economyLayout []byte, buisLayout []byte) (*dom.AirlineSeat, error) {
+func (repo *AdminAirlineRepositoryStruct) CreateAirlineSeatType(id int, p *pb.AirlineSeatRequest, economyLayout []byte, buisLayout []byte) (*dom.AirlineSeat, error) {
 	airlineSeat := dom.AirlineSeat{
-		AirlineId:           int(p.AirlineId),
+		AirlineId:           id,
 		EconomySeatNumber:   int(p.EconomySeatNo),
 		BusinessSeatNumber:  int(p.BuisinesSeatNo),
 		EconomySeatsPerRow:  int(p.EconomySeatsPerRow),
@@ -26,14 +26,14 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineSeatType(p *pb.AirlineSea
 	result := repo.DB.Create(&airlineSeat)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
-			log.Printf("Duplicate Key found of flight type %v", p.AirlineId)
+			log.Printf("Duplicate Key found of flight type %v", id)
 			return nil, gorm.ErrDuplicatedKey
 		} else {
 			return nil, result.Error
 		}
 	}
 
-	// * this code fetches me the seats, dont delete
+	// * this code fetches me the seats, don't delete
 	var ad dom.AirlineSeat
 	repo.DB.Where("id = ?", 1).First(&ad)
 	l := &Layout{}

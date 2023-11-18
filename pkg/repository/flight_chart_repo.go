@@ -19,8 +19,14 @@ func (repo *AdminAirlineRepositoryStruct) FindFlightSeatByID(id int) (*dom.Fligh
 
 func (repo *AdminAirlineRepositoryStruct) FindLastArrivedAirport(flightNumber string) (*dom.FlightChart, error) {
 	var flightChart dom.FlightChart
-	result := repo.DB.Preload("Schedule").
+	//result := repo.DB.Where("flight_charts.flight_number = ?", flightNumber).Preload("schedules").Order("schedules.arrival_date_time DESC").First(&flightChart)
+	//result := repo.DB.Joins("schedules").First(&flightChart)
+	//var result FlightChart
+
+	// Assuming flightNumber is the variable containing the flight number
+	result := repo.DB.Joins("JOIN schedules ON flight_charts.schedule_id = schedules.id").
 		Where("flight_charts.flight_number = ?", flightNumber).
+		Select("flight_charts.id, flight_number, flight_id, status, schedule_id").
 		Order("schedules.arrival_date_time DESC").
 		First(&flightChart)
 	if result.Error != nil {

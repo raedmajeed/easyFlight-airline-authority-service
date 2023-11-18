@@ -1,7 +1,9 @@
 package pkg
 
 import (
+	"context"
 	"fmt"
+	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"log"
 	"net"
 
@@ -17,7 +19,15 @@ type Server struct {
 	cfg *config.ConfigParams
 }
 
-func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler) (*Server, error) {
+func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, svc interfaces.AdminAirlineService) (*Server, error) {
+	newContext, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	kf := config.NewKafkaReaderConnect(svc)
+
+	log.Println("listening on search-flight-request topic")
+	go kf.SearchFlightRead(newContext)
+
 	err := NewGrpcServer(cfg, handler)
 	if err != nil {
 		log.Println("error connecting to gRPC server")

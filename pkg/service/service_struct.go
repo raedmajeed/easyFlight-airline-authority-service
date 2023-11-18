@@ -11,16 +11,16 @@ type AdminAirlineServiceStruct struct {
 	repo  inter.AdminAirlineRepostory
 	redis *redis.Client
 	cfg   *config.ConfigParams
-	kfk   *config.KafkaReadWrite
+	kfk   config.KafkaWriter
 }
 
 func NewAdminAirlineService(repo inter.AdminAirlineRepostory, redis *redis.Client,
-	cfg *config.ConfigParams, kfk *config.KafkaReadWrite) interfaces.AdminAirlineService {
+	cfg *config.ConfigParams, kf config.KafkaWriter) interfaces.AdminAirlineService {
 
 	return &AdminAirlineServiceStruct{
 		repo:  repo,
 		redis: redis,
+		kfk:   kf,
 		cfg:   cfg,
-		kfk:   kfk,
 	}
 }

@@ -51,7 +51,7 @@ type AirlineSeat struct {
 type AirlineBaggage struct {
 	gorm.Model
 	AirlineId           int    `json:"airline_id"`
-	FareClass           int    `json:"class"`
+	FareClass           string `json:"class"`
 	CabinAllowedWeight  int    `json:"cabin_allowed_weight"`
 	CabinAllowedLength  int    `json:"cabin_allowed_length"`
 	CabinAllowedBreadth int    `json:"cabin_allowed_breadth"`
@@ -67,11 +67,11 @@ type AirlineBaggage struct {
 
 type AirlineCancellation struct {
 	gorm.Model
-	AirlineId                  int  `json:"airline_id"`
-	FareClass                  int  `json:"class"`
-	CancellationDeadlineBefore int  `json:"cancellation_deadline_before_hours"`
-	CancellationPercentage     int  `json:"cancellation_percentage"`
-	Refundable                 bool `json:"refundable"`
+	AirlineId                  int    `json:"airline_id"`
+	FareClass                  string `json:"class"`
+	CancellationDeadlineBefore int    `json:"cancellation_deadline_before_hours"`
+	CancellationPercentage     int    `json:"cancellation_percentage"`
+	Refundable                 bool   `json:"refundable"`
 }
 
 type OtpData struct {

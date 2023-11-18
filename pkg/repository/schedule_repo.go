@@ -17,7 +17,7 @@ func (repo *AdminAirlineRepositoryStruct) CreateSchedules(schedule *dom.Schedule
 
 func (repo *AdminAirlineRepositoryStruct) FindScheduleByID(id int) (*dom.Schedule, error) {
 	var schedule dom.Schedule
-	result := repo.DB.First(&schedule).Where("id = ?", id)
+	result := repo.DB.Where("id = ?", uint(id)).Find(&schedule)
 	if result.Error != nil {
 		log.Println("unable to create schedule in db at repo folder")
 		return nil, result.Error

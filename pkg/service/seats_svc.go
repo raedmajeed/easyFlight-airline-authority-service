@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
@@ -13,17 +14,21 @@ import (
 // * METHODS TO EVERYTHING AIRLINE SEATS
 type Layout struct{ Rows [][]bool }
 
-func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest, id int) (*dom.AirlineSeat, error) {
-	_, err := svc.repo.FindAirlineById(int32(id))
+func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest) (*dom.AirlineSeat, error) {
+	fmt.Println("reached here ==============")
+	fmt.Println(p.AirlineEmail)
+	airline, err := svc.repo.FindAirlineByEmail(p.AirlineEmail)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("No existing record found  of airline %v", p.AirlineId)
+			log.Printf("No existing record found  of airline %v", p.AirlineEmail)
 			return nil, err
 		} else {
-			log.Printf("Flight Type not create of model %v, err: %v", p.AirlineId, err.Error())
+			log.Printf("Flight Type not create of model %v, err: %v", p.AirlineEmail, err.Error())
 			return nil, err
 		}
 	}
+
+	fmt.Println("reached here ==============")
 
 	economySeats := p.EconomySeatNo
 	economySeatsPerRow := p.EconomySeatsPerRow
@@ -45,11 +50,11 @@ func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatReques
 		log.Println("error parsing buisiness seat layout")
 		return nil, err
 	}
-	airlineSeats, err := svc.repo.CreateAirlineSeatType(p, economyLayoutJSON, buisinessLayoutJSON)
+	airlineSeats, err := svc.repo.CreateAirlineSeatType(int(airline.ID), p, economyLayoutJSON, buisinessLayoutJSON)
 	if err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			log.Printf("Seat layout not created of airline %v, err: %v",
-				p.AirlineId, err.Error())
+				p.AirlineEmail, err.Error())
 			return nil, err
 		} else {
 			return nil, err

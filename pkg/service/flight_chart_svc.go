@@ -10,42 +10,38 @@ import (
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 )
 
-func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChart, error) {
-	_, err := svc.repo.FindAirlineByEmail(p.AirlineEmail)
+func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChartResponse, error) {
+	airline, err := svc.repo.FindAirlineByEmail(p.AirlineEmail)
 	if err != nil {
 		log.Printf("unable to find airline: %v", p.AirlineEmail)
 		return nil, fmt.Errorf("unable to find airline: %v, err: %v", p.AirlineEmail, err.Error())
 	}
 
 	flightID := p.FlightFleetId
-
-	fmt.Println("id =======", p.ScheduleId)
 	flight, err := svc.repo.FindFlightFleetById(int(flightID))
 	if err != nil {
 		log.Println("some error")
 	}
 
-	fmt.Println(flight, "flight ==============")
-
+	// if the particular flight is not owned by the airline it throws an error
+	if airline.ID != flight.AirlineID {
+		log.Printf("flight of %v is not available in your fleet", flight.FlightNumber)
+		return nil, fmt.Errorf("flight of %v is not available in your fleet", flight.FlightNumber)
+	}
 	newSchedule, err := svc.repo.FindScheduleByID(int(p.ScheduleId))
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Println(newSchedule.ID, "id 00000000")
-
 	newDepartureAirport := newSchedule.DepartureAirport
-
 	newDepartureTime := newSchedule.DepartureDateTime
-
 	if err != nil {
 		return nil, err
 	}
 
 	flightNumber := flight.FlightNumber
-
 	lastChartOfFlight, _ := svc.repo.FindLastArrivedAirport(flightNumber)
-
+	// if the flight chart dosen't contain any flight of that number id adds directly
 	if lastChartOfFlight == nil {
 		flightChart := dom.FlightChart{
 			FlightNumber: flightNumber,
@@ -53,24 +49,28 @@ func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest)
 			ScheduleID:   newSchedule.ID,
 		}
 		err = svc.repo.CreateFlightChart(&flightChart)
-		return &flightChart, nil
+		flighChartResponse := dom.FlightChartResponse{
+			DepartureAirport:  newSchedule.DepartureAirport,
+			ArrivalAirport:    newSchedule.ArrivalAirport,
+			FlightNumber:      flightNumber,
+			DepartureDateTime: newSchedule.DepartureDateTime,
+			ArrivalDateTime:   newSchedule.ArrivalDateTime,
+			AirlineName:       airline.AirlineName,
+		}
+		return &flighChartResponse, nil
 	}
-	//? this preloads the schedule from last flight
-	//oldFlight, _ := svc.repo.FindFlightScheduleID(lastChartOfFlight.ID)
-	oldFlightSchedule := lastChartOfFlight.Schedule
+
+	oldFlightSchedule, err := svc.repo.FindScheduleByID(int(lastChartOfFlight.ScheduleID))
 	oldArrivedAirport := oldFlightSchedule.ArrivalAirport
+	oldArrivalTime := oldFlightSchedule.ArrivalDateTime
 
-	//? find the schedule from schedule id
-
-	oldDepartureTime := oldFlightSchedule.ArrivalDateTime
-
-	//* if new departure airport == old arrived airport and new departure time > old arroved time good to go
+	//* if new departure airport == old arrived airport and new departure time > old approved time good to go
 	if oldArrivedAirport != newDepartureAirport {
 		log.Println("the flight is at a different airport, schedule using available flights at the departure airport")
 		return nil, errors.New("the flight is at a different airport, schedule using available flights at the departure airport")
 	}
 
-	if !oldDepartureTime.Add(time.Hour).Before(newDepartureTime) {
+	if !oldArrivalTime.Add(time.Hour).Before(newDepartureTime) {
 		log.Println("layover time is less than an hour, not possible to schedule flight")
 		return nil, errors.New("layover time is less than an hour, not possible to schedule flight")
 	}
@@ -96,16 +96,16 @@ func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest)
 		log.Printf("flight chart not created, err: %v", err.Error())
 		return nil, err
 	}
-	// ! also add fare setting here
-	// flightSeatData, err := svc.repo.FindFlightSeatByID(int(p.FlightFleetId))
-	// if err != nil {
-	// 	return nil, err
-	// }
 
-	// flightSeat := flightSeatData.Seat
+	// ! also add fare setting here ===
 
-	// if oldFlightSchedule.ArrivalAirport ==
-
-	//! create booked seat table here
-	return &flightChart, nil
+	flightChartResponse := dom.FlightChartResponse{
+		DepartureAirport:  newSchedule.DepartureAirport,
+		ArrivalAirport:    newSchedule.ArrivalAirport,
+		FlightNumber:      flightNumber,
+		DepartureDateTime: newSchedule.DepartureDateTime,
+		ArrivalDateTime:   newSchedule.ArrivalDateTime,
+		AirlineName:       airline.AirlineName,
+	}
+	return &flightChartResponse, nil
 }

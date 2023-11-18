@@ -3,6 +3,7 @@ package interfaces
 import (
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
+	"github.com/segmentio/kafka-go"
 )
 
 type AdminAirlineService interface {
@@ -19,13 +20,13 @@ type AdminAirlineService interface {
 	AdminVerifyAirlineRequest(int) (*dom.Airline, error)
 
 	//*Methods to add airline seats to db
-	CreateAirlineSeats(*pb.AirlineSeatRequest, int) (*dom.AirlineSeat, error)
+	CreateAirlineSeats(*pb.AirlineSeatRequest) (*dom.AirlineSeat, error)
 
 	//*Methods to add airline baggage policy to db
-	CreateAirlineBaggagePolicy(*pb.AirlineBaggageRequest, int) (*dom.AirlineBaggage, error)
+	CreateAirlineBaggagePolicy(*pb.AirlineBaggageRequest) (*dom.AirlineBaggage, error)
 
 	//*Methods to add airline cancellation policy to db
-	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest, int) (*dom.AirlineCancellation, error)
+	CreateAirlineCancellationPolicy(*pb.AirlineCancellationRequest) (*dom.AirlineCancellation, error)
 
 	//*Methods to add airport to db
 	CreateAirport(*pb.Airport) (*dom.Airport, error)
@@ -44,5 +45,8 @@ type AdminAirlineService interface {
 	CreateFlightFleet(*pb.FlightFleetRequest) (*dom.FlightFleetResponse, error)
 
 	//*Methods to do flight chart
-	AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChart, error)
+	AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChartResponse, error)
+
+	SearchFlightInitial(kafka.Message)
+	SearchFlight(kafka.Message)
 }

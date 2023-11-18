@@ -170,7 +170,7 @@ message AirlinesResponse {
 // AIRLINE SEAT REQUEST
 
 message AirlineSeatRequest {
-  int32 airline_id = 1;
+  string airline_email = 1;
   int32 economy_seat_no = 2;
   int32 buisines_seat_no = 3;
   int32 economy_seats_per_row=4;
@@ -201,8 +201,8 @@ enum Class {
 }
 
 message AirlineBaggageRequest {
-  int32 airline_id = 1;
-  Class class = 2;
+  string airline_email = 1;
+  int32 class = 2;
   int32 cabin_allowed_weight = 3;
   int32 cabin_allowed_length = 4;
   int32 cabin_allowed_breadth = 5;
@@ -231,7 +231,7 @@ message AirlineBaggagesResponse {
 // AIRLINE CANCELLATION REQUEST
 
 message AirlineCancellationRequest {
-  int32 airline_id = 1;
+  string airline_email = 1;
   Class class = 2;
   uint32 cancellation_deadline_before_hours = 3;
   int32 cancellation_percentage = 4;
@@ -318,4 +318,6 @@ message FlightChartResponse {
   string flight_number = 3;
   string flight_type_model = 4;
   string airline_name = 5;
+  string departure_date_time = 6;
+  string arrival_date_time = 7;
 }

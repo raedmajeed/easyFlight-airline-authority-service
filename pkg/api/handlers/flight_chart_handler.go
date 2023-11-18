@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 	"errors"
-	"fmt"
+	"github.com/raedmajeed/admin-servcie/pkg/utils"
 	"log"
 	"time"
 
@@ -16,13 +16,11 @@ func (handler *AdminAirlineHandler) RegisterFlightChart(ctx context.Context, p *
 		log.Println("deadline passed, aborting gRPC call")
 		return nil, errors.New("deadline passed, aborting gRPC call")
 	}
-	response, _ := handler.svc.AddFlightToChart(p)
-	fmt.Println(response)
-	//if err != nil {
-	//	log.Printf("unable to schedule the flight, err: %v", err.Error())
-	//	return nil, err
-	//}
-	//flightChartResponse := utils.ConvertFlightChartToResponse(response)
-	//return flightChartResponse, nil
-	return &pb.FlightChartResponse{}, nil
+	response, err := handler.svc.AddFlightToChart(p)
+	if err != nil {
+		log.Printf("unable to schedule the flight, err: %v", err.Error())
+		return nil, err
+	}
+	flightChartResponse := utils.ConvertFlightChartToResponse(response)
+	return flightChartResponse, nil
 }
