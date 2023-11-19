@@ -17,7 +17,7 @@ func NewKafkaWriterConnect() *KafkaWriter {
 
 	searchWriter := &kafka.Writer{
 		Addr:         kafka.TCP("localhost:9092"),
-		Topic:        "search-flight-response",
+		Topic:        "search-flight-response-1",
 		Async:        true,
 		RequiredAcks: 0,
 	}

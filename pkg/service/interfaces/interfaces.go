@@ -48,5 +48,5 @@ type AdminAirlineService interface {
 	AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChartResponse, error)
 
 	SearchFlightInitial(kafka.Message)
-	SearchFlight(kafka.Message)
+	SearchFlight(message kafka.Message) ([]dom.Path, []dom.Path, error)
 }

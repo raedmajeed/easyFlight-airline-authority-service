@@ -41,6 +41,8 @@ type AdminAirlineRepostory interface {
 	// CreateSchedules * Methods to Do repo operation on schedules
 	CreateSchedules(schedule *dom.Schedule) error
 	FindScheduleByID(id int) (*dom.Schedule, error)
+	FindAllSchedules() []*dom.Schedule
+	Convert(d, a string, id uint)
 
 	// FindAirlineByEmail * Methods to do repo operation on airline
 	FindAirlineByEmail(string) (*dom.Airline, error)
@@ -63,4 +65,5 @@ type AdminAirlineRepostory interface {
 	// FindFlightsFromDep FindFlightsFromAirport * Methods to do repo operation on flight search
 	FindFlightsFromDep(depAirport string, depDate string) ([]*dom.FlightChart, error)
 	FindFlightsFromAirport(depAirport string, depTime time.Time) ([]*dom.FlightChart, error)
+	FindFlightScheduleByAirport(airport string, date time.Time, id int) ([]*dom.FlightChart, error)
 }

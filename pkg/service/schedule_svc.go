@@ -49,7 +49,6 @@ func (svc *AdminAirlineServiceStruct) CreateSchedules(p *pb.ScheduleRequest) (*d
 		ArrivalDateTime:   arrivalTime,
 	}
 
-	fmt.Println(scheduled)
 	err = svc.repo.CreateSchedules(&scheduled)
 	if err != nil {
 		log.Printf("unable to create schedule, err: %v", err.Error())
@@ -64,10 +63,8 @@ func checkAirportExists(airport string, svc *AdminAirlineServiceStruct) bool {
 }
 
 func convertScheduleTimeToGo(date, dtime string) (time.Time, error) {
-	concTime := date + " " + dtime
-	t, err := time.Parse("02/01/2006 15:04", concTime)
-	if err != nil {
-		return time.Time{}, err
-	}
-	return t, nil
+	format := "02/01/2006 15:04"
+	dateTimeStringDep := date + " " + dtime
+	tt, _ := time.Parse(format, dateTimeStringDep)
+	return tt, nil
 }

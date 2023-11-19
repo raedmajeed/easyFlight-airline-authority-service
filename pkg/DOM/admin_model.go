@@ -31,7 +31,7 @@ type Schedule struct {
 	DepartureAirport  string    `json:"departure_airport"`
 	ArrivalAirport    string    `json:"arrival_airport"`
 	DepartureDateTime time.Time `json:"departure_date_time"`
-	ArrivalDateTime   time.Time `json:"arrisval_date_time"`
+	ArrivalDateTime   time.Time `json:"arrival_date_time"`
 	Scheduled         bool      `json:"scheduled" gorm:"default:false"`
 }
 
@@ -72,4 +72,10 @@ type FlightChart struct {
 	Status       Status       `gorm:"default:0"`
 	ScheduleID   uint         `gorm:"not null"`
 	Schedule     Schedule     `gorm:"foreignKey:ScheduleID"`
+}
+
+type CombinedChartScheduleFleet struct {
+	FlightChart
+	Schedule
+	FlightFleets
 }
