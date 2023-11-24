@@ -66,4 +66,7 @@ type AdminAirlineRepostory interface {
 	FindFlightsFromDep(depAirport string, depDate string) ([]*dom.FlightChart, error)
 	FindFlightsFromAirport(depAirport string, depTime time.Time) ([]*dom.FlightChart, error)
 	FindFlightScheduleByAirport(airport string, date time.Time, id int) ([]*dom.FlightChart, error)
+
+	FindFlightByFlightNumber(string) (*dom.FlightFleets, error)
+	FindSeatsByChartID(uint) (*dom.BookedSeat, error)
 }

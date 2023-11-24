@@ -320,4 +320,6 @@ message FlightChartResponse {
   string airline_name = 5;
   string departure_date_time = 6;
   string arrival_date_time = 7;
+  float economy_fare = 8;
+  float business_fare = 9;
 }

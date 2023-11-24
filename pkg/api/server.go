@@ -27,6 +27,8 @@ func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, 
 
 	log.Println("listening on search-flight-request topic")
 	go kf.SearchFlightRead(newContext)
+	log.Println("listening on search-flight-request-2 topic")
+	go kf.SearchSelectFlightRead(newContext)
 
 	err := NewGrpcServer(cfg, handler)
 	if err != nil {

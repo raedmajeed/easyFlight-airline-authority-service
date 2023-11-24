@@ -25,6 +25,8 @@ type FlightChartResponse struct {
 	DepartureDateTime time.Time
 	ArrivalDateTime   time.Time
 	AirlineName       string
+	EconomyFare       float64
+	BusinessFare      float64
 }
 
 type FlightDetails struct {

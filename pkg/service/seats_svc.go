@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
@@ -15,8 +14,6 @@ import (
 type Layout struct{ Rows [][]bool }
 
 func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest) (*dom.AirlineSeat, error) {
-	fmt.Println("reached here ==============")
-	fmt.Println(p.AirlineEmail)
 	airline, err := svc.repo.FindAirlineByEmail(p.AirlineEmail)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -27,8 +24,6 @@ func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatReques
 			return nil, err
 		}
 	}
-
-	fmt.Println("reached here ==============")
 
 	economySeats := p.EconomySeatNo
 	economySeatsPerRow := p.EconomySeatsPerRow

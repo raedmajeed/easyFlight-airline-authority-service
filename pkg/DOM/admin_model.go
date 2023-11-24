@@ -52,8 +52,6 @@ type BookedSeat struct {
 	BusinessSeatBooked int    `json:"business_seat_no"`
 	EconomySeatLayout  []byte `json:"economy_seat_layout"`
 	BusinessSeatLayout []byte `json:"business_seat_layout"`
-	EconomySeatFare    float32
-	BusinessSeatFare   float32
 }
 
 type Status int
@@ -72,6 +70,8 @@ type FlightChart struct {
 	Status       Status       `gorm:"default:0"`
 	ScheduleID   uint         `gorm:"not null"`
 	Schedule     Schedule     `gorm:"foreignKey:ScheduleID"`
+	EconomyFare  float64
+	BusinessFare float64
 }
 
 type CombinedChartScheduleFleet struct {

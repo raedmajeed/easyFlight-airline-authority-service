@@ -32,6 +32,7 @@ func (svc *AdminAirlineServiceStruct) SearchFlight(message kafka.Message) ([]dom
 	if !search.ReturnFlight {
 		log.Println("one way flight")
 		finalPaths = OneWayFlightSearch(svc, search)
+		return finalPaths, nil, err
 	} else {
 		log.Println("return flight")
 		finalPaths = OneWayFlightSearch(svc, search)
@@ -121,7 +122,7 @@ func pathResponse(paths [][]dom.FlightDetails, maxStops int) []dom.Path {
 			continue
 		}
 		finalPaths = append(finalPaths, dom.Path{
-			PathId:        i,
+			PathId:        i + 1,
 			Flights:       path,
 			NumberOfStops: len(path),
 		})

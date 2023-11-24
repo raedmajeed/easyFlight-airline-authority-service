@@ -1,6 +1,7 @@
 package interfaces
 
 import (
+	"context"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 	"github.com/segmentio/kafka-go"
@@ -49,4 +50,6 @@ type AdminAirlineService interface {
 
 	SearchFlightInitial(kafka.Message)
 	SearchFlight(message kafka.Message) ([]dom.Path, []dom.Path, error)
+	SearchSelectFlight(context.Context, kafka.Message)
+	//SearchSelectFlight(ctx context.Context, message kafka.Message)
 }

@@ -193,5 +193,7 @@ func ConvertFlightChartToResponse(chart *dom.FlightChartResponse) *pb.FlightChar
 		AirlineName:       chart.AirlineName,
 		DepartureDateTime: chart.DepartureDateTime.String(),
 		ArrivalDateTime:   chart.ArrivalDateTime.String(),
+		EconomyFare:       float32(chart.EconomyFare),
+		BusinessFare:      float32(chart.BusinessFare),
 	}
 }

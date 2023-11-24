@@ -9,19 +9,20 @@ import (
 )
 
 type ConfigParams struct {
-	DBHost     string `mapstructure:"DBHOST"`
-	DBName     string `mapstructure:"DBNAME"`
-	DBUser     string `mapstructure:"DBUSER"`
-	DBPort     string `mapstructure:"DBPORT"`
-	DBPassword string `mapstructure:"DBPASSWORD"`
-	PORT       string `mapstructure:"PORT"`
-	ADMINPORT  string `mapstructure:"ADMINPORT"`
-	REDISHOST  string `mapstructure:"REDISHOST"`
-	SECRETKEY  string `mapstructure:"SECRETKEY"`
+	DBHost        string `mapstructure:"DBHOST"`
+	DBName        string `mapstructure:"DBNAME"`
+	DBUser        string `mapstructure:"DBUSER"`
+	DBPort        string `mapstructure:"DBPORT"`
+	DBPassword    string `mapstructure:"DBPASSWORD"`
+	PORT          string `mapstructure:"PORT"`
+	ADMINPORT     string `mapstructure:"ADMINPORT"`
+	REDISHOST     string `mapstructure:"REDISHOST"`
+	SECRETKEY     string `mapstructure:"SECRETKEY"`
+	BUSINESSSURGE string `mapstructure:"BUSINESSSURGE"`
 }
 
 var envs = []string{
-	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY",
+	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE",
 }
 
 func Configuration() (*ConfigParams, error, *redis.Client) {
@@ -48,8 +49,8 @@ func Configuration() (*ConfigParams, error, *redis.Client) {
 		return &cfg, err, nil
 	}
 
-	redis := connectToRedis(&cfg)
-	return &cfg, err, redis
+	redis2 := connectToRedis(&cfg)
+	return &cfg, err, redis2
 }
 
 func connectToRedis(cfg *ConfigParams) *redis.Client {

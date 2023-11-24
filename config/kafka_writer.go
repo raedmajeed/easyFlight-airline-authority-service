@@ -5,8 +5,9 @@ import (
 )
 
 type KafkaWriter struct {
-	EmailWriter  *kafka.Writer
-	SearchWriter *kafka.Writer
+	EmailWriter        *kafka.Writer
+	SearchWriter       *kafka.Writer
+	SearchSelectWriter *kafka.Writer
 }
 
 func NewKafkaWriterConnect() *KafkaWriter {
@@ -16,13 +17,16 @@ func NewKafkaWriterConnect() *KafkaWriter {
 	}
 
 	searchWriter := &kafka.Writer{
-		Addr:         kafka.TCP("localhost:9092"),
-		Topic:        "search-flight-response-1",
-		Async:        true,
-		RequiredAcks: 0,
+		Addr:  kafka.TCP("localhost:9092"),
+		Topic: "search-flight-response-1",
+	}
+	searchSelectWriter := &kafka.Writer{
+		Addr:  kafka.TCP("localhost:9092"),
+		Topic: "search-flight-response-2",
 	}
 	return &KafkaWriter{
-		EmailWriter:  &emailWriter,
-		SearchWriter: searchWriter,
+		EmailWriter:        &emailWriter,
+		SearchWriter:       searchWriter,
+		SearchSelectWriter: searchSelectWriter,
 	}
 }

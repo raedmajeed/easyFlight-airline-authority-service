@@ -18,6 +18,7 @@ import (
 //* METHODS TO EVERYTHING AIRLINE
 
 func (svc *AdminAirlineServiceStruct) RegisterAirlineSvc(p *pb.AirlineRequest) (*dom.RegisterAirlineOtpData, error) {
+	//go
 	airline := &dom.Airline{
 		AirlineName:         p.AirlineName,
 		CompanyAddress:      p.CompanyAddress,
