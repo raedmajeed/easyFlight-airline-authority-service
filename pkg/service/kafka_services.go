@@ -44,7 +44,7 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 	if err != nil {
 		log.Println("error marshaling json SearchSelectFlight() - booking service 1")
 		//err := svc.kfk.SearchSelectWriter.WriteMessages(ctx, kafka.Message{})
-		//writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
+		writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
 		return
 	}
 
@@ -64,7 +64,7 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 	if err = json.Unmarshal([]byte(redisVal.Val()), &kafkaPath); err != nil {
 		fmt.Println("error unmarshalling json from redis SearchSelectFlight() - booking service")
 		// add retry and if retry fails still write to kafka again
-		//writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
+		writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
 		return
 	}
 
@@ -99,7 +99,7 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 	if directPath.PathId <= 0 {
 		log.Println("path id not present, chance is paths from redis has been deleted")
 		// write to kafka here
-		//writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
+		writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
 		return
 	}
 
@@ -154,6 +154,7 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 func writeToKafkaOnError(ctx context.Context, svc *AdminAirlineServiceStruct, cf *dom.CompleteFlightFacilities) {
 	marshal, _ := json.Marshal(&cf)
 	// implement retry mechanism here
+	log.Println("here")
 	err := svc.kfk.SearchSelectWriter.WriteMessages(ctx, kafka.Message{
 		Value: marshal,
 	})

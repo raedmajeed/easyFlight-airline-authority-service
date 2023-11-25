@@ -9,20 +9,21 @@ import (
 )
 
 type ConfigParams struct {
-	DBHost        string `mapstructure:"DBHOST"`
-	DBName        string `mapstructure:"DBNAME"`
-	DBUser        string `mapstructure:"DBUSER"`
-	DBPort        string `mapstructure:"DBPORT"`
-	DBPassword    string `mapstructure:"DBPASSWORD"`
-	PORT          string `mapstructure:"PORT"`
-	ADMINPORT     string `mapstructure:"ADMINPORT"`
-	REDISHOST     string `mapstructure:"REDISHOST"`
-	SECRETKEY     string `mapstructure:"SECRETKEY"`
-	BUSINESSSURGE string `mapstructure:"BUSINESSSURGE"`
+	DBHost           string `mapstructure:"DBHOST"`
+	DBName           string `mapstructure:"DBNAME"`
+	DBUser           string `mapstructure:"DBUSER"`
+	DBPort           string `mapstructure:"DBPORT"`
+	DBPassword       string `mapstructure:"DBPASSWORD"`
+	PORT             string `mapstructure:"PORT"`
+	ADMINPORT        string `mapstructure:"ADMINPORT"`
+	REDISHOST        string `mapstructure:"REDISHOST"`
+	SECRETKEY        string `mapstructure:"SECRETKEY"`
+	BUSINESSSURGE    string `mapstructure:"BUSINESSSURGE"`
+	ADMINBOOKINGPORT string `mapstructure:"ADMINBOOKINGPORT"`
 }
 
 var envs = []string{
-	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE",
+	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE", "ADMINBOOKINGPORT",
 }
 
 func Configuration() (*ConfigParams, error, *redis.Client) {

@@ -2,10 +2,10 @@ package config
 
 import (
 	"context"
+	"fmt"
 	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"github.com/segmentio/kafka-go"
 	"log"
-	"time"
 )
 
 type KafkaReader struct {
@@ -22,9 +22,10 @@ func NewKafkaReaderConnect(svc interfaces.AdminAirlineService) *KafkaReader {
 		GroupID: "search-request-1",
 	})
 	searchSelectReader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"localhost:9092"},
-		Topic:   "search-flight-request-4",
-		GroupID: "search-request-3",
+		Brokers:  []string{"localhost:9092"},
+		Topic:    "search-select-request",
+		GroupID:  "search-select",
+		MaxBytes: 10e5,
 	})
 	return &KafkaReader{
 		SearchReader:       searchReader,
@@ -52,6 +53,7 @@ func (k *KafkaReader) SearchFlightRead(ctx context.Context) {
 			return
 		//case messageChan <- message:
 		default:
+			fmt.Println(message.Value)
 			k.svc.SearchFlightInitial(message)
 			err := k.SearchReader.CommitMessages(ctx, message)
 			if err != nil {
@@ -66,24 +68,27 @@ func (k *KafkaReader) SearchFlightRead(ctx context.Context) {
 func (k *KafkaReader) SearchSelectFlightRead(ctx context.Context) {
 	//messageChan := make(chan kafka.Message)
 	// here when searchFlight dosen't do anything it gets stuck handle that
-	newCont, cancel := context.WithTimeout(ctx, time.Second*20)
-	defer cancel()
+	//newCont, cancel := context.WithTimeout(ctx, time.Second*20)
+	//defer cancel()
 	for {
-		message, _ := k.SearchSelectReader.FetchMessage(newCont)
+		message, _ := k.SearchSelectReader.FetchMessage(ctx)
 		select {
 		case <-ctx.Done():
 			log.Println("context cancelled, terminating")
 			return
 		//case messageChan <- message:
 		default:
+			fmt.Println(message.Key)
 			log.Println("message reached in SearchSelectFlightRead() - kafka_reader")
-			k.svc.SearchSelectFlight(newCont, message)
-			err := k.SearchSelectReader.CommitMessages(newCont, message)
+			//break
+			k.svc.SearchSelectFlight(ctx, message)
+			err := k.SearchSelectReader.CommitMessages(ctx, message)
 			if err != nil {
 				return
 			}
-			//return
+			return
 		}
+		//break
 	}
 	//return messageChan
 }

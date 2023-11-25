@@ -3,6 +3,7 @@ package pkg
 import (
 	"context"
 	"fmt"
+	"github.com/raedmajeed/admin-servcie/pkg/api/bookingHandlers"
 	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"log"
 	"net"
@@ -19,7 +20,7 @@ type Server struct {
 	cfg *config.ConfigParams
 }
 
-func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, svc interfaces.AdminAirlineService) (*Server, error) {
+func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, svc interfaces.AdminAirlineService, bHandler bookingHandlers.BookingHandler) (*Server, error) {
 	newContext, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -29,6 +30,7 @@ func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, 
 	go kf.SearchFlightRead(newContext)
 	log.Println("listening on search-flight-request-2 topic")
 	go kf.SearchSelectFlightRead(newContext)
+	go NewBookingGrpcServer(cfg, &bHandler)
 
 	err := NewGrpcServer(cfg, handler)
 	if err != nil {
@@ -64,6 +66,23 @@ func NewGrpcServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandl
 		return err
 	}
 	return nil
+}
+
+func NewBookingGrpcServer(cfg *config.ConfigParams, handler *bookingHandlers.BookingHandler) {
+	log.Println("connecting to Booking gRPC server")
+	addr := fmt.Sprintf(":%s", cfg.ADMINBOOKINGPORT)
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Println("error listening to booking service")
+		return
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterBookingServiceServer(grpcServer, handler)
+	err = grpcServer.Serve(lis)
+	if err != nil {
+		log.Println("error connecting to booking  grpc server")
+		return
+	}
 }
 
 func (s *Server) ServerStart() error {

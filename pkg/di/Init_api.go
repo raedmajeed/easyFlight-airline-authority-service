@@ -5,6 +5,7 @@ import (
 	"github.com/raedmajeed/admin-servcie/config"
 	api "github.com/raedmajeed/admin-servcie/pkg/api"
 	pkg "github.com/raedmajeed/admin-servcie/pkg/api"
+	"github.com/raedmajeed/admin-servcie/pkg/api/bookingHandlers"
 	"github.com/raedmajeed/admin-servcie/pkg/api/handlers"
 	"github.com/raedmajeed/admin-servcie/pkg/db"
 	"github.com/raedmajeed/admin-servcie/pkg/repository"
@@ -21,7 +22,8 @@ func InitApi(cfg *config.ConfigParams, redis *redis.Client) (*pkg.Server, error)
 	repo := repository.NewAdminAirlineRepository(DB)
 	svc := service.NewAdminAirlineService(repo, redis, cfg, *kfWrite)
 	hdl := handlers.NewAdminAirlineHandler(svc)
-	server, err := api.NewServer(cfg, hdl, svc)
+	bhdl := bookingHandlers.NewBookingHandler(svc)
+	server, err := api.NewServer(cfg, hdl, svc, *bhdl)
 	if err != nil {
 		return nil, err
 	}
