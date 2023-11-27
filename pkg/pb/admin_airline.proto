@@ -1,0 +1,325 @@
+syntax = "proto3";
+
+package pb;
+
+
+option go_package = ".";
+
+service AdminAirline {
+  // gRPC methods for all actions on Flight Type
+  rpc RegisterFlightType(FlightTypeRequest) returns (FlightTypeResponse);
+  rpc FetchAllFlightTypes(EmptyRequest) returns (FlightTypesResponse);
+  rpc FetchFlightType(IDRequest) returns (FlightTypeResponse);
+  rpc UpdateFlightType(FlightTypeRequest) returns (FlightTypeResponse);
+  rpc DeleteFlightType(IDRequest) returns (FlightTypeResponse);
+
+  // gRPC methods for all actions on Airline
+  rpc RegisterAirline(AirlineRequest) returns (OtpResponse);
+  rpc FetchAllAirlines(EmptyRequest) returns (AirlinesResponse);
+  rpc FetchAirline(IDRequest) returns (AirlineResponse);
+  rpc UpdateAirline(AirlineRequest) returns (AirlineResponse);
+  rpc DeleteAirline(IDRequest) returns (AirlineResponse);
+  rpc VerifyAirlineRegistration(OTPRequest) returns (AirlineResponse);
+  rpc AdminVerifyAirline(EmptyRequest) returns (AirlineResponse);
+
+  // gRPC methods for all actions on Airline Seats
+  rpc RegisterAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
+  rpc FetchAllAirlineSeats(EmptyRequest) returns (AirlineSeatsResponse);
+  rpc FetchAirlineSeat(IDRequest) returns (AirlineSeatResponse);
+  rpc UpdateAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
+  rpc DeleteAirlineSeat(IDRequest) returns (AirlineSeatResponse);
+
+  // gRPC methods for all actions on Airline Baggage
+  rpc RegisterAirlineBaggage(AirlineBaggageRequest) returns (AirlineBaggageResponse);
+  rpc FetchAllAirlineBaggages(EmptyRequest) returns (AirlineBaggagesResponse);
+  rpc FetchAirlineBaggage(IDRequest) returns (AirlineBaggageResponse);
+  rpc UpdateAirlineBaggage(AirlineBaggageRequest) returns (AirlineBaggageResponse);
+  rpc DeleteAirlineBaggage(IDRequest) returns (AirlineBaggageResponse);
+
+  // gRPC methods for all actions on Airline Cancellation
+  rpc RegisterAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
+  rpc FetchAllAirlineCancellations(EmptyRequest) returns (AirlineCancellationsResponse);
+  rpc FetchAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
+  rpc UpdateAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
+  rpc DeleteAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
+
+  // gRPC methods for all actions on Airport
+  rpc RegisterAirportRequest(Airport) returns (AirportResponse);
+
+  // gRPC methods for all actions on Schedules
+  rpc RegisterScheduleRequest(ScheduleRequest) returns (ScheduleResponse);
+
+  // gRPC methods for all auth actions
+  rpc RegisterLoginRequest(LoginRequest) returns (LoginResponse);
+  rpc RegisterForgotPasswordRequest(ForgotPasswordRequest) returns (OtpResponse);
+  rpc RegisterVerifyOTPRequest(OTPRequest) returns(LoginResponse);
+  rpc RegisterConfirmPasswordRequest(ConfirmPasswordRequest) returns (EmailResponse);
+
+  // gRPC methods for all flight fleet
+  rpc RegisterFlightFleets(FlightFleetRequest) returns (FlightFleetResponse);
+
+  // gRPC methods for all flight chart
+  rpc RegisterFlightChart(FlightChartRequest) returns (FlightChartResponse);
+}
+
+message Error {
+  int32 code = 1;
+  string message = 2;
+}
+
+message EmptyRequest {}
+
+message EmailResponse {
+  string email = 1;
+}
+
+message OtpResponse {
+  string email = 1;
+  string expiration_time = 2;
+}
+
+message IDRequest {
+  int32 id = 1;
+}
+
+message OTPRequest {
+  int32 otp = 1;
+  string email = 2;
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  string role = 3;
+}
+
+message ConfirmPasswordRequest {
+  string password = 1;
+  string confirm_password = 2;
+}
+
+message ForgotPasswordRequest {
+  string email = 1;
+}
+
+message LoginResponse {
+  string email = 1;
+  string token = 2;
+}
+
+// Flight Request, Values are passed through context
+
+enum FlightTypeEnum {
+  COMMERCIAL = 0;
+  MILITARY = 1;
+  CARGO = 2;
+}
+
+message FlightTypeRequest {
+  int32 id = 1;
+  FlightTypeEnum type = 2;
+  string flight_model = 3;
+  string description = 4;
+  string manufacturer_name = 5;
+  string manufacturer_country = 6;
+  int32 max_distance = 7;
+  int32 cruise_speed = 8;
+}
+
+message FlightTypeResponse {
+  FlightTypeRequest flight_type = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+message FlightTypesResponse {
+  repeated FlightTypeRequest flight_types = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE REQUEST
+
+message AirlineRequest {
+  int32 id = 1;
+  string airline_name = 2;
+  string company_address = 3;
+  string phone_number = 4;
+  string email = 5;
+  string airline_code = 6;
+  string airline_logo_link = 7;
+  string support_documents_link = 8;
+}
+
+message AirlineResponse {
+  AirlineRequest Airline = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+message AirlinesResponse {
+  repeated AirlineRequest airlines = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE SEAT REQUEST
+
+message AirlineSeatRequest {
+  string airline_email = 1;
+  int32 economy_seat_no = 2;
+  int32 buisines_seat_no = 3;
+  int32 economy_seats_per_row=4;
+  int32 buisines_seats_per_row=5;
+}
+
+message AirlineSeatResponse {
+  AirlineSeatRequest airline_seat = 1;
+  bytes economy_seat_layout = 2;
+  bytes buisiness_seat_layout = 3;
+  int32 code = 4;
+  string message = 5;
+  Error error = 6;
+}
+
+message AirlineSeatsResponse {
+  repeated AirlineSeatRequest airline_seats = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE BAGGAGE REQUEST
+
+enum Class {
+  ECONOMY = 0;
+  BUSINESS = 1;
+}
+
+message AirlineBaggageRequest {
+  string airline_email = 1;
+  int32 class = 2;
+  int32 cabin_allowed_weight = 3;
+  int32 cabin_allowed_length = 4;
+  int32 cabin_allowed_breadth = 5;
+  int32 cabin_allowed_height = 6;
+  int32 hand_allowed_weight = 7;
+  int32 hand_allowed_length = 8;
+  int32 hand_allowed_breadth = 9;
+  int32 hand_allowed_height = 10;
+  int32 fee_for_extra_kg_cabin = 11;
+  int32 fee_for_extra_kg_hand = 12;
+  string restrictions = 13;
+}
+
+message AirlineBaggageResponse {
+  AirlineBaggageRequest airline_baggage = 1;
+
+}
+
+message AirlineBaggagesResponse {
+  repeated AirlineBaggageRequest airline_baggages = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRLINE CANCELLATION REQUEST
+
+message AirlineCancellationRequest {
+  string airline_email = 1;
+  Class class = 2;
+  uint32 cancellation_deadline_before_hours = 3;
+  int32 cancellation_percentage = 4;
+  bool refundable = 5;
+}
+
+message AirlineCancellationResponse {
+  AirlineCancellationRequest airline_cancellation = 1;
+}
+
+message AirlineCancellationsResponse {
+  repeated AirlineCancellationRequest airline_cancellations = 1;
+  int32 code = 2;
+  string message = 3;
+  Error error = 4;
+}
+
+// AIRPORT REQUEST
+
+message Airport {
+  string airport_code = 1;
+  string airport_name = 2;
+  string city = 3;
+  string country = 4;
+  string region = 5;
+  double latitude = 6;
+  double longitude = 7;
+  string iata_fcs_code = 8;
+  string icao_code = 9;
+  string website = 10;
+  string contact_email = 11;
+  string contact_phone = 12;
+}
+
+
+message AirportResponse {
+  Airport airport = 1;
+}
+
+// SCHEDULE REQUEST
+
+message ScheduleRequest {
+  string departure_time = 1;
+  string arrival_time = 2;
+  string departure_airport = 3;
+  string arrival_airport = 4;
+  string departure_date = 5;
+  string arrival_date = 6;
+}
+
+message ScheduleResponse {
+  ScheduleRequest schedule = 1;
+}
+
+// FLIGHT FLEET
+
+message FlightFleetRequest {
+  string airline_email = 1;
+  int32 seat_id = 2;
+  int32 flight_type_id = 3;
+  int32 baggage_policy_id = 4;
+  int32 cancellation_policy_id = 5;
+}
+
+message FlightFleetResponse {
+  string flight_number = 1;
+  string flight_type_model = 2;
+  string airline_name = 3;
+  int32 economy_seat_number = 4;
+  int32 busisiness_seat_number = 5;
+}
+
+// FLIGHT CHART
+
+message FlightChartRequest {
+  string airline_email = 1;
+  int32 flight_fleet_id = 2;
+  int32 schedule_id = 3;
+}
+
+message FlightChartResponse {
+  string departure_airport = 1;
+  string arrival_airport = 2;
+  string flight_number = 3;
+  string flight_type_model = 4;
+  string airline_name = 5;
+  string departure_date_time = 6;
+  string arrival_date_time = 7;
+  float economy_fare = 8;
+  float business_fare = 9;
+}
