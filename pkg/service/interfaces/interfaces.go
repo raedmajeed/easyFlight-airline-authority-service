@@ -52,4 +52,8 @@ type AdminAirlineService interface {
 	SearchFlight(message kafka.Message) ([]dom.Path, []dom.Path, error)
 	SearchSelectFlight(context.Context, kafka.Message)
 	//SearchSelectFlight(ctx context.Context, message kafka.Message)
+
+	SelectAndBookSeats(ctx context.Context, request *pb.SeatRequest) (*pb.SeatResponse, error)
+	CalculateDailyFare()
+	AddConfirmedSeatsToBooked(context.Context, *pb.ConfirmedSeatRequest) (*pb.ConfirmedSeatResponse, error)
 }

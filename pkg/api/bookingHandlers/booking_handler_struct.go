@@ -7,7 +7,7 @@ import (
 
 type BookingHandler struct {
 	svc interfaces.AdminAirlineService
-	pb.BookingServiceServer
+	pb.AdminServiceServer
 }
 
 func NewBookingHandler(svc interfaces.AdminAirlineService) *BookingHandler {

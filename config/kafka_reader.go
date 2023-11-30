@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"github.com/segmentio/kafka-go"
 	"log"
@@ -18,14 +17,13 @@ func NewKafkaReaderConnect(svc interfaces.AdminAirlineService) *KafkaReader {
 	// trying
 	searchReader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: []string{"localhost:9092"},
-		Topic:   "search-flight-request",
-		GroupID: "search-request-1",
+		Topic:   "search-flight-request-3",
+		GroupID: "search-request-3",
 	})
 	searchSelectReader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:  []string{"localhost:9092"},
-		Topic:    "search-select-request",
-		GroupID:  "search-select",
-		MaxBytes: 10e5,
+		Brokers: []string{"localhost:9092"},
+		Topic:   "selected-flight-request-4",
+		GroupID: "search-selected-3",
 	})
 	return &KafkaReader{
 		SearchReader:       searchReader,
@@ -44,51 +42,38 @@ type SearchDetails struct {
 }
 
 func (k *KafkaReader) SearchFlightRead(ctx context.Context) {
-	//messageChan := make(chan kafka.Message)
 	for {
-		message, _ := k.SearchReader.FetchMessage(ctx)
+		message, _ := k.SearchReader.ReadMessage(ctx)
 		select {
 		case <-ctx.Done():
 			log.Println("context cancelled, terminating")
 			return
-		//case messageChan <- message:
 		default:
-			fmt.Println(message.Value)
 			k.svc.SearchFlightInitial(message)
-			err := k.SearchReader.CommitMessages(ctx, message)
-			if err != nil {
-				return
-			}
-			//return
+			//err := k.SearchReader.CommitMessages(ctx, message)
+			//if err != nil {
+			//	return
+			//}
 		}
 	}
-	//return messageChan
 }
 
 func (k *KafkaReader) SearchSelectFlightRead(ctx context.Context) {
-	//messageChan := make(chan kafka.Message)
-	// here when searchFlight dosen't do anything it gets stuck handle that
-	//newCont, cancel := context.WithTimeout(ctx, time.Second*20)
-	//defer cancel()
 	for {
-		message, _ := k.SearchSelectReader.FetchMessage(ctx)
+		message, _ := k.SearchSelectReader.ReadMessage(ctx)
 		select {
 		case <-ctx.Done():
 			log.Println("context cancelled, terminating")
 			return
-		//case messageChan <- message:
 		default:
-			fmt.Println(message.Key)
 			log.Println("message reached in SearchSelectFlightRead() - kafka_reader")
 			//break
 			k.svc.SearchSelectFlight(ctx, message)
-			err := k.SearchSelectReader.CommitMessages(ctx, message)
-			if err != nil {
-				return
-			}
-			return
+			//err := k.SearchSelectReader.CommitMessages(ctx, message)
+			//if err != nil {
+			//	return
+			//}
+			//return
 		}
-		//break
 	}
-	//return messageChan
 }

@@ -18,86 +18,122 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// BookingServiceClient is the client API for BookingService service.
+// AdminServiceClient is the client API for AdminService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type BookingServiceClient interface {
-	AddTravellerSeats(ctx context.Context, in *SeatRequest, opts ...grpc.CallOption) (*SeatResponse, error)
+type AdminServiceClient interface {
+	RegisterSelectSeat(ctx context.Context, in *SeatRequest, opts ...grpc.CallOption) (*SeatResponse, error)
+	AddConfirmedSeats(ctx context.Context, in *ConfirmedSeatRequest, opts ...grpc.CallOption) (*ConfirmedSeatResponse, error)
 }
 
-type bookingServiceClient struct {
+type adminServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewBookingServiceClient(cc grpc.ClientConnInterface) BookingServiceClient {
-	return &bookingServiceClient{cc}
+func NewAdminServiceClient(cc grpc.ClientConnInterface) AdminServiceClient {
+	return &adminServiceClient{cc}
 }
 
-func (c *bookingServiceClient) AddTravellerSeats(ctx context.Context, in *SeatRequest, opts ...grpc.CallOption) (*SeatResponse, error) {
+func (c *adminServiceClient) RegisterSelectSeat(ctx context.Context, in *SeatRequest, opts ...grpc.CallOption) (*SeatResponse, error) {
 	out := new(SeatResponse)
-	err := c.cc.Invoke(ctx, "/admin.BookingService/AddTravellerSeats", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/admin.AdminService/RegisterSelectSeat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// BookingServiceServer is the server API for BookingService service.
-// All implementations must embed UnimplementedBookingServiceServer
+func (c *adminServiceClient) AddConfirmedSeats(ctx context.Context, in *ConfirmedSeatRequest, opts ...grpc.CallOption) (*ConfirmedSeatResponse, error) {
+	out := new(ConfirmedSeatResponse)
+	err := c.cc.Invoke(ctx, "/admin.AdminService/AddConfirmedSeats", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// AdminServiceServer is the server API for AdminService service.
+// All implementations must embed UnimplementedAdminServiceServer
 // for forward compatibility
-type BookingServiceServer interface {
-	AddTravellerSeats(context.Context, *SeatRequest) (*SeatResponse, error)
-	mustEmbedUnimplementedBookingServiceServer()
+type AdminServiceServer interface {
+	RegisterSelectSeat(context.Context, *SeatRequest) (*SeatResponse, error)
+	AddConfirmedSeats(context.Context, *ConfirmedSeatRequest) (*ConfirmedSeatResponse, error)
+	mustEmbedUnimplementedAdminServiceServer()
 }
 
-// UnimplementedBookingServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedBookingServiceServer struct {
+// UnimplementedAdminServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedAdminServiceServer struct {
 }
 
-func (UnimplementedBookingServiceServer) AddTravellerSeats(context.Context, *SeatRequest) (*SeatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddTravellerSeats not implemented")
+func (UnimplementedAdminServiceServer) RegisterSelectSeat(context.Context, *SeatRequest) (*SeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterSelectSeat not implemented")
 }
-func (UnimplementedBookingServiceServer) mustEmbedUnimplementedBookingServiceServer() {}
+func (UnimplementedAdminServiceServer) AddConfirmedSeats(context.Context, *ConfirmedSeatRequest) (*ConfirmedSeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddConfirmedSeats not implemented")
+}
+func (UnimplementedAdminServiceServer) mustEmbedUnimplementedAdminServiceServer() {}
 
-// UnsafeBookingServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to BookingServiceServer will
+// UnsafeAdminServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to AdminServiceServer will
 // result in compilation errors.
-type UnsafeBookingServiceServer interface {
-	mustEmbedUnimplementedBookingServiceServer()
+type UnsafeAdminServiceServer interface {
+	mustEmbedUnimplementedAdminServiceServer()
 }
 
-func RegisterBookingServiceServer(s grpc.ServiceRegistrar, srv BookingServiceServer) {
-	s.RegisterService(&BookingService_ServiceDesc, srv)
+func RegisterAdminServiceServer(s grpc.ServiceRegistrar, srv AdminServiceServer) {
+	s.RegisterService(&AdminService_ServiceDesc, srv)
 }
 
-func _BookingService_AddTravellerSeats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _AdminService_RegisterSelectSeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SeatRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(BookingServiceServer).AddTravellerSeats(ctx, in)
+		return srv.(AdminServiceServer).RegisterSelectSeat(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/admin.BookingService/AddTravellerSeats",
+		FullMethod: "/admin.AdminService/RegisterSelectSeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BookingServiceServer).AddTravellerSeats(ctx, req.(*SeatRequest))
+		return srv.(AdminServiceServer).RegisterSelectSeat(ctx, req.(*SeatRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// BookingService_ServiceDesc is the grpc.ServiceDesc for BookingService service.
+func _AdminService_AddConfirmedSeats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmedSeatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminServiceServer).AddConfirmedSeats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/admin.AdminService/AddConfirmedSeats",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminServiceServer).AddConfirmedSeats(ctx, req.(*ConfirmedSeatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// AdminService_ServiceDesc is the grpc.ServiceDesc for AdminService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var BookingService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "admin.BookingService",
-	HandlerType: (*BookingServiceServer)(nil),
+var AdminService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "admin.AdminService",
+	HandlerType: (*AdminServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AddTravellerSeats",
-			Handler:    _BookingService_AddTravellerSeats_Handler,
+			MethodName: "RegisterSelectSeat",
+			Handler:    _AdminService_RegisterSelectSeat_Handler,
+		},
+		{
+			MethodName: "AddConfirmedSeats",
+			Handler:    _AdminService_AddConfirmedSeats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

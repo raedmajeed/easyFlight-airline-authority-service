@@ -14,7 +14,6 @@ import (
 func (repo *AdminAirlineRepositoryStruct) FindAirlineById(id int32) (*dom.Airline, error) {
 	var airline dom.Airline
 	result := repo.DB.Where("id = ?", int(id)).First(&airline)
-	fmt.Println(result)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			log.Printf("Record not found of airline %v", id)

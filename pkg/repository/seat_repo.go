@@ -1,9 +1,7 @@
 package repository
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
@@ -32,14 +30,6 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirlineSeatType(id int, p *pb.Ai
 			return nil, result.Error
 		}
 	}
-
-	// * this code fetches me the seats, don't delete
-	var ad dom.AirlineSeat
-	repo.DB.Where("id = ?", 1).First(&ad)
-	l := &Layout{}
-	_ = json.Unmarshal(ad.EconomySeatLayout, l)
-	fmt.Println(l.Rows[0])
-
 	return &airlineSeat, nil
 }
 

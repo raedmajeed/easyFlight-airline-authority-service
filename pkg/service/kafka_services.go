@@ -11,14 +11,20 @@ import (
 )
 
 func (svc *AdminAirlineServiceStruct) SearchFlightInitial(message kafka.Message) {
-	flightPath, returnFlightPath, err := svc.SearchFlight(message)
+	search := dom.SearchDetails{}
+	err := json.Unmarshal(message.Value, &search)
+	//if err != nil {
+	//	log.Println("error unmarshalling json, error: ", err.Error())
+	//	//return nil, nil, err
+	//}
+
+	flightPath, returnFlightPath, err := svc.SearchFlight(search)
 	marshal, err := json.Marshal(dom.KafkaPath{
-		DirectPath: flightPath,
-		ReturnPath: returnFlightPath,
+		DirectPath:       flightPath,
+		ReturnPath:       returnFlightPath,
+		DepartureAirport: search.DepartureAirport,
+		ArrivalAirport:   search.ArrivalAirport,
 	})
-	if err != nil {
-		return
-	}
 
 	err = svc.kfk.SearchWriter.WriteMessages(
 		context.Background(), kafka.Message{
@@ -36,8 +42,6 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 	//var selectReq dom.SelectRequest
 	var directPath dom.Path
 	var returnPath dom.Path
-
-	fmt.Println(string(message.Value)) // printed
 
 	selectReq := dom.SelectRequest{}
 	err := json.Unmarshal(message.Value, &selectReq)
@@ -67,8 +71,6 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 		writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
 		return
 	}
-
-	fmt.Println(kafkaPath.DirectPath, "redis path")
 
 	cabinClass := "ECONOMY"
 	if !selectReq.Economy {
@@ -121,6 +123,8 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 			NumberOfAdults:   selectReq.Adults,
 			NumberOfChildren: selectReq.Children,
 			CabinClass:       cabinClass,
+			DepartureAirport: kafkaPath.DepartureAirport,
+			ArrivalAirport:   kafkaPath.ArrivalAirport,
 		}
 		writeToKafka(ctx, svc, &cf)
 		return
@@ -135,6 +139,8 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 			NumberOfAdults:   selectReq.Adults,
 			NumberOfChildren: selectReq.Children,
 			CabinClass:       cabinClass,
+			DepartureAirport: kafkaPath.DepartureAirport,
+			ArrivalAirport:   kafkaPath.ArrivalAirport,
 		}
 		writeToKafka(ctx, svc, &cf)
 		return
@@ -145,6 +151,8 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 		NumberOfAdults:   selectReq.Adults,
 		NumberOfChildren: selectReq.Children,
 		CabinClass:       cabinClass,
+		DepartureAirport: kafkaPath.DepartureAirport,
+		ArrivalAirport:   kafkaPath.ArrivalAirport,
 	}
 	writeToKafka(ctx, svc, &cf)
 	return
@@ -154,7 +162,6 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, me
 func writeToKafkaOnError(ctx context.Context, svc *AdminAirlineServiceStruct, cf *dom.CompleteFlightFacilities) {
 	marshal, _ := json.Marshal(&cf)
 	// implement retry mechanism here
-	log.Println("here")
 	err := svc.kfk.SearchSelectWriter.WriteMessages(ctx, kafka.Message{
 		Value: marshal,
 	})
@@ -185,6 +192,11 @@ func writeToKafka(ctx context.Context, svc *AdminAirlineServiceStruct, cf *dom.C
 }
 
 func GetFlightFacilities(svc *AdminAirlineServiceStruct, path dom.Path, addDetails dom.SelectRequest) (bool, dom.FlightFacilities) {
+	if len(path.Flights) == 0 {
+		log.Println("flight path is zero")
+		return false, dom.FlightFacilities{}
+	}
+
 	flightNumber := path.Flights[0].FlightNumber
 	flight, err := svc.repo.FindFlightByFlightNumber(flightNumber)
 	if err != nil {
@@ -195,6 +207,10 @@ func GetFlightFacilities(svc *AdminAirlineServiceStruct, path dom.Path, addDetai
 	cancellation, err := getCancellationDetails(svc, *flight)
 	baggage, err := getBaggageDetails(svc, *flight)
 	seatCheckD, _ := seatAvailabilityCheck(svc, path.Flights, addDetails)
+	fare := path.Flights[0].EconomyFare
+	if !addDetails.Economy {
+		fare = path.Flights[0].BusinessFare
+	}
 	//seatCheckR, ReturnSeats := seatAvailabilityCheck(svc, path.Flights, addDetails)
 	if !seatCheckD {
 		return false, dom.FlightFacilities{}
@@ -224,6 +240,7 @@ func GetFlightFacilities(svc *AdminAirlineServiceStruct, path dom.Path, addDetai
 		Cancellation: canc,
 		Baggage:      bag,
 		FlightPath:   path,
+		Fare:         fare,
 	}
 }
 

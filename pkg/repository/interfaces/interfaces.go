@@ -69,4 +69,17 @@ type AdminAirlineRepostory interface {
 
 	FindFlightByFlightNumber(string) (*dom.FlightFleets, error)
 	FindSeatsByChartID(uint) (*dom.BookedSeat, error)
+
+	FindBookedSeatsByChartID(uint) (*dom.BookedSeat, error)
+	UpdateEconomyBookedSeats([]byte, *dom.BookedSeat) error
+	UpdateBusinessBookedSeats([]byte, *dom.BookedSeat) error
+
+	UpdateBusinessSeatNo(int, *dom.BookedSeat) error
+	UpdateEconomySeatNo(int, *dom.BookedSeat) error
+
+	FindAllBookedSeats() ([]dom.BookedSeat, error)
+	FindFlightChartById(id int) (dom.FlightChart, error)
+	UpdateFlightChart(chart dom.FlightChart) error
+
+	UpdateBookedSeats(seat dom.BookedSeat, int2 int) error
 }

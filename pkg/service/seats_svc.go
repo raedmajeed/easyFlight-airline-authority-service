@@ -11,7 +11,6 @@ import (
 )
 
 // * METHODS TO EVERYTHING AIRLINE SEATS
-type Layout struct{ Rows [][]bool }
 
 func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest) (*dom.AirlineSeat, error) {
 	airline, err := svc.repo.FindAirlineByEmail(p.AirlineEmail)
