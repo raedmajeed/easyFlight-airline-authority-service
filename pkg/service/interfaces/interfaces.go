@@ -49,7 +49,7 @@ type AdminAirlineService interface {
 	AddFlightToChart(p *pb.FlightChartRequest) (*dom.FlightChartResponse, error)
 
 	SearchFlightInitial(kafka.Message)
-	SearchFlight(message kafka.Message) ([]dom.Path, []dom.Path, error)
+	SearchFlight(search dom.SearchDetails) ([]dom.Path, []dom.Path, error)
 	SearchSelectFlight(context.Context, kafka.Message)
 	//SearchSelectFlight(ctx context.Context, message kafka.Message)
 
