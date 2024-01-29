@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"log"
 
@@ -31,4 +32,61 @@ func (svc *AdminAirlineServiceStruct) CreateAirport(p *pb.Airport) (*dom.Airport
 		}
 	}
 	return airport, nil
+}
+
+func (svc *AdminAirlineServiceStruct) GetAirport(ctx context.Context, p *pb.AirportRequest) (*pb.AirportResponse, error) {
+	resp, err := svc.repo.FindAirportByAirportCode(p.AirportCode)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AirportResponse{
+		Airport: &pb.Airport{
+			AirportCode:  resp.AirportCode,
+			AirportName:  resp.AirportName,
+			City:         resp.City,
+			Country:      resp.Country,
+			Region:       resp.Region,
+			IcaoCode:     resp.ICAOCode,
+			IataFcsCode:  resp.IATAFCSCode,
+			Website:      resp.Website,
+			ContactEmail: resp.ContactEmail,
+			ContactPhone: resp.ContactPhone,
+		},
+	}, err
+}
+func (svc *AdminAirlineServiceStruct) GetAirports(ctx context.Context, p *pb.EmptyRequest) (*pb.AirportsResponse, error) {
+	resp, err := svc.repo.FindAllAirports()
+	if err != nil {
+		return nil, err
+	}
+	return ConvertToResponseAirport(resp), err
+}
+
+func (svc *AdminAirlineServiceStruct) DeleteAirport(ctx context.Context, p *pb.AirportRequest) error {
+	err := svc.repo.DeleteAirportByCode(p.AirportCode)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ConvertToResponseAirport(data []dom.Airport) *pb.AirportsResponse {
+	var result []*pb.Airport
+	for _, resp := range data {
+		result = append(result, &pb.Airport{
+			AirportCode:  resp.AirportCode,
+			AirportName:  resp.AirportName,
+			City:         resp.City,
+			Country:      resp.Country,
+			Region:       resp.Region,
+			IcaoCode:     resp.ICAOCode,
+			IataFcsCode:  resp.IATAFCSCode,
+			Website:      resp.Website,
+			ContactEmail: resp.ContactEmail,
+			ContactPhone: resp.ContactPhone,
+		})
+	}
+	return &pb.AirportsResponse{
+		Airports: result,
+	}
 }

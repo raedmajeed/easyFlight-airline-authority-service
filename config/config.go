@@ -20,10 +20,11 @@ type ConfigParams struct {
 	SECRETKEY        string `mapstructure:"SECRETKEY"`
 	BUSINESSSURGE    string `mapstructure:"BUSINESSSURGE"`
 	ADMINBOOKINGPORT string `mapstructure:"ADMINBOOKINGPORT"`
+	KAFKABROKER      string `mapstructure:"KAFKABROKER"`
 }
 
 var envs = []string{
-	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE", "ADMINBOOKINGPORT",
+	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE", "KAFKABROKER", "ADMINBOOKINGPORT",
 }
 
 func Configuration() (*ConfigParams, error, *redis.Client) {

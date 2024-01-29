@@ -186,3 +186,50 @@ func calculateAndSavePriceFlightChart(svc *AdminAirlineServiceStruct, scheduleID
 
 	return EconomyFare / 10, BusinessFare / 10, nil
 }
+
+func (svc *AdminAirlineServiceStruct) GetFlightChartForAirline(ctx context.Context, p *pb.FetchRequest) (*pb.FlightChartsResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.GetFlightChartForAirline(airline.ID)
+	if err != nil {
+		return nil, err
+	}
+	result := ConvertToResponseFlightChart(resp)
+	return result, err
+}
+
+func ConvertToResponseFlightChart(data []dom.FlightChart) *pb.FlightChartsResponse {
+	var result []*pb.FlightChartResponse
+	for _, resp := range data {
+		result = append(result, &pb.FlightChartResponse{
+			DepartureAirport: resp.DepartureAirport,
+			ArrivalAirport:   resp.ArrivalAirport,
+			FlightNumber:     resp.FlightNumber,
+			EconomyFare:      float32(resp.EconomyFare),
+			BusinessFare:     float32(resp.BusinessFare),
+		})
+	}
+	return &pb.FlightChartsResponse{
+		FlightChartResponse: result,
+	}
+}
+
+func (svc *AdminAirlineServiceStruct) GetFlightChart(ctx context.Context, p *pb.GetChartRequest) (*pb.FlightChartResponse, error) {
+	chart, err := svc.repo.FindFlightChart(p.DepAirport, p.ArrAirport)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.FlightChartResponse{
+		DepartureAirport: chart.DepartureAirport,
+		ArrivalAirport:   chart.ArrivalAirport,
+		FlightNumber:     chart.FlightNumber,
+		EconomyFare:      float32(chart.EconomyFare),
+		BusinessFare:     float32(chart.BusinessFare),
+	}, err
+}
+func (svc *AdminAirlineServiceStruct) GetFlightCharts(ctx context.Context, p *pb.EmptyRequest) (*pb.FlightChartsResponse, error) {
+	chart, err := svc.repo.FindAllFlightChart()
+	if err != nil {
+		return nil, err
+	}
+	return ConvertToResponseFlightChart(chart), err
+}

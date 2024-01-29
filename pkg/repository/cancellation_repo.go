@@ -38,3 +38,22 @@ func (repo *AdminAirlineRepositoryStruct) FindAirlineCancellationByid(id int32) 
 	}
 	return &cancellation, nil
 }
+
+func (repo *AdminAirlineRepositoryStruct) FetchAllAirlineCancellations(id uint) ([]dom.AirlineCancellation, error) {
+	var seats []dom.AirlineCancellation
+	if err := repo.DB.Where("airline_id = ?", id).Find(&seats).Error; err != nil {
+		return nil, err
+	}
+	return seats, nil
+}
+func (repo *AdminAirlineRepositoryStruct) FetchAirlineCancellation(id uint, sid string) (dom.AirlineCancellation, error) {
+	var seat dom.AirlineCancellation
+	if err := repo.DB.Where("airline_id = ? AND id = ?", id, sid).First(&seat).Error; err != nil {
+		return dom.AirlineCancellation{}, err
+	}
+	return seat, nil
+}
+func (repo *AdminAirlineRepositoryStruct) DeleteAirlineCancellation(id uint, sid string) error {
+	result := repo.DB.Where("airline_id = ?", id).Delete(&dom.AirlineCancellation{}, sid)
+	return result.Error
+}

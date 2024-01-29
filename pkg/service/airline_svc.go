@@ -93,3 +93,43 @@ func (svc *AdminAirlineServiceStruct) VerifyAirlineRequest(p *pb.OTPRequest) (*d
 	}
 	return airline, nil
 }
+
+func (svc *AdminAirlineServiceStruct) FetchAllAirlines(ctx context.Context, p *pb.EmptyRequest) (*pb.AirlinesResponse, error) {
+	resp, err := svc.repo.FindAllAirlines()
+	if err != nil {
+		return nil, err
+	}
+	return ConvertToResponseAirline(resp), nil
+}
+func (svc *AdminAirlineServiceStruct) AcceptedAirlines(ctx context.Context, p *pb.EmptyRequest) (*pb.AirlinesResponse, error) {
+	log.Println("reached here 2")
+	resp, err := svc.repo.FindAllAcceptedAirlines()
+	if err != nil {
+		return nil, err
+	}
+	return ConvertToResponseAirline(resp), nil
+}
+func (svc *AdminAirlineServiceStruct) RejectedAirlines(ctx context.Context, p *pb.EmptyRequest) (*pb.AirlinesResponse, error) {
+	resp, err := svc.repo.FindAllRejectedAirlines()
+	if err != nil {
+		return nil, err
+	}
+	return ConvertToResponseAirline(resp), nil
+}
+
+func ConvertToResponseAirline(data []dom.Airline) *pb.AirlinesResponse {
+	var result []*pb.AirlineRequest
+	for _, resp := range data {
+		result = append(result, &pb.AirlineRequest{
+			AirlineName:     resp.AirlineName,
+			AirlineCode:     resp.AirlineCode,
+			CompanyAddress:  resp.CompanyAddress,
+			Email:           resp.Email,
+			PhoneNumber:     resp.PhoneNumber,
+			AirlineLogoLink: resp.AirlineLogoLink,
+		})
+	}
+	return &pb.AirlinesResponse{
+		Airlines: result,
+	}
+}

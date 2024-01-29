@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"log"
 
@@ -33,4 +34,64 @@ func (svc *AdminAirlineServiceStruct) CreateAirlineBaggagePolicy(p *pb.AirlineBa
 		}
 	}
 	return airlineBaggagePolicy, nil
+}
+
+func (svc *AdminAirlineServiceStruct) FetchAllAirlineBaggages(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineBaggagesResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.FetchAllAirlineBaggages(airline.ID)
+	if err != nil {
+		return nil, err
+	}
+	result := ConvertToResponseBaggage(resp)
+	return result, err
+}
+func (svc *AdminAirlineServiceStruct) FetchAirlineBaggage(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineBaggageResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.FetchAirlineBaggage(airline.ID, p.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AirlineBaggageResponse{
+		AirlineBaggage: &pb.AirlineBaggageRequest{
+			CabinAllowedLength:  int32(resp.CabinAllowedLength),
+			CabinAllowedBreadth: int32(resp.CabinAllowedBreadth),
+			CabinAllowedWeight:  int32(resp.CabinAllowedWeight),
+			CabinAllowedHeight:  int32(resp.CabinAllowedHeight),
+			HandAllowedLength:   int32(resp.HandAllowedLength),
+			HandAllowedBreadth:  int32(resp.HandAllowedBreadth),
+			HandAllowedWeight:   int32(resp.HandAllowedWeight),
+			HandAllowedHeight:   int32(resp.HandAllowedHeight),
+			FeeForExtraKgHand:   int32(resp.FeeExtraPerKGHand),
+			FeeForExtraKgCabin:  int32(resp.FeeExtraPerKGCabin),
+		},
+	}, nil
+}
+func (svc *AdminAirlineServiceStruct) DeleteAirlineBaggage(ctx context.Context, p *pb.FetchRequest) error {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	err := svc.repo.DeleteAirlineBaggage(airline.ID, p.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ConvertToResponseBaggage(data []dom.AirlineBaggage) *pb.AirlineBaggagesResponse {
+	var result []*pb.AirlineBaggageRequest
+	for _, resp := range data {
+		result = append(result, &pb.AirlineBaggageRequest{
+			CabinAllowedLength:  int32(resp.CabinAllowedLength),
+			CabinAllowedBreadth: int32(resp.CabinAllowedBreadth),
+			CabinAllowedWeight:  int32(resp.CabinAllowedWeight),
+			CabinAllowedHeight:  int32(resp.CabinAllowedHeight),
+			HandAllowedLength:   int32(resp.HandAllowedLength),
+			HandAllowedBreadth:  int32(resp.HandAllowedBreadth),
+			HandAllowedWeight:   int32(resp.HandAllowedWeight),
+			HandAllowedHeight:   int32(resp.HandAllowedHeight),
+			FeeForExtraKgHand:   int32(resp.FeeExtraPerKGHand),
+			FeeForExtraKgCabin:  int32(resp.FeeExtraPerKGCabin),
+		})
+	}
+	return &pb.AirlineBaggagesResponse{
+		AirlineBaggages: result,
+	}
 }

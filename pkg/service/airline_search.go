@@ -132,6 +132,7 @@ func FindAllPaths(departureAirport, arrivalAirport string, flights []dom.FlightD
 		graph[flight.DepartureAirport] = append(graph[flight.DepartureAirport], flight)
 	}
 
+	//Checking whether there is any flight from departure airport
 	totalFlightsFromDep := graph[departureAirport]
 	if len(totalFlightsFromDep) <= 0 {
 		return [][]dom.FlightDetails{}

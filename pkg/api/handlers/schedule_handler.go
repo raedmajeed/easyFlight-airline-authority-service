@@ -25,3 +25,15 @@ func (handler *AdminAirlineHandler) RegisterScheduleRequest(ctx context.Context,
 	}
 	return utils.ConvertSchedulesToResponse(response), nil
 }
+
+func (handler *AdminAirlineHandler) GetSchedules(ctx context.Context, p *pb.EmptyRequest) (*pb.SchedulesResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	response, err := handler.svc.GetSchedules(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}

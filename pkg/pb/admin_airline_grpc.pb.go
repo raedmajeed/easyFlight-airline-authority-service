@@ -32,32 +32,34 @@ type AdminAirlineClient interface {
 	RegisterAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*OtpResponse, error)
 	FetchAllAirlines(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlinesResponse, error)
 	FetchAirline(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
-	UpdateAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	DeleteAirline(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	VerifyAirlineRegistration(ctx context.Context, in *OTPRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	AdminVerifyAirline(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineResponse, error)
 	// gRPC methods for all actions on Airline Seats
 	RegisterAirlineSeat(ctx context.Context, in *AirlineSeatRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
-	FetchAllAirlineSeats(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineSeatsResponse, error)
-	FetchAirlineSeat(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
-	UpdateAirlineSeat(ctx context.Context, in *AirlineSeatRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
-	DeleteAirlineSeat(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
+	FetchAllAirlineSeats(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineSeatsResponse, error)
+	FetchAirlineSeat(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
+	DeleteAirlineSeat(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error)
+	GetAcceptedAirlines(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlinesResponse, error)
+	GetRejectedAirlines(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlinesResponse, error)
 	// gRPC methods for all actions on Airline Baggage
 	RegisterAirlineBaggage(ctx context.Context, in *AirlineBaggageRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error)
-	FetchAllAirlineBaggages(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineBaggagesResponse, error)
-	FetchAirlineBaggage(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error)
-	UpdateAirlineBaggage(ctx context.Context, in *AirlineBaggageRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error)
-	DeleteAirlineBaggage(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error)
+	FetchAllAirlineBaggages(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineBaggagesResponse, error)
+	FetchAirlineBaggage(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error)
+	DeleteAirlineBaggage(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error)
 	// gRPC methods for all actions on Airline Cancellation
 	RegisterAirlineCancellation(ctx context.Context, in *AirlineCancellationRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
-	FetchAllAirlineCancellations(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineCancellationsResponse, error)
-	FetchAirlineCancellation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
-	UpdateAirlineCancellation(ctx context.Context, in *AirlineCancellationRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
-	DeleteAirlineCancellation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
+	FetchAllAirlineCancellations(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineCancellationsResponse, error)
+	FetchAirlineCancellation(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
+	DeleteAirlineCancellation(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error)
 	// gRPC methods for all actions on Airport
 	RegisterAirportRequest(ctx context.Context, in *Airport, opts ...grpc.CallOption) (*AirportResponse, error)
+	GetAirport(ctx context.Context, in *AirportRequest, opts ...grpc.CallOption) (*AirportResponse, error)
+	GetAirports(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirportsResponse, error)
+	DeleteAirport(ctx context.Context, in *AirportRequest, opts ...grpc.CallOption) (*AirportResponse, error)
 	// gRPC methods for all actions on Schedules
 	RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error)
+	GetSchedules(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*SchedulesResponse, error)
 	// gRPC methods for all auth actions
 	RegisterLoginRequest(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	RegisterForgotPasswordRequest(ctx context.Context, in *ForgotPasswordRequest, opts ...grpc.CallOption) (*OtpResponse, error)
@@ -65,8 +67,14 @@ type AdminAirlineClient interface {
 	RegisterConfirmPasswordRequest(ctx context.Context, in *ConfirmPasswordRequest, opts ...grpc.CallOption) (*EmailResponse, error)
 	// gRPC methods for all flight fleet
 	RegisterFlightFleets(ctx context.Context, in *FlightFleetRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error)
+	GetFlightFleets(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightFleetsResponse, error)
+	GetFlightFleet(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error)
+	DeleteFlightFleet(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error)
 	// gRPC methods for all flight chart
 	RegisterFlightChart(ctx context.Context, in *FlightChartRequest, opts ...grpc.CallOption) (*FlightChartResponse, error)
+	GetFlightChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*FlightChartResponse, error)
+	GetFlightCharts(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*FlightChartsResponse, error)
+	GetFlightChartForAirline(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightChartsResponse, error)
 }
 
 type adminAirlineClient struct {
@@ -149,15 +157,6 @@ func (c *adminAirlineClient) FetchAirline(ctx context.Context, in *IDRequest, op
 	return out, nil
 }
 
-func (c *adminAirlineClient) UpdateAirline(ctx context.Context, in *AirlineRequest, opts ...grpc.CallOption) (*AirlineResponse, error) {
-	out := new(AirlineResponse)
-	err := c.cc.Invoke(ctx, "/pb.AdminAirline/UpdateAirline", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *adminAirlineClient) DeleteAirline(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineResponse, error) {
 	out := new(AirlineResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteAirline", in, out, opts...)
@@ -194,7 +193,7 @@ func (c *adminAirlineClient) RegisterAirlineSeat(ctx context.Context, in *Airlin
 	return out, nil
 }
 
-func (c *adminAirlineClient) FetchAllAirlineSeats(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineSeatsResponse, error) {
+func (c *adminAirlineClient) FetchAllAirlineSeats(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineSeatsResponse, error) {
 	out := new(AirlineSeatsResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/FetchAllAirlineSeats", in, out, opts...)
 	if err != nil {
@@ -203,7 +202,7 @@ func (c *adminAirlineClient) FetchAllAirlineSeats(ctx context.Context, in *Empty
 	return out, nil
 }
 
-func (c *adminAirlineClient) FetchAirlineSeat(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error) {
+func (c *adminAirlineClient) FetchAirlineSeat(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error) {
 	out := new(AirlineSeatResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/FetchAirlineSeat", in, out, opts...)
 	if err != nil {
@@ -212,18 +211,27 @@ func (c *adminAirlineClient) FetchAirlineSeat(ctx context.Context, in *IDRequest
 	return out, nil
 }
 
-func (c *adminAirlineClient) UpdateAirlineSeat(ctx context.Context, in *AirlineSeatRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error) {
+func (c *adminAirlineClient) DeleteAirlineSeat(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error) {
 	out := new(AirlineSeatResponse)
-	err := c.cc.Invoke(ctx, "/pb.AdminAirline/UpdateAirlineSeat", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteAirlineSeat", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *adminAirlineClient) DeleteAirlineSeat(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineSeatResponse, error) {
-	out := new(AirlineSeatResponse)
-	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteAirlineSeat", in, out, opts...)
+func (c *adminAirlineClient) GetAcceptedAirlines(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlinesResponse, error) {
+	out := new(AirlinesResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetAcceptedAirlines", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetRejectedAirlines(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlinesResponse, error) {
+	out := new(AirlinesResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetRejectedAirlines", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -239,7 +247,7 @@ func (c *adminAirlineClient) RegisterAirlineBaggage(ctx context.Context, in *Air
 	return out, nil
 }
 
-func (c *adminAirlineClient) FetchAllAirlineBaggages(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineBaggagesResponse, error) {
+func (c *adminAirlineClient) FetchAllAirlineBaggages(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineBaggagesResponse, error) {
 	out := new(AirlineBaggagesResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/FetchAllAirlineBaggages", in, out, opts...)
 	if err != nil {
@@ -248,7 +256,7 @@ func (c *adminAirlineClient) FetchAllAirlineBaggages(ctx context.Context, in *Em
 	return out, nil
 }
 
-func (c *adminAirlineClient) FetchAirlineBaggage(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error) {
+func (c *adminAirlineClient) FetchAirlineBaggage(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error) {
 	out := new(AirlineBaggageResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/FetchAirlineBaggage", in, out, opts...)
 	if err != nil {
@@ -257,16 +265,7 @@ func (c *adminAirlineClient) FetchAirlineBaggage(ctx context.Context, in *IDRequ
 	return out, nil
 }
 
-func (c *adminAirlineClient) UpdateAirlineBaggage(ctx context.Context, in *AirlineBaggageRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error) {
-	out := new(AirlineBaggageResponse)
-	err := c.cc.Invoke(ctx, "/pb.AdminAirline/UpdateAirlineBaggage", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *adminAirlineClient) DeleteAirlineBaggage(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error) {
+func (c *adminAirlineClient) DeleteAirlineBaggage(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineBaggageResponse, error) {
 	out := new(AirlineBaggageResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteAirlineBaggage", in, out, opts...)
 	if err != nil {
@@ -284,7 +283,7 @@ func (c *adminAirlineClient) RegisterAirlineCancellation(ctx context.Context, in
 	return out, nil
 }
 
-func (c *adminAirlineClient) FetchAllAirlineCancellations(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirlineCancellationsResponse, error) {
+func (c *adminAirlineClient) FetchAllAirlineCancellations(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineCancellationsResponse, error) {
 	out := new(AirlineCancellationsResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/FetchAllAirlineCancellations", in, out, opts...)
 	if err != nil {
@@ -293,7 +292,7 @@ func (c *adminAirlineClient) FetchAllAirlineCancellations(ctx context.Context, i
 	return out, nil
 }
 
-func (c *adminAirlineClient) FetchAirlineCancellation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error) {
+func (c *adminAirlineClient) FetchAirlineCancellation(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error) {
 	out := new(AirlineCancellationResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/FetchAirlineCancellation", in, out, opts...)
 	if err != nil {
@@ -302,16 +301,7 @@ func (c *adminAirlineClient) FetchAirlineCancellation(ctx context.Context, in *I
 	return out, nil
 }
 
-func (c *adminAirlineClient) UpdateAirlineCancellation(ctx context.Context, in *AirlineCancellationRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error) {
-	out := new(AirlineCancellationResponse)
-	err := c.cc.Invoke(ctx, "/pb.AdminAirline/UpdateAirlineCancellation", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *adminAirlineClient) DeleteAirlineCancellation(ctx context.Context, in *IDRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error) {
+func (c *adminAirlineClient) DeleteAirlineCancellation(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*AirlineCancellationResponse, error) {
 	out := new(AirlineCancellationResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteAirlineCancellation", in, out, opts...)
 	if err != nil {
@@ -329,9 +319,45 @@ func (c *adminAirlineClient) RegisterAirportRequest(ctx context.Context, in *Air
 	return out, nil
 }
 
+func (c *adminAirlineClient) GetAirport(ctx context.Context, in *AirportRequest, opts ...grpc.CallOption) (*AirportResponse, error) {
+	out := new(AirportResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetAirport", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetAirports(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*AirportsResponse, error) {
+	out := new(AirportsResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetAirports", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) DeleteAirport(ctx context.Context, in *AirportRequest, opts ...grpc.CallOption) (*AirportResponse, error) {
+	out := new(AirportResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteAirport", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *adminAirlineClient) RegisterScheduleRequest(ctx context.Context, in *ScheduleRequest, opts ...grpc.CallOption) (*ScheduleResponse, error) {
 	out := new(ScheduleResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/RegisterScheduleRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetSchedules(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*SchedulesResponse, error) {
+	out := new(SchedulesResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetSchedules", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -383,9 +409,63 @@ func (c *adminAirlineClient) RegisterFlightFleets(ctx context.Context, in *Fligh
 	return out, nil
 }
 
+func (c *adminAirlineClient) GetFlightFleets(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightFleetsResponse, error) {
+	out := new(FlightFleetsResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetFlightFleets", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetFlightFleet(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error) {
+	out := new(FlightFleetResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetFlightFleet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) DeleteFlightFleet(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightFleetResponse, error) {
+	out := new(FlightFleetResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/DeleteFlightFleet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *adminAirlineClient) RegisterFlightChart(ctx context.Context, in *FlightChartRequest, opts ...grpc.CallOption) (*FlightChartResponse, error) {
 	out := new(FlightChartResponse)
 	err := c.cc.Invoke(ctx, "/pb.AdminAirline/RegisterFlightChart", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetFlightChart(ctx context.Context, in *GetChartRequest, opts ...grpc.CallOption) (*FlightChartResponse, error) {
+	out := new(FlightChartResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetFlightChart", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetFlightCharts(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*FlightChartsResponse, error) {
+	out := new(FlightChartsResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetFlightCharts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminAirlineClient) GetFlightChartForAirline(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*FlightChartsResponse, error) {
+	out := new(FlightChartsResponse)
+	err := c.cc.Invoke(ctx, "/pb.AdminAirline/GetFlightChartForAirline", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -406,32 +486,34 @@ type AdminAirlineServer interface {
 	RegisterAirline(context.Context, *AirlineRequest) (*OtpResponse, error)
 	FetchAllAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error)
 	FetchAirline(context.Context, *IDRequest) (*AirlineResponse, error)
-	UpdateAirline(context.Context, *AirlineRequest) (*AirlineResponse, error)
 	DeleteAirline(context.Context, *IDRequest) (*AirlineResponse, error)
 	VerifyAirlineRegistration(context.Context, *OTPRequest) (*AirlineResponse, error)
 	AdminVerifyAirline(context.Context, *EmptyRequest) (*AirlineResponse, error)
 	// gRPC methods for all actions on Airline Seats
 	RegisterAirlineSeat(context.Context, *AirlineSeatRequest) (*AirlineSeatResponse, error)
-	FetchAllAirlineSeats(context.Context, *EmptyRequest) (*AirlineSeatsResponse, error)
-	FetchAirlineSeat(context.Context, *IDRequest) (*AirlineSeatResponse, error)
-	UpdateAirlineSeat(context.Context, *AirlineSeatRequest) (*AirlineSeatResponse, error)
-	DeleteAirlineSeat(context.Context, *IDRequest) (*AirlineSeatResponse, error)
+	FetchAllAirlineSeats(context.Context, *FetchRequest) (*AirlineSeatsResponse, error)
+	FetchAirlineSeat(context.Context, *FetchRequest) (*AirlineSeatResponse, error)
+	DeleteAirlineSeat(context.Context, *FetchRequest) (*AirlineSeatResponse, error)
+	GetAcceptedAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error)
+	GetRejectedAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error)
 	// gRPC methods for all actions on Airline Baggage
 	RegisterAirlineBaggage(context.Context, *AirlineBaggageRequest) (*AirlineBaggageResponse, error)
-	FetchAllAirlineBaggages(context.Context, *EmptyRequest) (*AirlineBaggagesResponse, error)
-	FetchAirlineBaggage(context.Context, *IDRequest) (*AirlineBaggageResponse, error)
-	UpdateAirlineBaggage(context.Context, *AirlineBaggageRequest) (*AirlineBaggageResponse, error)
-	DeleteAirlineBaggage(context.Context, *IDRequest) (*AirlineBaggageResponse, error)
+	FetchAllAirlineBaggages(context.Context, *FetchRequest) (*AirlineBaggagesResponse, error)
+	FetchAirlineBaggage(context.Context, *FetchRequest) (*AirlineBaggageResponse, error)
+	DeleteAirlineBaggage(context.Context, *FetchRequest) (*AirlineBaggageResponse, error)
 	// gRPC methods for all actions on Airline Cancellation
 	RegisterAirlineCancellation(context.Context, *AirlineCancellationRequest) (*AirlineCancellationResponse, error)
-	FetchAllAirlineCancellations(context.Context, *EmptyRequest) (*AirlineCancellationsResponse, error)
-	FetchAirlineCancellation(context.Context, *IDRequest) (*AirlineCancellationResponse, error)
-	UpdateAirlineCancellation(context.Context, *AirlineCancellationRequest) (*AirlineCancellationResponse, error)
-	DeleteAirlineCancellation(context.Context, *IDRequest) (*AirlineCancellationResponse, error)
+	FetchAllAirlineCancellations(context.Context, *FetchRequest) (*AirlineCancellationsResponse, error)
+	FetchAirlineCancellation(context.Context, *FetchRequest) (*AirlineCancellationResponse, error)
+	DeleteAirlineCancellation(context.Context, *FetchRequest) (*AirlineCancellationResponse, error)
 	// gRPC methods for all actions on Airport
 	RegisterAirportRequest(context.Context, *Airport) (*AirportResponse, error)
+	GetAirport(context.Context, *AirportRequest) (*AirportResponse, error)
+	GetAirports(context.Context, *EmptyRequest) (*AirportsResponse, error)
+	DeleteAirport(context.Context, *AirportRequest) (*AirportResponse, error)
 	// gRPC methods for all actions on Schedules
 	RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error)
+	GetSchedules(context.Context, *EmptyRequest) (*SchedulesResponse, error)
 	// gRPC methods for all auth actions
 	RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error)
 	RegisterForgotPasswordRequest(context.Context, *ForgotPasswordRequest) (*OtpResponse, error)
@@ -439,8 +521,14 @@ type AdminAirlineServer interface {
 	RegisterConfirmPasswordRequest(context.Context, *ConfirmPasswordRequest) (*EmailResponse, error)
 	// gRPC methods for all flight fleet
 	RegisterFlightFleets(context.Context, *FlightFleetRequest) (*FlightFleetResponse, error)
+	GetFlightFleets(context.Context, *FetchRequest) (*FlightFleetsResponse, error)
+	GetFlightFleet(context.Context, *FetchRequest) (*FlightFleetResponse, error)
+	DeleteFlightFleet(context.Context, *FetchRequest) (*FlightFleetResponse, error)
 	// gRPC methods for all flight chart
 	RegisterFlightChart(context.Context, *FlightChartRequest) (*FlightChartResponse, error)
+	GetFlightChart(context.Context, *GetChartRequest) (*FlightChartResponse, error)
+	GetFlightCharts(context.Context, *EmptyRequest) (*FlightChartsResponse, error)
+	GetFlightChartForAirline(context.Context, *FetchRequest) (*FlightChartsResponse, error)
 	mustEmbedUnimplementedAdminAirlineServer()
 }
 
@@ -472,9 +560,6 @@ func (UnimplementedAdminAirlineServer) FetchAllAirlines(context.Context, *EmptyR
 func (UnimplementedAdminAirlineServer) FetchAirline(context.Context, *IDRequest) (*AirlineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAirline not implemented")
 }
-func (UnimplementedAdminAirlineServer) UpdateAirline(context.Context, *AirlineRequest) (*AirlineResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirline not implemented")
-}
 func (UnimplementedAdminAirlineServer) DeleteAirline(context.Context, *IDRequest) (*AirlineResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAirline not implemented")
 }
@@ -487,53 +572,62 @@ func (UnimplementedAdminAirlineServer) AdminVerifyAirline(context.Context, *Empt
 func (UnimplementedAdminAirlineServer) RegisterAirlineSeat(context.Context, *AirlineSeatRequest) (*AirlineSeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirlineSeat not implemented")
 }
-func (UnimplementedAdminAirlineServer) FetchAllAirlineSeats(context.Context, *EmptyRequest) (*AirlineSeatsResponse, error) {
+func (UnimplementedAdminAirlineServer) FetchAllAirlineSeats(context.Context, *FetchRequest) (*AirlineSeatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAllAirlineSeats not implemented")
 }
-func (UnimplementedAdminAirlineServer) FetchAirlineSeat(context.Context, *IDRequest) (*AirlineSeatResponse, error) {
+func (UnimplementedAdminAirlineServer) FetchAirlineSeat(context.Context, *FetchRequest) (*AirlineSeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAirlineSeat not implemented")
 }
-func (UnimplementedAdminAirlineServer) UpdateAirlineSeat(context.Context, *AirlineSeatRequest) (*AirlineSeatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirlineSeat not implemented")
-}
-func (UnimplementedAdminAirlineServer) DeleteAirlineSeat(context.Context, *IDRequest) (*AirlineSeatResponse, error) {
+func (UnimplementedAdminAirlineServer) DeleteAirlineSeat(context.Context, *FetchRequest) (*AirlineSeatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAirlineSeat not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetAcceptedAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAcceptedAirlines not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetRejectedAirlines(context.Context, *EmptyRequest) (*AirlinesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRejectedAirlines not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterAirlineBaggage(context.Context, *AirlineBaggageRequest) (*AirlineBaggageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirlineBaggage not implemented")
 }
-func (UnimplementedAdminAirlineServer) FetchAllAirlineBaggages(context.Context, *EmptyRequest) (*AirlineBaggagesResponse, error) {
+func (UnimplementedAdminAirlineServer) FetchAllAirlineBaggages(context.Context, *FetchRequest) (*AirlineBaggagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAllAirlineBaggages not implemented")
 }
-func (UnimplementedAdminAirlineServer) FetchAirlineBaggage(context.Context, *IDRequest) (*AirlineBaggageResponse, error) {
+func (UnimplementedAdminAirlineServer) FetchAirlineBaggage(context.Context, *FetchRequest) (*AirlineBaggageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAirlineBaggage not implemented")
 }
-func (UnimplementedAdminAirlineServer) UpdateAirlineBaggage(context.Context, *AirlineBaggageRequest) (*AirlineBaggageResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirlineBaggage not implemented")
-}
-func (UnimplementedAdminAirlineServer) DeleteAirlineBaggage(context.Context, *IDRequest) (*AirlineBaggageResponse, error) {
+func (UnimplementedAdminAirlineServer) DeleteAirlineBaggage(context.Context, *FetchRequest) (*AirlineBaggageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAirlineBaggage not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterAirlineCancellation(context.Context, *AirlineCancellationRequest) (*AirlineCancellationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirlineCancellation not implemented")
 }
-func (UnimplementedAdminAirlineServer) FetchAllAirlineCancellations(context.Context, *EmptyRequest) (*AirlineCancellationsResponse, error) {
+func (UnimplementedAdminAirlineServer) FetchAllAirlineCancellations(context.Context, *FetchRequest) (*AirlineCancellationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAllAirlineCancellations not implemented")
 }
-func (UnimplementedAdminAirlineServer) FetchAirlineCancellation(context.Context, *IDRequest) (*AirlineCancellationResponse, error) {
+func (UnimplementedAdminAirlineServer) FetchAirlineCancellation(context.Context, *FetchRequest) (*AirlineCancellationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchAirlineCancellation not implemented")
 }
-func (UnimplementedAdminAirlineServer) UpdateAirlineCancellation(context.Context, *AirlineCancellationRequest) (*AirlineCancellationResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateAirlineCancellation not implemented")
-}
-func (UnimplementedAdminAirlineServer) DeleteAirlineCancellation(context.Context, *IDRequest) (*AirlineCancellationResponse, error) {
+func (UnimplementedAdminAirlineServer) DeleteAirlineCancellation(context.Context, *FetchRequest) (*AirlineCancellationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteAirlineCancellation not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterAirportRequest(context.Context, *Airport) (*AirportResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterAirportRequest not implemented")
 }
+func (UnimplementedAdminAirlineServer) GetAirport(context.Context, *AirportRequest) (*AirportResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAirport not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetAirports(context.Context, *EmptyRequest) (*AirportsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAirports not implemented")
+}
+func (UnimplementedAdminAirlineServer) DeleteAirport(context.Context, *AirportRequest) (*AirportResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAirport not implemented")
+}
 func (UnimplementedAdminAirlineServer) RegisterScheduleRequest(context.Context, *ScheduleRequest) (*ScheduleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterScheduleRequest not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetSchedules(context.Context, *EmptyRequest) (*SchedulesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSchedules not implemented")
 }
 func (UnimplementedAdminAirlineServer) RegisterLoginRequest(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterLoginRequest not implemented")
@@ -550,8 +644,26 @@ func (UnimplementedAdminAirlineServer) RegisterConfirmPasswordRequest(context.Co
 func (UnimplementedAdminAirlineServer) RegisterFlightFleets(context.Context, *FlightFleetRequest) (*FlightFleetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterFlightFleets not implemented")
 }
+func (UnimplementedAdminAirlineServer) GetFlightFleets(context.Context, *FetchRequest) (*FlightFleetsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFlightFleets not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetFlightFleet(context.Context, *FetchRequest) (*FlightFleetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFlightFleet not implemented")
+}
+func (UnimplementedAdminAirlineServer) DeleteFlightFleet(context.Context, *FetchRequest) (*FlightFleetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteFlightFleet not implemented")
+}
 func (UnimplementedAdminAirlineServer) RegisterFlightChart(context.Context, *FlightChartRequest) (*FlightChartResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterFlightChart not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetFlightChart(context.Context, *GetChartRequest) (*FlightChartResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFlightChart not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetFlightCharts(context.Context, *EmptyRequest) (*FlightChartsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFlightCharts not implemented")
+}
+func (UnimplementedAdminAirlineServer) GetFlightChartForAirline(context.Context, *FetchRequest) (*FlightChartsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetFlightChartForAirline not implemented")
 }
 func (UnimplementedAdminAirlineServer) mustEmbedUnimplementedAdminAirlineServer() {}
 
@@ -710,24 +822,6 @@ func _AdminAirline_FetchAirline_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AdminAirline_UpdateAirline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AirlineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AdminAirlineServer).UpdateAirline(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.AdminAirline/UpdateAirline",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).UpdateAirline(ctx, req.(*AirlineRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AdminAirline_DeleteAirline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(IDRequest)
 	if err := dec(in); err != nil {
@@ -801,7 +895,7 @@ func _AdminAirline_RegisterAirlineSeat_Handler(srv interface{}, ctx context.Cont
 }
 
 func _AdminAirline_FetchAllAirlineSeats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -813,13 +907,13 @@ func _AdminAirline_FetchAllAirlineSeats_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/pb.AdminAirline/FetchAllAirlineSeats",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).FetchAllAirlineSeats(ctx, req.(*EmptyRequest))
+		return srv.(AdminAirlineServer).FetchAllAirlineSeats(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminAirline_FetchAirlineSeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -831,31 +925,13 @@ func _AdminAirline_FetchAirlineSeat_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/pb.AdminAirline/FetchAirlineSeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).FetchAirlineSeat(ctx, req.(*IDRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AdminAirline_UpdateAirlineSeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AirlineSeatRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AdminAirlineServer).UpdateAirlineSeat(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.AdminAirline/UpdateAirlineSeat",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).UpdateAirlineSeat(ctx, req.(*AirlineSeatRequest))
+		return srv.(AdminAirlineServer).FetchAirlineSeat(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminAirline_DeleteAirlineSeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -867,7 +943,43 @@ func _AdminAirline_DeleteAirlineSeat_Handler(srv interface{}, ctx context.Contex
 		FullMethod: "/pb.AdminAirline/DeleteAirlineSeat",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).DeleteAirlineSeat(ctx, req.(*IDRequest))
+		return srv.(AdminAirlineServer).DeleteAirlineSeat(ctx, req.(*FetchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetAcceptedAirlines_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetAcceptedAirlines(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetAcceptedAirlines",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetAcceptedAirlines(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetRejectedAirlines_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetRejectedAirlines(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetRejectedAirlines",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetRejectedAirlines(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -891,7 +1003,7 @@ func _AdminAirline_RegisterAirlineBaggage_Handler(srv interface{}, ctx context.C
 }
 
 func _AdminAirline_FetchAllAirlineBaggages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -903,13 +1015,13 @@ func _AdminAirline_FetchAllAirlineBaggages_Handler(srv interface{}, ctx context.
 		FullMethod: "/pb.AdminAirline/FetchAllAirlineBaggages",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).FetchAllAirlineBaggages(ctx, req.(*EmptyRequest))
+		return srv.(AdminAirlineServer).FetchAllAirlineBaggages(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminAirline_FetchAirlineBaggage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -921,31 +1033,13 @@ func _AdminAirline_FetchAirlineBaggage_Handler(srv interface{}, ctx context.Cont
 		FullMethod: "/pb.AdminAirline/FetchAirlineBaggage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).FetchAirlineBaggage(ctx, req.(*IDRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AdminAirline_UpdateAirlineBaggage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AirlineBaggageRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AdminAirlineServer).UpdateAirlineBaggage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.AdminAirline/UpdateAirlineBaggage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).UpdateAirlineBaggage(ctx, req.(*AirlineBaggageRequest))
+		return srv.(AdminAirlineServer).FetchAirlineBaggage(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminAirline_DeleteAirlineBaggage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -957,7 +1051,7 @@ func _AdminAirline_DeleteAirlineBaggage_Handler(srv interface{}, ctx context.Con
 		FullMethod: "/pb.AdminAirline/DeleteAirlineBaggage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).DeleteAirlineBaggage(ctx, req.(*IDRequest))
+		return srv.(AdminAirlineServer).DeleteAirlineBaggage(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -981,7 +1075,7 @@ func _AdminAirline_RegisterAirlineCancellation_Handler(srv interface{}, ctx cont
 }
 
 func _AdminAirline_FetchAllAirlineCancellations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EmptyRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -993,13 +1087,13 @@ func _AdminAirline_FetchAllAirlineCancellations_Handler(srv interface{}, ctx con
 		FullMethod: "/pb.AdminAirline/FetchAllAirlineCancellations",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).FetchAllAirlineCancellations(ctx, req.(*EmptyRequest))
+		return srv.(AdminAirlineServer).FetchAllAirlineCancellations(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminAirline_FetchAirlineCancellation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1011,31 +1105,13 @@ func _AdminAirline_FetchAirlineCancellation_Handler(srv interface{}, ctx context
 		FullMethod: "/pb.AdminAirline/FetchAirlineCancellation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).FetchAirlineCancellation(ctx, req.(*IDRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AdminAirline_UpdateAirlineCancellation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AirlineCancellationRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AdminAirlineServer).UpdateAirlineCancellation(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/pb.AdminAirline/UpdateAirlineCancellation",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).UpdateAirlineCancellation(ctx, req.(*AirlineCancellationRequest))
+		return srv.(AdminAirlineServer).FetchAirlineCancellation(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _AdminAirline_DeleteAirlineCancellation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IDRequest)
+	in := new(FetchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1047,7 +1123,7 @@ func _AdminAirline_DeleteAirlineCancellation_Handler(srv interface{}, ctx contex
 		FullMethod: "/pb.AdminAirline/DeleteAirlineCancellation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AdminAirlineServer).DeleteAirlineCancellation(ctx, req.(*IDRequest))
+		return srv.(AdminAirlineServer).DeleteAirlineCancellation(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1070,6 +1146,60 @@ func _AdminAirline_RegisterAirportRequest_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminAirline_GetAirport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AirportRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetAirport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetAirport",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetAirport(ctx, req.(*AirportRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetAirports_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetAirports(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetAirports",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetAirports(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_DeleteAirport_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AirportRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).DeleteAirport(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/DeleteAirport",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).DeleteAirport(ctx, req.(*AirportRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AdminAirline_RegisterScheduleRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ScheduleRequest)
 	if err := dec(in); err != nil {
@@ -1084,6 +1214,24 @@ func _AdminAirline_RegisterScheduleRequest_Handler(srv interface{}, ctx context.
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminAirlineServer).RegisterScheduleRequest(ctx, req.(*ScheduleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetSchedules_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetSchedules(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetSchedules",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetSchedules(ctx, req.(*EmptyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1178,6 +1326,60 @@ func _AdminAirline_RegisterFlightFleets_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminAirline_GetFlightFleets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetFlightFleets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetFlightFleets",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetFlightFleets(ctx, req.(*FetchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetFlightFleet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetFlightFleet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetFlightFleet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetFlightFleet(ctx, req.(*FetchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_DeleteFlightFleet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).DeleteFlightFleet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/DeleteFlightFleet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).DeleteFlightFleet(ctx, req.(*FetchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AdminAirline_RegisterFlightChart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FlightChartRequest)
 	if err := dec(in); err != nil {
@@ -1192,6 +1394,60 @@ func _AdminAirline_RegisterFlightChart_Handler(srv interface{}, ctx context.Cont
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AdminAirlineServer).RegisterFlightChart(ctx, req.(*FlightChartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetFlightChart_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChartRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetFlightChart(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetFlightChart",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetFlightChart(ctx, req.(*GetChartRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetFlightCharts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetFlightCharts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetFlightCharts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetFlightCharts(ctx, req.(*EmptyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AdminAirline_GetFlightChartForAirline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminAirlineServer).GetFlightChartForAirline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.AdminAirline/GetFlightChartForAirline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminAirlineServer).GetFlightChartForAirline(ctx, req.(*FetchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1236,10 +1492,6 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminAirline_FetchAirline_Handler,
 		},
 		{
-			MethodName: "UpdateAirline",
-			Handler:    _AdminAirline_UpdateAirline_Handler,
-		},
-		{
 			MethodName: "DeleteAirline",
 			Handler:    _AdminAirline_DeleteAirline_Handler,
 		},
@@ -1264,12 +1516,16 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminAirline_FetchAirlineSeat_Handler,
 		},
 		{
-			MethodName: "UpdateAirlineSeat",
-			Handler:    _AdminAirline_UpdateAirlineSeat_Handler,
-		},
-		{
 			MethodName: "DeleteAirlineSeat",
 			Handler:    _AdminAirline_DeleteAirlineSeat_Handler,
+		},
+		{
+			MethodName: "GetAcceptedAirlines",
+			Handler:    _AdminAirline_GetAcceptedAirlines_Handler,
+		},
+		{
+			MethodName: "GetRejectedAirlines",
+			Handler:    _AdminAirline_GetRejectedAirlines_Handler,
 		},
 		{
 			MethodName: "RegisterAirlineBaggage",
@@ -1282,10 +1538,6 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FetchAirlineBaggage",
 			Handler:    _AdminAirline_FetchAirlineBaggage_Handler,
-		},
-		{
-			MethodName: "UpdateAirlineBaggage",
-			Handler:    _AdminAirline_UpdateAirlineBaggage_Handler,
 		},
 		{
 			MethodName: "DeleteAirlineBaggage",
@@ -1304,10 +1556,6 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminAirline_FetchAirlineCancellation_Handler,
 		},
 		{
-			MethodName: "UpdateAirlineCancellation",
-			Handler:    _AdminAirline_UpdateAirlineCancellation_Handler,
-		},
-		{
 			MethodName: "DeleteAirlineCancellation",
 			Handler:    _AdminAirline_DeleteAirlineCancellation_Handler,
 		},
@@ -1316,8 +1564,24 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminAirline_RegisterAirportRequest_Handler,
 		},
 		{
+			MethodName: "GetAirport",
+			Handler:    _AdminAirline_GetAirport_Handler,
+		},
+		{
+			MethodName: "GetAirports",
+			Handler:    _AdminAirline_GetAirports_Handler,
+		},
+		{
+			MethodName: "DeleteAirport",
+			Handler:    _AdminAirline_DeleteAirport_Handler,
+		},
+		{
 			MethodName: "RegisterScheduleRequest",
 			Handler:    _AdminAirline_RegisterScheduleRequest_Handler,
+		},
+		{
+			MethodName: "GetSchedules",
+			Handler:    _AdminAirline_GetSchedules_Handler,
 		},
 		{
 			MethodName: "RegisterLoginRequest",
@@ -1340,8 +1604,32 @@ var AdminAirline_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AdminAirline_RegisterFlightFleets_Handler,
 		},
 		{
+			MethodName: "GetFlightFleets",
+			Handler:    _AdminAirline_GetFlightFleets_Handler,
+		},
+		{
+			MethodName: "GetFlightFleet",
+			Handler:    _AdminAirline_GetFlightFleet_Handler,
+		},
+		{
+			MethodName: "DeleteFlightFleet",
+			Handler:    _AdminAirline_DeleteFlightFleet_Handler,
+		},
+		{
 			MethodName: "RegisterFlightChart",
 			Handler:    _AdminAirline_RegisterFlightChart_Handler,
+		},
+		{
+			MethodName: "GetFlightChart",
+			Handler:    _AdminAirline_GetFlightChart_Handler,
+		},
+		{
+			MethodName: "GetFlightCharts",
+			Handler:    _AdminAirline_GetFlightCharts_Handler,
+		},
+		{
+			MethodName: "GetFlightChartForAirline",
+			Handler:    _AdminAirline_GetFlightChartForAirline_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -82,4 +82,31 @@ type AdminAirlineRepostory interface {
 	UpdateFlightChart(chart dom.FlightChart) error
 
 	UpdateBookedSeats(seat dom.BookedSeat, int2 int) error
+
+	FindAllAirlines() ([]dom.Airline, error)
+	FindAllAcceptedAirlines() ([]dom.Airline, error)
+	FindAllRejectedAirlines() ([]dom.Airline, error)
+
+	FindAllAirports() ([]dom.Airport, error)
+	DeleteAirportByCode(string2 string) error
+
+	FindFlightChart(string2 string, string3 string) (dom.FlightChart, error)
+	FindAllFlightChart() ([]dom.FlightChart, error)
+
+	FetchAllAirlineSeats(string2 uint) ([]dom.AirlineSeat, error)
+	FetchAirlineSeat(string2 uint, string3 string) (dom.AirlineSeat, error)
+	DeleteAirlineSeat(string2 uint, string3 string) error
+
+	FetchAllAirlineBaggages(string2 uint) ([]dom.AirlineBaggage, error)
+	FetchAirlineBaggage(string2 uint, string3 string) (dom.AirlineBaggage, error)
+	DeleteAirlineBaggage(string2 uint, string3 string) error
+
+	FetchAllAirlineCancellations(string2 uint) ([]dom.AirlineCancellation, error)
+	FetchAirlineCancellation(string2 uint, string3 string) (dom.AirlineCancellation, error)
+	DeleteAirlineCancellation(string2 uint, string3 string) error
+
+	GetFlightFleets(string2 uint) ([]dom.FlightFleets, error)
+	GetFlightFleet(string2 uint, string3 string) (dom.FlightFleets, error)
+	DeleteFlightFleet(string2 uint, string3 string) error
+	GetFlightChartForAirline(string2 uint) ([]dom.FlightChart, error)
 }

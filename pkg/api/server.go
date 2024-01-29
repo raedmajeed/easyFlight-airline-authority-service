@@ -1,21 +1,19 @@
 package pkg
 
 import (
-	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/raedmajeed/admin-servcie/config"
 	"github.com/raedmajeed/admin-servcie/pkg/api/bookingHandlers"
+	"github.com/raedmajeed/admin-servcie/pkg/api/handlers"
+	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
+	"google.golang.org/grpc"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/gin-gonic/gin"
-	"github.com/raedmajeed/admin-servcie/config"
-	"github.com/raedmajeed/admin-servcie/pkg/api/handlers"
-	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
-	"google.golang.org/grpc"
 )
 
 type Server struct {
@@ -23,30 +21,18 @@ type Server struct {
 	cfg *config.ConfigParams
 }
 
-func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, svc interfaces.AdminAirlineService, bHandler *bookingHandlers.BookingHandler) {
-	newContext, cancel := context.WithCancel(context.Background())
-	defer cancel()
+func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler,
+	svc interfaces.AdminAirlineService, bHandler *bookingHandlers.BookingHandler) {
+	//newContext, cancel := context.WithTimeout(context.Background(), time.Second*1500)
+	//defer cancel()
 
-	signalChan := make(chan os.Signal, 1)
-	kf := config.NewKafkaReaderConnect(svc)
+	signalChan := make(chan os.Signal, 2)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	//go config.KafkaReaders(newContext, svc, signalChan)
 
-	log.Println("listening on SEARCH-FLIGHT-REQUEST topic")
-	go kf.SearchFlightRead(newContext)
-	log.Println("listening on SELECT-FLIGHT-REQUEST topic")
-	go kf.SearchSelectFlightRead(newContext)
 	go NewBookingGrpcServer(cfg, bHandler)
 	go NewGrpcServer(cfg, handler)
-
-	signal.Notify(signalChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
-	sign := <-signalChan
-	fmt.Println("program stopped", sign)
-
-	if err := kf.SearchReader.Close(); err != nil {
-		log.Println("error closing search reader")
-	}
-	if err := kf.SearchSelectReader.Close(); err != nil {
-		log.Println("error closing search select reader")
-	}
+	<-signalChan
 }
 
 func NewGrpcServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler) {

@@ -14,7 +14,7 @@ import (
 func InitApi(cfg *config.ConfigParams, redis *redis.Client) {
 
 	DB, _ := db.NewDBConnect(cfg)
-	kfWrite := config.NewKafkaWriterConnect()
+	kfWrite := config.NewKafkaWriterConnect(cfg)
 	repo := repository.NewAdminAirlineRepository(DB)
 	svc := service.NewAdminAirlineService(repo, redis, cfg, *kfWrite)
 	hdl := handlers.NewAdminAirlineHandler(svc)

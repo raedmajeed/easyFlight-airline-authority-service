@@ -37,8 +37,26 @@ func (repo *AdminAirlineRepositoryStruct) FindAirlineSeatByid(id int32) (*dom.Ai
 	var seats dom.AirlineSeat
 	result := repo.DB.Where("id = ?", id).First(&seats)
 	if result.Error != nil {
-		log.Println("Unable to fetch the flight types")
 		return nil, result.Error
 	}
 	return &seats, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) FetchAllAirlineSeats(id uint) ([]dom.AirlineSeat, error) {
+	var seats []dom.AirlineSeat
+	if err := repo.DB.Where("airline_id = ?", id).Find(&seats).Error; err != nil {
+		return nil, err
+	}
+	return seats, nil
+}
+func (repo *AdminAirlineRepositoryStruct) FetchAirlineSeat(id uint, sid string) (dom.AirlineSeat, error) {
+	var seat dom.AirlineSeat
+	if err := repo.DB.Where("airline_id = ? AND id = ?", id, sid).First(&seat).Error; err != nil {
+		return dom.AirlineSeat{}, err
+	}
+	return seat, nil
+}
+func (repo *AdminAirlineRepositoryStruct) DeleteAirlineSeat(id uint, sid string) error {
+	result := repo.DB.Where("airline_id = ?", id).Delete(&dom.AirlineSeat{}, sid)
+	return result.Error
 }

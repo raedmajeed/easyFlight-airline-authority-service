@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"log"
 
@@ -74,5 +75,51 @@ func findUniqueNo(svc *AdminAirlineServiceStruct) int {
 		return 1
 	} else {
 		return flightNo + 1
+	}
+}
+
+func (svc *AdminAirlineServiceStruct) GetFlightFleets(ctx context.Context, p *pb.FetchRequest) (*pb.FlightFleetsResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.GetFlightFleets(airline.ID)
+	if err != nil {
+		return nil, err
+	}
+	result := ConvertToResponseFleet(resp)
+	return result, err
+}
+func (svc *AdminAirlineServiceStruct) GetFlightFleet(ctx context.Context, p *pb.FetchRequest) (*pb.FlightFleetResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.GetFlightFleet(airline.ID, p.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.FlightFleetResponse{
+		FlightNumber:         resp.FlightNumber,
+		AirlineName:          resp.Airline.AirlineName,
+		EconomySeatNumber:    int32(resp.Seat.EconomySeatNumber),
+		BusisinessSeatNumber: int32(resp.Seat.BusinessSeatNumber),
+	}, err
+}
+func (svc *AdminAirlineServiceStruct) DeleteFlightFleet(ctx context.Context, p *pb.FetchRequest) error {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	err := svc.repo.DeleteFlightFleet(airline.ID, p.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ConvertToResponseFleet(data []dom.FlightFleets) *pb.FlightFleetsResponse {
+	var result []*pb.FlightFleetResponse
+	for _, resp := range data {
+		result = append(result, &pb.FlightFleetResponse{
+			FlightNumber:         resp.FlightNumber,
+			AirlineName:          resp.Airline.AirlineName,
+			EconomySeatNumber:    int32(resp.Seat.EconomySeatNumber),
+			BusisinessSeatNumber: int32(resp.Seat.BusinessSeatNumber),
+		})
+	}
+	return &pb.FlightFleetsResponse{
+		FlightFleets: result,
 	}
 }

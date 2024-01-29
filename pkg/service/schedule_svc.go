@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -67,4 +68,26 @@ func convertScheduleTimeToGo(date, dtime string) (time.Time, error) {
 	dateTimeStringDep := date + " " + dtime
 	tt, _ := time.Parse(format, dateTimeStringDep)
 	return tt, nil
+}
+
+func (svc *AdminAirlineServiceStruct) GetSchedules(ctx context.Context, p *pb.EmptyRequest) (*pb.SchedulesResponse, error) {
+	resp := svc.repo.FindAllSchedules()
+	return ConvertToResponseSchedules(resp), nil
+}
+
+func ConvertToResponseSchedules(data []*dom.Schedule) *pb.SchedulesResponse {
+	var result []*pb.ScheduleRequest
+	for _, resp := range data {
+		result = append(result, &pb.ScheduleRequest{
+			DepartureAirport: resp.DepartureAirport,
+			ArrivalAirport:   resp.ArrivalAirport,
+			DepartureTime:    resp.DepartureTime,
+			ArrivalTime:      resp.ArrivalTime,
+			DepartureDate:    resp.DepartureDate,
+			ArrivalDate:      resp.ArrivalDate,
+		})
+	}
+	return &pb.SchedulesResponse{
+		Schedules: result,
+	}
 }
