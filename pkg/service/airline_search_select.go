@@ -84,20 +84,13 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, se
 		log.Printf("return path id is null so setting it with -1, returnpathid: %v", selectReq.ReturnPathId)
 		returnPathID = -1
 	}
-
-	// this gets the additional details stored in token, like no of adults, children and cabin class
-	//addDetails := selectReq.AddDetails
 	token := selectReq.Token
 
-	log.Println("here")
-
 	redisVal := svc.redis.Get(ctx, token)
-	var searchDetails pb.SearchFlightResponse
+	var searchDetails pb.SearchFlightResponse1
 	if err = json.Unmarshal([]byte(redisVal.Val()), &searchDetails); err != nil {
 		return nil, err
 	}
-
-	log.Println(searchDetails, "=====")
 
 	cabinClass := "ECONOMY"
 	if !selectReq.Economy {

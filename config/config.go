@@ -23,9 +23,9 @@ type ConfigParams struct {
 	KAFKABROKER      string `mapstructure:"KAFKABROKER"`
 }
 
-var envs = []string{
-	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE", "KAFKABROKER", "ADMINBOOKINGPORT",
-}
+//var envs = []string{
+//	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE", "ADMINBOOKINGPORT",
+//}
 
 func Configuration() (*ConfigParams, error, *redis.Client) {
 	var cfg ConfigParams
@@ -36,11 +36,11 @@ func Configuration() (*ConfigParams, error, *redis.Client) {
 		return &ConfigParams{}, err, nil
 	}
 
-	for _, e := range envs {
-		if err := viper.BindEnv(e); err != nil {
-			return &cfg, err, nil
-		}
-	}
+	//for _, e := range envs {
+	//	if err := viper.BindEnv(e); err != nil {
+	//		return &cfg, err, nil
+	//	}
+	//}
 
 	err = viper.Unmarshal(&cfg)
 	if err != nil {

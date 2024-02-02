@@ -113,7 +113,7 @@ message SearchFlightDetails {
   repeated FlightDetails flight_segment = 3;
 }
 
-message SearchFlightResponse {
+message SearchFlightResponse1 {
   int32 total_direct_flights = 1;
   int32 total_return_flights = 2;
   repeated SearchFlightDetails to_flights = 3;

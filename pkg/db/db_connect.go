@@ -2,12 +2,11 @@ package db
 
 import (
 	"fmt"
-	"log"
-
 	"github.com/raedmajeed/admin-servcie/config"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
 )
 
 func NewDBConnect(cfg *config.ConfigParams) (*gorm.DB, error) {
@@ -21,8 +20,6 @@ func NewDBConnect(cfg *config.ConfigParams) (*gorm.DB, error) {
 		fmt.Printf("Connection to DB %s Failed, Error: %s", cfg.DBName, err)
 		return nil, err
 	}
-
-	// MIGRATING DB
 	err = database.AutoMigrate(
 		&dom.FlightTypeModel{},
 		&dom.Airline{},
