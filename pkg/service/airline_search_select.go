@@ -6,7 +6,6 @@ import (
 	"errors"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
-	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"log"
 	"strconv"
@@ -158,39 +157,6 @@ func (svc *AdminAirlineServiceStruct) SearchSelectFlight(ctx context.Context, se
 	return cf, nil
 }
 
-// this method is invoked when some error happens
-func writeToKafkaOnError(ctx context.Context, svc *AdminAirlineServiceStruct, cf *dom.CompleteFlightFacilities) {
-	marshal, _ := json.Marshal(&cf)
-	// implement retry mechanism here
-	err := svc.kfk.SearchSelectWriter.WriteMessages(ctx, kafka.Message{
-		Value: marshal,
-	})
-	if err != nil {
-		// write to kafka here
-		log.Println("error writing to kafka writeToKafkaOnError() - kafka_services 2")
-		return
-	}
-}
-
-func writeToKafka(ctx context.Context, svc *AdminAirlineServiceStruct, cf *dom.CompleteFlightFacilities) {
-	marshal, err := json.Marshal(&cf)
-	if err != nil {
-		log.Println("error marshaling json writeToKafka() - kafka_services 1")
-		//writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
-		return
-	}
-	// implement retry mechanism here
-	err = svc.kfk.SearchSelectWriter.WriteMessages(ctx, kafka.Message{
-		Value: marshal,
-	})
-	if err != nil {
-		// write to kafka here
-		log.Println("error writing to kafka writeToKafka() - kafka_services 1")
-		//writeToKafkaOnError(ctx, svc, &dom.CompleteFlightFacilities{})
-		return
-	}
-}
-
 func GetFlightFacilities(svc *AdminAirlineServiceStruct, path *pb.SearchFlightDetails, addDetails *pb.SelectFlightAdmin) (bool, *pb.FlightFacilities) {
 	if len(path.FlightSegment) == 0 {
 		log.Println("flight path is zero")
@@ -275,17 +241,3 @@ func seatAvailabilityCheck(svc *AdminAirlineServiceStruct, flights []*pb.FlightD
 	}
 	return true, tempData
 }
-
-/*func bookSeats(seats []TemporaryData, add SearchClaims, svc *AdminAirlineServiceStruct, id uint) {
-	for _, data := range seats {
-		cId := data.chartId
-		seat := data.seats
-		if add.Economy {
-			seat.EconomySeatBooked = seat.EconomySeatBooked + add.Adults + add.Children
-			svc.repo.UpdateBookedSeat(seat, cId)
-		} else {
-			seat.BusinessSeatBooked = seat.BusinessSeatBooked + add.Adults + add.Children
-			svc.repo.UpdateBookedSeat(seat, cId)
-		}
-	}
-}*/
