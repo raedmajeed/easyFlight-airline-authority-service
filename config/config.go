@@ -36,12 +36,6 @@ func Configuration() (*ConfigParams, error, *redis.Client) {
 		return &ConfigParams{}, err, nil
 	}
 
-	//for _, e := range envs {
-	//	if err := viper.BindEnv(e); err != nil {
-	//		return &cfg, err, nil
-	//	}
-	//}
-
 	err = viper.Unmarshal(&cfg)
 	if err != nil {
 		log.Printf("Unable to unmarshal values, err: %v", err.Error())

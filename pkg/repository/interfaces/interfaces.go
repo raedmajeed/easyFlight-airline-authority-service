@@ -82,6 +82,8 @@ type AdminAirlineRepostory interface {
 	UpdateFlightChart(chart dom.FlightChart) error
 
 	UpdateBookedSeats(seat dom.BookedSeat, int2 int) error
+	UpdateEconomyBookedSeat(seat int, seats dom.BookedSeat) error
+	UpdateBusinessBookedSeat(seat int, seats dom.BookedSeat) error
 
 	FindAllAirlines() ([]dom.Airline, error)
 	FindAllAcceptedAirlines() ([]dom.Airline, error)

@@ -9,6 +9,7 @@ import (
 func (svc *AdminAirlineServiceStruct) AddConfirmedSeatsToBooked(ctx context.Context, request *pb.ConfirmedSeatRequest) (*pb.ConfirmedSeatResponse, error) {
 	directFlightIDs := request.FlightChartIdDirect
 	returnFlightIDs := request.FlightChartIdIndirect
+
 	err := confirmSeats(svc, directFlightIDs, request.Travellers, request.Economy)
 	if err != nil {
 		return nil, errors.New("did not update direct flight booked seat")
@@ -30,14 +31,19 @@ func confirmSeats(svc *AdminAirlineServiceStruct, flights []int32, travellerCoun
 			return err
 		}
 		if economy {
-			bookedSeatResponse.EconomySeatBooked = bookedSeatResponse.EconomySeatTotal + int(travellerCount)
+			ecoSeats := bookedSeatResponse.EconomySeatTotal + int(travellerCount)
+			err = svc.repo.UpdateEconomyBookedSeat(ecoSeats, *bookedSeatResponse)
+			if err != nil {
+				return err
+			}
 		} else {
-			bookedSeatResponse.BusinessSeatBooked = bookedSeatResponse.BusinessSeatTotal + int(travellerCount)
+			busSeats := bookedSeatResponse.BusinessSeatTotal + int(travellerCount)
+			err = svc.repo.UpdateBusinessBookedSeat(busSeats, *bookedSeatResponse)
+			if err != nil {
+				return err
+			}
 		}
-		err = svc.repo.UpdateBookedSeats(*bookedSeatResponse, int(bookedSeatResponse.ID))
-		if err != nil {
-			return err
-		}
+		//svc.repo.UpdateBookedSeats(*bookedSeatResponse, )
 	}
 	return nil
 }
