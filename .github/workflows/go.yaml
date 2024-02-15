@@ -5,7 +5,7 @@ name: easyFlight-airline-service
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "pre-hosting" ]
   pull_request:
     branches: [ "main" ]
 
