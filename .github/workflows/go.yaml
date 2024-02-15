@@ -38,7 +38,7 @@ jobs:
           image: raedmajeed/airline-service:16
           registry: docker.io
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_PASS }}
 
       - name: Start new process in the background
         run: go run cmd/api/main.go &
