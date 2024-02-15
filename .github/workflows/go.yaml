@@ -20,25 +20,23 @@ jobs:
         with:
           go-version: '1.21.3'
 
-      - name: Debug secrets
-        run: |
-          echo "DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}"
-          echo "DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}"
-
-
       - name: Build
         run: go build -v ./...
 
       - name: Test
         run: go test -v ./...
 
-      - name: Docker Build and Push
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          image: raedmajeed/airline-service:16
-          registry: docker.io
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASS }}
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag airline-service:16
+
+      - name: Tag the Docker Image
+        run: docker tag airline-service:16 raedmajeed/airline-service:16
+
+      - name: DockerHub Login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASS }} docker.io
+
+      - name: Push to docker hub
+        run: docker push raedmajeed/airline-service:16
 
       - name: Start new process in the background
         run: go run cmd/api/main.go &
