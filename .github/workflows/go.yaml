@@ -33,7 +33,9 @@ jobs:
         run: docker tag airline-service:16 raedmajeed/airline-service:16
 
       - name: Push to docker hub
-        run: docker push raedmajeed/airline-service:16
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          docker push raedmajeed/airline-service:16
 
       - name: Start new process in the background
         run: go run cmd/api/main.go &
