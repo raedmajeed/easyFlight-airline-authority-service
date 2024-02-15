@@ -1,11 +1,10 @@
 package config
 
 import (
-	"log"
+	"github.com/joho/godotenv"
+	"os"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis/v8"
-	"github.com/spf13/viper"
 )
 
 type ConfigParams struct {
@@ -29,24 +28,26 @@ type ConfigParams struct {
 
 func Configuration() (*ConfigParams, error, *redis.Client) {
 	var cfg ConfigParams
-	viper.SetConfigFile("../../.env")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Printf("Unable to load env values, err: %v", err.Error())
-		return &ConfigParams{}, err, nil
+	//cfg := ConfigParams{}
+	if err := godotenv.Load("../../.env"); err != nil {
+		os.Exit(1)
 	}
 
-	err = viper.Unmarshal(&cfg)
-	if err != nil {
-		log.Printf("Unable to unmarshal values, err: %v", err.Error())
-	}
-
-	if err := validator.New().Struct(&cfg); err != nil {
-		return &cfg, err, nil
-	}
+	cfg.DBHost = os.Getenv("DBHOST")
+	cfg.DBName = os.Getenv("DBNAME")
+	cfg.DBUser = os.Getenv("DBUSER")
+	cfg.DBPort = os.Getenv("DBPORT")
+	cfg.DBPassword = os.Getenv("DBPASSWORD")
+	cfg.PORT = os.Getenv("PORT")
+	cfg.ADMINPORT = os.Getenv("ADMINPORT")
+	cfg.REDISHOST = os.Getenv("REDISHOST")
+	cfg.SECRETKEY = os.Getenv("SECRETKEY")
+	cfg.BUSINESSSURGE = os.Getenv("BUSINESSSURGE")
+	cfg.ADMINBOOKINGPORT = os.Getenv("ADMINBOOKINGPORT")
+	cfg.KAFKABROKER = os.Getenv("KAFKABROKER")
 
 	redis2 := connectToRedis(&cfg)
-	return &cfg, err, redis2
+	return &cfg, nil, redis2
 }
 
 func connectToRedis(cfg *ConfigParams) *redis.Client {

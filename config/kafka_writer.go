@@ -11,7 +11,7 @@ type KafkaWriter struct {
 func NewKafkaWriterConnect(cfg *ConfigParams) *KafkaWriter {
 	emailWriter := kafka.Writer{
 		Addr:                   kafka.TCP(cfg.KAFKABROKER),
-		Topic:                  "email-service-2",
+		Topic:                  "email-service-3",
 		AllowAutoTopicCreation: true,
 	}
 
