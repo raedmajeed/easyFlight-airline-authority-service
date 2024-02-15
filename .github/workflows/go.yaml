@@ -22,8 +22,8 @@ jobs:
 
       - name: Debug secrets
         run: |
-          echo "DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}"
-          echo "DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}"
+          echo "DOCKERHUB_TOKEN: ${{ vars..DOCKERHUB_TOKEN }}"
+          echo "DOCKERHUB_USERNAME: ${{ vars..DOCKERHUB_USERNAME }}"
 
 
       - name: Build
@@ -40,7 +40,7 @@ jobs:
 
       - name: Push to docker hub
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+          echo "${{ vars..DOCKERHUB_TOKEN }}" | docker login --username ${{ vars..DOCKERHUB_USERNAME }} --password-stdin
           docker push raedmajeed/airline-service:16
 
       - name: Start new process in the background
