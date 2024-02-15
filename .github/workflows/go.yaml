@@ -33,7 +33,8 @@ jobs:
         run: docker tag airline-service:16 raedmajeed/airline-service:16
 
       - name: DockerHub Login
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASS }} docker.io
+        run: |
+          echo "Raed786**" | docker login -u raedmajeed --password-stdin docker.io
 
       - name: Push to docker hub
         run: docker push raedmajeed/airline-service:16
