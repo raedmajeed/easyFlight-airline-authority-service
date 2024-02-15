@@ -28,18 +28,38 @@ func (handler *AdminAirlineHandler) RegisterAirlineBaggage(ctx context.Context, 
 	return airlineBaggagePolicyResponse, nil
 }
 
-func (handler *AdminAirlineHandler) FetchAllAirlineBaggages(context.Context, *pb.EmptyRequest) (*pb.AirlineBaggagesResponse, error) {
-	return &pb.AirlineBaggagesResponse{}, nil
+func (handler *AdminAirlineHandler) FetchAllAirlineBaggages(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineBaggagesResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	response, err := handler.svc.FetchAllAirlineBaggages(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }
 
-func (handler *AdminAirlineHandler) FetchAirlineBaggage(context.Context, *pb.IDRequest) (*pb.AirlineBaggageResponse, error) {
-	return &pb.AirlineBaggageResponse{}, nil
+func (handler *AdminAirlineHandler) FetchAirlineBaggage(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineBaggageResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	response, err := handler.svc.FetchAirlineBaggage(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }
 
-func (handler *AdminAirlineHandler) UpdateAirlineBaggage(context.Context, *pb.AirlineBaggageRequest) (*pb.AirlineBaggageResponse, error) {
-	return &pb.AirlineBaggageResponse{}, nil
-}
-
-func (handler *AdminAirlineHandler) DeleteAirlineBaggage(context.Context, *pb.IDRequest) (*pb.AirlineBaggageResponse, error) {
+func (handler *AdminAirlineHandler) DeleteAirlineBaggage(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineBaggageResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	err := handler.svc.DeleteAirlineBaggage(ctx, p)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.AirlineBaggageResponse{}, nil
 }

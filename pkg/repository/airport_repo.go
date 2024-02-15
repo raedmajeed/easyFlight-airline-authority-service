@@ -24,7 +24,7 @@ func (repo *AdminAirlineRepositoryStruct) FindAirportByAirportCode(airportCode s
 }
 
 func (repo *AdminAirlineRepositoryStruct) CreateAirport(p *pb.Airport) (*dom.Airport, error) {
-	airport := dom.Airport {
+	airport := dom.Airport{
 		AirportCode:  p.AirportCode,
 		AirportName:  p.AirportName,
 		City:         p.City,
@@ -48,4 +48,17 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirport(p *pb.Airport) (*dom.Air
 		}
 	}
 	return &airport, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) FindAllAirports() ([]dom.Airport, error) {
+	var airports []dom.Airport
+	if err := repo.DB.Find(&airports).Error; err != nil {
+		return nil, err
+	}
+	return airports, nil
+}
+
+func (repo *AdminAirlineRepositoryStruct) DeleteAirportByCode(string2 string) error {
+	result := repo.DB.Where("airport_code = ?", string2).Delete(&dom.Airport{})
+	return result.Error
 }

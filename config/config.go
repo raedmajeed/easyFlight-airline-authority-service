@@ -9,21 +9,23 @@ import (
 )
 
 type ConfigParams struct {
-	DBHost        string `mapstructure:"DBHOST"`
-	DBName        string `mapstructure:"DBNAME"`
-	DBUser        string `mapstructure:"DBUSER"`
-	DBPort        string `mapstructure:"DBPORT"`
-	DBPassword    string `mapstructure:"DBPASSWORD"`
-	PORT          string `mapstructure:"PORT"`
-	ADMINPORT     string `mapstructure:"ADMINPORT"`
-	REDISHOST     string `mapstructure:"REDISHOST"`
-	SECRETKEY     string `mapstructure:"SECRETKEY"`
-	BUSINESSSURGE string `mapstructure:"BUSINESSSURGE"`
+	DBHost           string `mapstructure:"DBHOST"`
+	DBName           string `mapstructure:"DBNAME"`
+	DBUser           string `mapstructure:"DBUSER"`
+	DBPort           string `mapstructure:"DBPORT"`
+	DBPassword       string `mapstructure:"DBPASSWORD"`
+	PORT             string `mapstructure:"PORT"`
+	ADMINPORT        string `mapstructure:"ADMINPORT"`
+	REDISHOST        string `mapstructure:"REDISHOST"`
+	SECRETKEY        string `mapstructure:"SECRETKEY"`
+	BUSINESSSURGE    string `mapstructure:"BUSINESSSURGE"`
+	ADMINBOOKINGPORT string `mapstructure:"ADMINBOOKINGPORT"`
+	KAFKABROKER      string `mapstructure:"KAFKABROKER"`
 }
 
-var envs = []string{
-	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE",
-}
+//var envs = []string{
+//	"DBHOST", "DBNAME", "DBSUER", "DBPORT", "DBPASSWORD", "PORT", "ADMINPORT", "REDISHOST", "SECRETKEY", "BUSINESSSURGE", "ADMINBOOKINGPORT",
+//}
 
 func Configuration() (*ConfigParams, error, *redis.Client) {
 	var cfg ConfigParams
@@ -32,12 +34,6 @@ func Configuration() (*ConfigParams, error, *redis.Client) {
 	if err != nil {
 		log.Printf("Unable to load env values, err: %v", err.Error())
 		return &ConfigParams{}, err, nil
-	}
-
-	for _, e := range envs {
-		if err := viper.BindEnv(e); err != nil {
-			return &cfg, err, nil
-		}
 	}
 
 	err = viper.Unmarshal(&cfg)

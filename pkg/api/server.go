@@ -1,17 +1,19 @@
 package pkg
 
 import (
-	"context"
 	"fmt"
-	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
-	"log"
-	"net"
-
 	"github.com/gin-gonic/gin"
 	"github.com/raedmajeed/admin-servcie/config"
+	"github.com/raedmajeed/admin-servcie/pkg/api/bookingHandlers"
 	"github.com/raedmajeed/admin-servcie/pkg/api/handlers"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
+	"github.com/raedmajeed/admin-servcie/pkg/service/interfaces"
 	"google.golang.org/grpc"
+	"log"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 type Server struct {
@@ -19,51 +21,59 @@ type Server struct {
 	cfg *config.ConfigParams
 }
 
-func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler, svc interfaces.AdminAirlineService) (*Server, error) {
-	newContext, cancel := context.WithCancel(context.Background())
-	defer cancel()
+func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler,
+	svc interfaces.AdminAirlineService, bHandler *bookingHandlers.BookingHandler) {
+	//newContext, cancel := context.WithTimeout(context.Background(), time.Second*1500)
+	//defer cancel()
 
-	kf := config.NewKafkaReaderConnect(svc)
+	signalChan := make(chan os.Signal, 2)
+	signal.Notify(signalChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	//go config.KafkaReaders(newContext, svc, signalChan)
 
-	log.Println("listening on search-flight-request topic")
-	go kf.SearchFlightRead(newContext)
-	log.Println("listening on search-flight-request-2 topic")
-	go kf.SearchSelectFlightRead(newContext)
-
-	err := NewGrpcServer(cfg, handler)
-	if err != nil {
-		log.Println("error connecting to gRPC server")
-		return nil, err
-	}
-	r := gin.Default()
-	return &Server{
-		E:   r,
-		cfg: cfg,
-	}, nil
+	go NewBookingGrpcServer(cfg, bHandler)
+	go NewGrpcServer(cfg, handler)
+	<-signalChan
 }
 
-func NewGrpcServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler) error {
+func NewGrpcServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler) {
 	log.Println("connecting to gRPC server")
 	addr := fmt.Sprintf(":%s", cfg.ADMINPORT)
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Println("error Connecting to gRPC server")
-		return err
+		return
 	}
 	grp := grpc.NewServer()
 	pb.RegisterAdminAirlineServer(grp, handler)
 	if err != nil {
 		log.Println("error connecting to gRPC server")
-		return err
+		return
 	}
 
 	log.Printf("listening on gRPC server %v", cfg.ADMINPORT)
 	err = grp.Serve(lis)
 	if err != nil {
 		log.Println("error connecting to gRPC server")
-		return err
+		return
 	}
-	return nil
+	return
+}
+
+func NewBookingGrpcServer(cfg *config.ConfigParams, handler *bookingHandlers.BookingHandler) {
+	log.Println("connecting to Booking gRPC server")
+	addr := fmt.Sprintf(":%s", cfg.ADMINBOOKINGPORT)
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
+		log.Println("error listening to booking service")
+		return
+	}
+	grpcServer := grpc.NewServer()
+	pb.RegisterAdminServiceServer(grpcServer, handler)
+	err = grpcServer.Serve(lis)
+	if err != nil {
+		log.Println("error connecting to booking  grpc server")
+		return
+	}
 }
 
 func (s *Server) ServerStart() error {

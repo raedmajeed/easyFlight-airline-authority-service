@@ -17,37 +17,40 @@ service AdminAirline {
   rpc RegisterAirline(AirlineRequest) returns (OtpResponse);
   rpc FetchAllAirlines(EmptyRequest) returns (AirlinesResponse);
   rpc FetchAirline(IDRequest) returns (AirlineResponse);
-  rpc UpdateAirline(AirlineRequest) returns (AirlineResponse);
   rpc DeleteAirline(IDRequest) returns (AirlineResponse);
   rpc VerifyAirlineRegistration(OTPRequest) returns (AirlineResponse);
   rpc AdminVerifyAirline(EmptyRequest) returns (AirlineResponse);
 
   // gRPC methods for all actions on Airline Seats
   rpc RegisterAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
-  rpc FetchAllAirlineSeats(EmptyRequest) returns (AirlineSeatsResponse);
-  rpc FetchAirlineSeat(IDRequest) returns (AirlineSeatResponse);
-  rpc UpdateAirlineSeat(AirlineSeatRequest) returns (AirlineSeatResponse);
-  rpc DeleteAirlineSeat(IDRequest) returns (AirlineSeatResponse);
+  rpc FetchAllAirlineSeats(FetchRequest) returns (AirlineSeatsResponse);
+  rpc FetchAirlineSeat(FetchRequest) returns (AirlineSeatResponse);
+  rpc DeleteAirlineSeat(FetchRequest) returns (AirlineSeatResponse);
+  rpc GetAcceptedAirlines(EmptyRequest) returns (AirlinesResponse);
+  rpc GetRejectedAirlines(EmptyRequest) returns (AirlinesResponse);
 
   // gRPC methods for all actions on Airline Baggage
   rpc RegisterAirlineBaggage(AirlineBaggageRequest) returns (AirlineBaggageResponse);
-  rpc FetchAllAirlineBaggages(EmptyRequest) returns (AirlineBaggagesResponse);
-  rpc FetchAirlineBaggage(IDRequest) returns (AirlineBaggageResponse);
-  rpc UpdateAirlineBaggage(AirlineBaggageRequest) returns (AirlineBaggageResponse);
-  rpc DeleteAirlineBaggage(IDRequest) returns (AirlineBaggageResponse);
+  rpc FetchAllAirlineBaggages(FetchRequest) returns (AirlineBaggagesResponse);
+  rpc FetchAirlineBaggage(FetchRequest) returns (AirlineBaggageResponse);
+  rpc DeleteAirlineBaggage(FetchRequest) returns (AirlineBaggageResponse);
 
   // gRPC methods for all actions on Airline Cancellation
   rpc RegisterAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
-  rpc FetchAllAirlineCancellations(EmptyRequest) returns (AirlineCancellationsResponse);
-  rpc FetchAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
-  rpc UpdateAirlineCancellation(AirlineCancellationRequest) returns (AirlineCancellationResponse);
-  rpc DeleteAirlineCancellation(IDRequest) returns (AirlineCancellationResponse);
+  rpc FetchAllAirlineCancellations(FetchRequest) returns (AirlineCancellationsResponse);
+  rpc FetchAirlineCancellation(FetchRequest) returns (AirlineCancellationResponse);
+  rpc DeleteAirlineCancellation(FetchRequest) returns (AirlineCancellationResponse);
 
   // gRPC methods for all actions on Airport
   rpc RegisterAirportRequest(Airport) returns (AirportResponse);
+  rpc GetAirport(AirportRequest) returns (AirportResponse);
+  rpc GetAirports(EmptyRequest) returns (AirportsResponse);
+  rpc DeleteAirport(AirportRequest) returns (AirportResponse);
+
 
   // gRPC methods for all actions on Schedules
   rpc RegisterScheduleRequest(ScheduleRequest) returns (ScheduleResponse);
+  rpc GetSchedules(EmptyRequest) returns (SchedulesResponse);
 
   // gRPC methods for all auth actions
   rpc RegisterLoginRequest(LoginRequest) returns (LoginResponse);
@@ -57,9 +60,20 @@ service AdminAirline {
 
   // gRPC methods for all flight fleet
   rpc RegisterFlightFleets(FlightFleetRequest) returns (FlightFleetResponse);
+  rpc GetFlightFleets(FetchRequest) returns (FlightFleetsResponse);
+  rpc GetFlightFleet(FetchRequest) returns (FlightFleetResponse);
+  rpc DeleteFlightFleet(FetchRequest) returns (FlightFleetResponse);
 
   // gRPC methods for all flight chart
   rpc RegisterFlightChart(FlightChartRequest) returns (FlightChartResponse);
+  rpc GetFlightChart(GetChartRequest) returns (FlightChartResponse);
+  rpc GetFlightCharts(EmptyRequest) returns (FlightChartsResponse);
+  rpc GetFlightChartForAirline(FetchRequest) returns (FlightChartsResponse);
+}
+
+message FetchRequest {
+  string email = 1;
+  string id = 2;
 }
 
 message Error {
@@ -79,7 +93,8 @@ message OtpResponse {
 }
 
 message IDRequest {
-  int32 id = 1;
+  string email = 1;
+  int32 id = 2;
 }
 
 message OTPRequest {
@@ -266,11 +281,17 @@ message Airport {
   string contact_phone = 12;
 }
 
-
 message AirportResponse {
   Airport airport = 1;
 }
 
+message AirportRequest {
+  string airport_code = 1;
+}
+
+message AirportsResponse {
+  repeated Airport airports = 1;
+}
 // SCHEDULE REQUEST
 
 message ScheduleRequest {
@@ -284,6 +305,10 @@ message ScheduleRequest {
 
 message ScheduleResponse {
   ScheduleRequest schedule = 1;
+}
+
+message SchedulesResponse {
+  repeated ScheduleRequest schedules = 1;
 }
 
 // FLIGHT FLEET
@@ -304,6 +329,10 @@ message FlightFleetResponse {
   int32 busisiness_seat_number = 5;
 }
 
+message FlightFleetsResponse {
+  repeated FlightFleetResponse flight_fleets = 1;
+}
+
 // FLIGHT CHART
 
 message FlightChartRequest {
@@ -322,4 +351,23 @@ message FlightChartResponse {
   string arrival_date_time = 7;
   float economy_fare = 8;
   float business_fare = 9;
+}
+
+message GetChartRequest {
+  string dep_airport = 1;
+  string arr_airport = 2;
+}
+
+message FlightChartsResponse {
+  repeated FlightChartResponse flight_chart_response = 1;
+}
+
+// AIRLINE ACCEPTS REJECT
+
+message AcceptedAirlineResponse {
+  repeated AirlineRequest airline_details = 1;
+}
+
+message RejectedAirlineResponse {
+  repeated AirlineRequest airline_details = 1;
 }

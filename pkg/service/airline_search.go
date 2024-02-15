@@ -2,10 +2,8 @@ package service
 
 import (
 	"container/list"
-	"encoding/json"
 	"fmt"
 	dom "github.com/raedmajeed/admin-servcie/pkg/DOM"
-	"github.com/segmentio/kafka-go"
 	"log"
 	"strconv"
 	"time"
@@ -15,39 +13,33 @@ type FinalFlightList struct {
 	List []*dom.FlightChart
 }
 
-// write a logic to calculate the fare
-
-func (svc *AdminAirlineServiceStruct) SearchFlight(message kafka.Message) ([]dom.Path, []dom.Path, error) {
-	search := dom.SearchDetails{}
-	err := json.Unmarshal(message.Value, &search)
-	if err != nil {
-		log.Println("error unmarshalling json, error: ", err.Error())
-		return nil, nil, err
-	}
-
+// SearchFlight this function initiate the flight search
+// checks if the flight is a direct flight or return
+// and finds the connected and direct flight
+func (svc *AdminAirlineServiceStruct) SearchFlight(search dom.SearchDetails) ([]dom.Path, []dom.Path, error) {
 	var finalPaths []dom.Path
 	var returnFinalPaths []dom.Path
+	var err error
 
-	// checking if the searched flight is return or one way
 	if !search.ReturnFlight {
-		log.Println("one way flight")
-		finalPaths = OneWayFlightSearch(svc, search)
+		finalPaths, err = OneWayFlightSearch(svc, search)
 		return finalPaths, nil, err
 	} else {
-		log.Println("return flight")
-		finalPaths = OneWayFlightSearch(svc, search)
+		finalPaths, err = OneWayFlightSearch(svc, search)
 		temp := search.DepartureAirport
 		search.DepartureAirport = search.ArrivalAirport
 		search.ArrivalAirport = temp
 		search.DepartureDate = search.ReturnDepartureDate
-		returnFinalPaths = OneWayFlightSearch(svc, search)
+		returnFinalPaths, err = OneWayFlightSearch(svc, search)
 	}
-
-	// once these works add the option to find the travel time as well
-	return finalPaths, returnFinalPaths, nil
+	log.Println("good byes", err)
+	return finalPaths, returnFinalPaths, err
 }
 
-func OneWayFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDetails) []dom.Path {
+// OneWayFlightSearch this takes in the service, search details and finds
+// the flight details connected and direct and sets into a
+// path so that this can be used to fetch the details after
+func OneWayFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDetails) ([]dom.Path, error) {
 	var finalFlightList []*dom.FlightChart
 	var tempFlightList []*dom.FlightChart
 	var tempFlightList2 []*dom.FlightChart
@@ -55,11 +47,10 @@ func OneWayFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDet
 	flightLists, err := svc.repo.FindFlightsFromDep(searchInfo.DepartureAirport, searchInfo.DepartureDate)
 	if err != nil {
 		log.Println("error fetching flight path")
-		return []dom.Path{}
+		return []dom.Path{}, fmt.Errorf("error fetching flight path OneWayFlightSearch(), err: %v", err.Error())
 	}
 
 	finalFlightList = addingToFinalFlightList(finalFlightList, flightLists)
-	//
 	//// STOP - 1 search all arrival airports from previous departure airport
 	for _, flight := range flightLists {
 		chart, _ := svc.repo.FindScheduleByID(int(flight.ScheduleID))
@@ -69,7 +60,6 @@ func OneWayFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDet
 		finalFlightList = addingToFinalFlightList(finalFlightList, flightChart)
 		tempFlightList = addingToFinalFlightList(tempFlightList, flightChart)
 	}
-	//
 	//// STOP - 2 search all arrival airports from previous departure airport
 	for _, flight := range tempFlightList {
 		chart, _ := svc.repo.FindScheduleByID(int(flight.ScheduleID))
@@ -105,6 +95,8 @@ func OneWayFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDet
 			ArrivalDate:       schedule.ArrivalDate,
 			DepartureDateTime: schedule.DepartureDateTime,
 			ArrivalDateTime:   schedule.ArrivalDateTime,
+			EconomyFare:       f.EconomyFare,
+			BusinessFare:      f.BusinessFare,
 		})
 	}
 	//
@@ -112,7 +104,7 @@ func OneWayFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDet
 	//
 	paths := FindAllPaths(searchInfo.DepartureAirport, searchInfo.ArrivalAirport, finalFlightDetails)
 	finalResponsePaths := pathResponse(paths, maxStops)
-	return finalResponsePaths
+	return finalResponsePaths, nil
 }
 
 func pathResponse(paths [][]dom.FlightDetails, maxStops int) []dom.Path {
@@ -141,6 +133,7 @@ func FindAllPaths(departureAirport, arrivalAirport string, flights []dom.FlightD
 		graph[flight.DepartureAirport] = append(graph[flight.DepartureAirport], flight)
 	}
 
+	//Checking whether there is any flight from departure airport
 	totalFlightsFromDep := graph[departureAirport]
 	if len(totalFlightsFromDep) <= 0 {
 		return [][]dom.FlightDetails{}
@@ -212,10 +205,6 @@ func findPathsOfFlight(start dom.FlightDetails, end string, graph map[string][]d
 		visited[currentAirport] = true
 	}
 	return results
-}
-
-func ReturnFlightSearch(svc *AdminAirlineServiceStruct, searchInfo dom.SearchDetails) {
-
 }
 
 func findAllFlightsFromDepAirport(svc *AdminAirlineServiceStruct, depAirport string, depDateTime time.Time) ([]*dom.FlightChart, error) {

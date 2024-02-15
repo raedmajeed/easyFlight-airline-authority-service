@@ -28,18 +28,36 @@ func (handler *AdminAirlineHandler) RegisterAirlineCancellation(ctx context.Cont
 	return airlineCancellationPolicyResponse, nil
 }
 
-func (handler *AdminAirlineHandler) FetchAllAirlineCancellations(context.Context, *pb.EmptyRequest) (*pb.AirlineCancellationsResponse, error) {
-	return &pb.AirlineCancellationsResponse{}, nil
+func (handler *AdminAirlineHandler) FetchAllAirlineCancellations(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineCancellationsResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	response, err := handler.svc.FetchAllAirlineCancellations(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }
-
-func (handler *AdminAirlineHandler) FetchAirlineCancellation(context.Context, *pb.IDRequest) (*pb.AirlineCancellationResponse, error) {
-	return &pb.AirlineCancellationResponse{}, nil
+func (handler *AdminAirlineHandler) FetchAirlineCancellation(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineCancellationResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	response, err := handler.svc.FetchAirlineCancellation(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
 }
-
-func (handler *AdminAirlineHandler) UpdateAirlineCancellation(context.Context, *pb.AirlineCancellationRequest) (*pb.AirlineCancellationResponse, error) {
-	return &pb.AirlineCancellationResponse{}, nil
-}
-
-func (handler *AdminAirlineHandler) DeleteAirlineCancellation(context.Context, *pb.IDRequest) (*pb.AirlineCancellationResponse, error) {
+func (handler *AdminAirlineHandler) DeleteAirlineCancellation(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineCancellationResponse, error) {
+	deadline, ok := ctx.Deadline()
+	if ok && deadline.Before(time.Now()) {
+		return nil, errors.New("deadline passed, aborting gRPC call")
+	}
+	err := handler.svc.DeleteAirlineCancellation(ctx, p)
+	if err != nil {
+		return nil, err
+	}
 	return &pb.AirlineCancellationResponse{}, nil
 }

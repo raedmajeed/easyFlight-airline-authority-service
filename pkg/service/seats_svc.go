@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"log"
@@ -11,7 +12,6 @@ import (
 )
 
 // * METHODS TO EVERYTHING AIRLINE SEATS
-type Layout struct{ Rows [][]bool }
 
 func (svc *AdminAirlineServiceStruct) CreateAirlineSeats(p *pb.AirlineSeatRequest) (*dom.AirlineSeat, error) {
 	airline, err := svc.repo.FindAirlineByEmail(p.AirlineEmail)
@@ -81,4 +81,52 @@ func createBuisinessSeatsJSONLayout(seats, sprow int32) *Layout {
 		l.Rows = append(l.Rows, row)
 	}
 	return l
+}
+
+func (svc *AdminAirlineServiceStruct) FetchAllAirlineSeats(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineSeatsResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.FetchAllAirlineSeats(airline.ID)
+	if err != nil {
+		return nil, err
+	}
+	result := ConvertToResponse(resp)
+	return result, err
+}
+func (svc *AdminAirlineServiceStruct) FetchAirlineSeat(ctx context.Context, p *pb.FetchRequest) (*pb.AirlineSeatResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.FetchAirlineSeat(airline.ID, p.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.AirlineSeatResponse{
+		AirlineSeat: &pb.AirlineSeatRequest{
+			EconomySeatNo:       int32(resp.BusinessSeatNumber),
+			BuisinesSeatNo:      int32(resp.EconomySeatNumber),
+			EconomySeatsPerRow:  int32(resp.EconomySeatsPerRow),
+			BuisinesSeatsPerRow: int32(resp.BusinessSeatsPerRow),
+		},
+	}, err
+}
+func (svc *AdminAirlineServiceStruct) DeleteAirlineSeat(ctx context.Context, p *pb.FetchRequest) error {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	err := svc.repo.DeleteAirlineSeat(airline.ID, p.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ConvertToResponse(data []dom.AirlineSeat) *pb.AirlineSeatsResponse {
+	var result []*pb.AirlineSeatRequest
+	for _, d := range data {
+		result = append(result, &pb.AirlineSeatRequest{
+			EconomySeatNo:       int32(d.EconomySeatNumber),
+			BuisinesSeatNo:      int32(d.BusinessSeatNumber),
+			EconomySeatsPerRow:  int32(d.EconomySeatsPerRow),
+			BuisinesSeatsPerRow: int32(d.BusinessSeatsPerRow),
+		})
+	}
+	return &pb.AirlineSeatsResponse{
+		AirlineSeats: result,
+	}
 }

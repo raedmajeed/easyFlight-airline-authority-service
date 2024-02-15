@@ -47,3 +47,22 @@ func (repo *AdminAirlineRepositoryStruct) FindAirlineBaggageByid(id int32) (*dom
 	}
 	return &baggage, nil
 }
+
+func (repo *AdminAirlineRepositoryStruct) FetchAllAirlineBaggages(id uint) ([]dom.AirlineBaggage, error) {
+	var seats []dom.AirlineBaggage
+	if err := repo.DB.Where("airline_id = ?", id).Find(&seats).Error; err != nil {
+		return nil, err
+	}
+	return seats, nil
+}
+func (repo *AdminAirlineRepositoryStruct) FetchAirlineBaggage(id uint, sid string) (dom.AirlineBaggage, error) {
+	var seat dom.AirlineBaggage
+	if err := repo.DB.Where("airline_id = ? AND id = ?", id, sid).First(&seat).Error; err != nil {
+		return dom.AirlineBaggage{}, err
+	}
+	return seat, nil
+}
+func (repo *AdminAirlineRepositoryStruct) DeleteAirlineBaggage(id uint, sid string) error {
+	result := repo.DB.Where("airline_id = ?", id).Delete(&dom.AirlineBaggage{}, sid)
+	return result.Error
+}

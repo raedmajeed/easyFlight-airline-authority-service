@@ -64,14 +64,17 @@ const (
 
 type FlightChart struct {
 	gorm.Model
-	FlightNumber string       `gorm:"not null"`
-	FlightID     uint         `gorm:"not null"`
-	Flight       FlightFleets `gorm:"foreignKey:FlightID"`
-	Status       Status       `gorm:"default:0"`
-	ScheduleID   uint         `gorm:"not null"`
-	Schedule     Schedule     `gorm:"foreignKey:ScheduleID"`
-	EconomyFare  float64
-	BusinessFare float64
+	FlightNumber     string       `gorm:"not null"`
+	FlightID         uint         `gorm:"not null"`
+	Flight           FlightFleets `gorm:"foreignKey:FlightID"`
+	Status           Status       `gorm:"default:0"`
+	ScheduleID       uint         `gorm:"not null"`
+	Schedule         Schedule     `gorm:"foreignKey:ScheduleID"`
+	EconomyFare      float64
+	BusinessFare     float64
+	DepartureAirport string
+	ArrivalAirport   string
+	Departed         bool `gorm:"default:false"`
 }
 
 type CombinedChartScheduleFleet struct {

@@ -41,11 +41,15 @@ type FlightDetails struct {
 	ArrivalTime       string    `column:"arr_time"`
 	DepartureDateTime time.Time `column:"dep_datetime"`
 	ArrivalDateTime   time.Time `column:"arr_datetime"`
+	EconomyFare       float64
+	BusinessFare      float64
 }
 
 type Path struct {
-	PathId          int
-	Flights         []FlightDetails
-	NumberOfStops   int
-	TotalTravelTime float64
+	PathId           int
+	Flights          []FlightDetails
+	NumberOfStops    int
+	TotalTravelTime  float64
+	DepartureAirport string
+	ArrivalAirport   string
 }

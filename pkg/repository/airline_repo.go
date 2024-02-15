@@ -14,7 +14,6 @@ import (
 func (repo *AdminAirlineRepositoryStruct) FindAirlineById(id int32) (*dom.Airline, error) {
 	var airline dom.Airline
 	result := repo.DB.Where("id = ?", int(id)).First(&airline)
-	fmt.Println(result)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			log.Printf("Record not found of airline %v", id)
@@ -92,4 +91,31 @@ func (repo *AdminAirlineRepositoryStruct) CreateAirline(airline *dom.Airline) (*
 
 func (repo *AdminAirlineRepositoryStruct) UnlockAirlineAccount(airlineID int) error {
 	return repo.DB.Model(&dom.Airline{}).Where("id = ?", airlineID).Update("IsAccountLocked", false).Error
+}
+
+const (
+	unlocked = 0
+	locked   = 1
+)
+
+func (repo *AdminAirlineRepositoryStruct) FindAllAirlines() ([]dom.Airline, error) {
+	var airlines []dom.Airline
+	if err := repo.DB.Find(&airlines).Error; err != nil {
+		return nil, err
+	}
+	return airlines, nil
+}
+func (repo *AdminAirlineRepositoryStruct) FindAllAcceptedAirlines() ([]dom.Airline, error) {
+	var airlines []dom.Airline
+	if err := repo.DB.Where("is_account_locked = ?", unlocked).Find(&airlines).Error; err != nil {
+		return nil, err
+	}
+	return airlines, nil
+}
+func (repo *AdminAirlineRepositoryStruct) FindAllRejectedAirlines() ([]dom.Airline, error) {
+	var airlines []dom.Airline
+	if err := repo.DB.Where("is_account_locked = ?", locked).Find(&airlines).Error; err != nil {
+		return nil, err
+	}
+	return airlines, nil
 }

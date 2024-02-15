@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"github.com/raedmajeed/admin-servcie/pkg/utils"
 	"github.com/segmentio/kafka-go"
-	"io"
 	"log"
 	"math"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -96,7 +94,7 @@ func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest)
 	//* creating flight chart here
 
 	// ! also add fare setting here ===
-	economyFare, businessFare, err := calculateAndSavePrice(svc, newSchedule.ID, flight.ID)
+	economyFare, businessFare, err := calculateAndSavePriceFlightChart(svc, newSchedule.ID, flight.ID)
 	if err != nil {
 		log.Printf("unable to get the economy and business fare, method AddFlightToChart() - service, err: %v", err.Error())
 		data := utils.SendAirlineFareSetFailure(airline.Email, flightNumber, newSchedule.DepartureAirport, newDepartureTime, uint(flightID))
@@ -110,9 +108,10 @@ func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest)
 		FlightNumber: flightNumber,
 		FlightID:     flight.ID,
 		ScheduleID:   newSchedule.ID,
-		EconomyFare:  economyFare,
-		BusinessFare: businessFare,
+		EconomyFare:  math.Round(economyFare),
+		BusinessFare: math.Round(businessFare),
 	}
+
 	err = svc.repo.CreateFlightChart(&flightChart)
 	if err != nil {
 		log.Printf("flight chart not created, err: %v", err.Error())
@@ -126,38 +125,13 @@ func (svc *AdminAirlineServiceStruct) AddFlightToChart(p *pb.FlightChartRequest)
 		DepartureDateTime: newSchedule.DepartureDateTime,
 		ArrivalDateTime:   newSchedule.ArrivalDateTime,
 		AirlineName:       airline.AirlineName,
-		EconomyFare:       economyFare,
-		BusinessFare:      businessFare,
+		EconomyFare:       flightChart.EconomyFare,
+		BusinessFare:      flightChart.BusinessFare,
 	}
 	return &flightChartResponse, nil
 }
 
-func FuelPricedDaily() (float64, error) {
-	res, err := http.Get("https://mfapps.indiatimes.com/ET_Calculators/oilpricebymetro.htm")
-	if err != nil {
-		log.Println("unable to fetch today's petrol price")
-		return 100, err
-	}
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		log.Printf("unable to read response, in method FuelPricedDaily() - service, err: %v", err.Error())
-		return 100, err
-	}
-
-	var prices dom.PetrolPrice
-	err = json.Unmarshal(body, &prices)
-	if err != nil {
-		log.Printf("unable to marshal json, in method  FuelPricedDaily() - service, err: %v", err.Error())
-		return 100, err
-	}
-
-	todayPetrolPrice := prices.Prices[0].PetrolPrice
-	price, _ := strconv.Atoi(todayPetrolPrice)
-	return float64(price), nil
-}
-
-func calculateAndSavePrice(svc *AdminAirlineServiceStruct, scheduleID uint, flightID uint) (float64, float64, error) {
+func calculateAndSavePriceFlightChart(svc *AdminAirlineServiceStruct, scheduleID uint, flightID uint) (float64, float64, error) {
 	response, err := svc.repo.FindScheduleByID(int(scheduleID))
 	seats, err := svc.repo.FindSeatsByChartID(flightID)
 	if err != nil {
@@ -171,7 +145,7 @@ func calculateAndSavePrice(svc *AdminAirlineServiceStruct, scheduleID uint, flig
 	remainingDays := departureDate.Sub(todayDate)
 	days := int(remainingDays.Hours() / 24)
 	onlyDate := todayDate.Format("2006-01-02")
-	businessSurgeFactor, _ := strconv.Atoi(svc.cfg.BUSINESSSURGE)
+	businessSurgeFactor, _ := strconv.ParseFloat(svc.cfg.BUSINESSSURGE, 64)
 
 	depResponse, err := svc.repo.FindAirportByAirportCode(departureAirport)
 	if err != nil {
@@ -210,64 +184,52 @@ func calculateAndSavePrice(svc *AdminAirlineServiceStruct, scheduleID uint, flig
 	BusinessFare = BusinessFare + ((BusinessFare * bFare) / 100)
 	BusinessFare = BusinessFare * float64(businessSurgeFactor)
 
-	return EconomyFare, BusinessFare, nil
+	return EconomyFare / 10, BusinessFare / 10, nil
 }
 
-func SeatsBookedPercentage(seats *dom.BookedSeat) (float64, float64) {
-	eFare := 0
-	bFare := 0
-	economySeatsBooked := seats.EconomySeatBooked
-	economySeatsTotal := seats.EconomySeatTotal
-	businessSeatsBooked := seats.BusinessSeatBooked
-	businessSeatsTotal := seats.BusinessSeatTotal
-
-	ePercentage := (economySeatsBooked / economySeatsTotal) * 100
-	bPercentage := (businessSeatsBooked / businessSeatsTotal) * 100
-
-	if ePercentage > 50 {
-		eFare = 7
-	} else if ePercentage > 70 {
-		eFare = 10
-	} else if ePercentage > 90 {
-		eFare = 14
+func (svc *AdminAirlineServiceStruct) GetFlightChartForAirline(ctx context.Context, p *pb.FetchRequest) (*pb.FlightChartsResponse, error) {
+	airline, _ := svc.repo.FindAirlineByEmail(p.Email)
+	resp, err := svc.repo.GetFlightChartForAirline(airline.ID)
+	if err != nil {
+		return nil, err
 	}
-
-	if bPercentage > 50 {
-		bFare = 7
-	} else if bPercentage > 70 {
-		bFare = 10
-	} else if bPercentage > 90 {
-		bFare = 14
-	}
-
-	return float64(eFare), float64(bFare)
+	result := ConvertToResponseFlightChart(resp)
+	return result, err
 }
 
-func CalculateCustomPercentage(days int) float64 {
-	maxPercentage := 15.0
-	percentage := (float64(15-days) / 14) * maxPercentage
-
-	if percentage > maxPercentage {
-		percentage = maxPercentage
+func ConvertToResponseFlightChart(data []dom.FlightChart) *pb.FlightChartsResponse {
+	var result []*pb.FlightChartResponse
+	for _, resp := range data {
+		result = append(result, &pb.FlightChartResponse{
+			DepartureAirport: resp.DepartureAirport,
+			ArrivalAirport:   resp.ArrivalAirport,
+			FlightNumber:     resp.FlightNumber,
+			EconomyFare:      float32(resp.EconomyFare),
+			BusinessFare:     float32(resp.BusinessFare),
+		})
 	}
-	return percentage
+	return &pb.FlightChartsResponse{
+		FlightChartResponse: result,
+	}
 }
 
-func DistanceCalculator(lat1, lon1, lat2, lon2 float64) float64 {
-	// Convert latitude and longitude from degrees to radians
-	const EarthRadius = 6371 // Earth's radius in kilometers
-	lat1Rad := lat1 * (math.Pi / 180)
-	lon1Rad := lon1 * (math.Pi / 180)
-	lat2Rad := lat2 * (math.Pi / 180)
-	lon2Rad := lon2 * (math.Pi / 180)
-
-	// Haversine formula
-	dlon := lon2Rad - lon1Rad
-	dlat := lat2Rad - lat1Rad
-	a := math.Pow(math.Sin(dlat/2), 2) + math.Cos(lat1Rad)*math.Cos(lat2Rad)*math.Pow(math.Sin(dlon/2), 2)
-	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
-
-	// Calculate the distance
-	distance := EarthRadius * c
-	return distance
+func (svc *AdminAirlineServiceStruct) GetFlightChart(ctx context.Context, p *pb.GetChartRequest) (*pb.FlightChartResponse, error) {
+	chart, err := svc.repo.FindFlightChart(p.DepAirport, p.ArrAirport)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.FlightChartResponse{
+		DepartureAirport: chart.DepartureAirport,
+		ArrivalAirport:   chart.ArrivalAirport,
+		FlightNumber:     chart.FlightNumber,
+		EconomyFare:      float32(chart.EconomyFare),
+		BusinessFare:     float32(chart.BusinessFare),
+	}, err
+}
+func (svc *AdminAirlineServiceStruct) GetFlightCharts(ctx context.Context, p *pb.EmptyRequest) (*pb.FlightChartsResponse, error) {
+	chart, err := svc.repo.FindAllFlightChart()
+	if err != nil {
+		return nil, err
+	}
+	return ConvertToResponseFlightChart(chart), err
 }

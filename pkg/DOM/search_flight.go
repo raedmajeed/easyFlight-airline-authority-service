@@ -1,8 +1,10 @@
 package model
 
 type KafkaPath struct {
-	DirectPath []Path
-	ReturnPath []Path
+	DirectPath       []Path
+	ReturnPath       []Path
+	DepartureAirport string
+	ArrivalAirport   string
 }
 
 type SelectRequest struct {

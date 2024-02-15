@@ -4,26 +4,27 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/raedmajeed/admin-servcie/config"
 	api "github.com/raedmajeed/admin-servcie/pkg/api"
-	pkg "github.com/raedmajeed/admin-servcie/pkg/api"
+	"github.com/raedmajeed/admin-servcie/pkg/api/bookingHandlers"
 	"github.com/raedmajeed/admin-servcie/pkg/api/handlers"
 	"github.com/raedmajeed/admin-servcie/pkg/db"
 	"github.com/raedmajeed/admin-servcie/pkg/repository"
 	"github.com/raedmajeed/admin-servcie/pkg/service"
+	"log"
+	"os"
 )
 
-func InitApi(cfg *config.ConfigParams, redis *redis.Client) (*pkg.Server, error) {
-	// db connection
+func InitApi(cfg *config.ConfigParams, redis *redis.Client) {
+
 	DB, err := db.NewDBConnect(cfg)
 	if err != nil {
-		return nil, err
+		os.Exit(2)
 	}
-	kfWrite := config.NewKafkaWriterConnect()
+	log.Println("here")
+	kfWrite := config.NewKafkaWriterConnect(cfg)
 	repo := repository.NewAdminAirlineRepository(DB)
 	svc := service.NewAdminAirlineService(repo, redis, cfg, *kfWrite)
 	hdl := handlers.NewAdminAirlineHandler(svc)
-	server, err := api.NewServer(cfg, hdl, svc)
-	if err != nil {
-		return nil, err
-	}
-	return server, nil
+	bhdl := bookingHandlers.NewBookingHandler(svc)
+	go DailyFlightUpdate(svc)
+	api.NewServer(cfg, hdl, svc, bhdl)
 }
