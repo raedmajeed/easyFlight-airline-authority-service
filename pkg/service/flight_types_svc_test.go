@@ -79,14 +79,11 @@ func TestCreateFlightType(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			// Create a mock repository
 			mockRepo := repository.NewMockAdminAirlineRepostory(ctrl)
 			tt.beforeTest(mockRepo)
 
-			// Create a new service instance with the mock repository and Redis client
 			svc := service.NewAdminAirlineService(mockRepo, redis, &config.ConfigParams{}, config.KafkaWriter{})
 
-			// Call the function under test
 			got, err := svc.CreateFlightType(&pb.FlightTypeRequest{
 				FlightModel:         tt.args.input.FlightModel,
 				Description:         tt.args.input.Description,
@@ -96,13 +93,11 @@ func TestCreateFlightType(t *testing.T) {
 				CruiseSpeed:         tt.args.input.CruiseSpeed,
 			})
 
-			// Check the error
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateFlightType() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
-			// Check the result
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("CreateFlightType() got = %v, want %v", got, tt.want)
 			}
