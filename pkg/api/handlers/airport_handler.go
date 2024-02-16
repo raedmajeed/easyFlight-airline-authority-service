@@ -13,7 +13,6 @@ import (
 func (handler *AdminAirlineHandler) RegisterAirportRequest(ctx context.Context, p *pb.Airport) (*pb.AirportResponse, error) {
 	deadline, ok := ctx.Deadline()
 	if ok && deadline.Before(time.Now()) {
-		log.Println("deadline passed, aborting gRPC call")
 		return nil, errors.New("deadline passed, aborting gRPC call")
 	}
 

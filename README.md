@@ -98,3 +98,7 @@ This meticulous search operation ensures a comprehensive exploration of availabl
 **14. Conclusion:**
 
 - The integration of caching and search token generation enhances the overall efficiency and consistency of the flight search system. Users benefit from quicker responses and a stabilized fare environment within the specified time frame, contributing to a seamless and reliable user experience in the flight booking project.
+
+**To generate mock file using mockgen**
+
+- mockgen -source=source.go -destination=destination.go -package=package_no
