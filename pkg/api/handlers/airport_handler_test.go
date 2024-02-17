@@ -2,6 +2,7 @@ package handlers_test
 
 import (
 	"context"
+	"errors"
 	"github.com/golang/mock/gomock"
 	pb "github.com/raedmajeed/admin-servcie/pkg/pb"
 	"github.com/raedmajeed/admin-servcie/pkg/service"
@@ -66,6 +67,21 @@ func TestGetAirport(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		},
+		{
+			name: "Test 2",
+			args: args{
+				&pb.AirportRequest{
+					AirportCode: "DEL",
+				},
+			},
+			beforeFunc: func(svc *service.MockAdminAirlineService) {
+				svc.EXPECT().GetAirport(context.Background(), &pb.AirportRequest{
+					AirportCode: "DEL",
+				}).Return(&pb.AirportResponse{}, errors.New("oops"))
+			},
+			want:    &pb.AirportResponse{},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
