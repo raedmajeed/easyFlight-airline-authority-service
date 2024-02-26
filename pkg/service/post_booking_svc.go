@@ -20,7 +20,7 @@ func (svc *AdminAirlineServiceStruct) SelectAndBookSeats(ctx context.Context, re
 	response, err := svc.repo.FindBookedSeatsByChartID(uint(flightChart))
 	if err != nil {
 		log.Printf("error finding booked seats, err: %v", err.Error())
-		return nil, err
+		return nil, fmt.Errorf("error finding booked seats, err: %v", err.Error())
 	}
 
 	economy := true
@@ -52,11 +52,19 @@ func (svc *AdminAirlineServiceStruct) SelectAndBookSeats(ctx context.Context, re
 		if err != nil {
 			return nil, err
 		}
-		err = checkSeatBooked(layout.Rows[row][column], r+columnS)
+		log.Println("2======")
+		if len(layout.Rows) < row {
+			return nil, errors.New("row length is lesser than total rows")
+		}
+		if len(layout.Rows[row]) < column {
+			return nil, fmt.Errorf("column length is lesser than total column in row, max column is %v", len(layout.Rows[0]))
+		}
+		err = checkSeatBooked(layout.Rows[row-1][column-1], r+columnS)
 		if err != nil {
 			return nil, err
 		}
-		layout.Rows[row][column] = true
+		log.Println("3======")
+		layout.Rows[row-1][column-1] = true
 		seatNos = append(seatNos, r+columnS)
 	}
 
@@ -92,6 +100,9 @@ func checkSeatBooked(l bool, s string) error {
 }
 
 func checkRowColumn(r, rs, c, cs int) error {
+	if r == 0 || c == 0 {
+		return errors.New("row/column is 0 add value greater than 0")
+	}
 	if r > rs {
 		return errors.New("row is greater than rows in flight")
 	}

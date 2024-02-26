@@ -14,12 +14,14 @@ func NewDBConnect(cfg *config.ConfigParams) (*gorm.DB, error) {
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg.DBUser, cfg.DBPassword, cfg.DBHost, cfg.DBPort, cfg.DBName,
 	)
-
+	log.Println("here 12")
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		fmt.Printf("Connection to DB %s Failed, Error: %s", cfg.DBName, err)
 		return nil, err
 	}
+
+	log.Println("here 1")
 	err = database.AutoMigrate(
 		&dom.FlightTypeModel{},
 		&dom.Airline{},

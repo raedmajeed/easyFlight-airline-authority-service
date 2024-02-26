@@ -32,6 +32,7 @@ func (svc *AdminAirlineServiceStruct) SearchFlight(search dom.SearchDetails) ([]
 		search.DepartureDate = search.ReturnDepartureDate
 		returnFinalPaths, err = OneWayFlightSearch(svc, search)
 	}
+	log.Println("good byes", err)
 	return finalPaths, returnFinalPaths, err
 }
 
