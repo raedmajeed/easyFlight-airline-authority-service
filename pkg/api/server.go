@@ -36,44 +36,45 @@ func NewServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler,
 }
 
 func NewGrpcServer(cfg *config.ConfigParams, handler *handlers.AdminAirlineHandler) {
-	log.Println("connecting to gRPC server")
+	log.Println("connecting to gRPC server listening from api-gateway on port ", cfg.ADMINPORT)
 	addr := fmt.Sprintf(":%s", cfg.ADMINPORT)
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Println("error Connecting to gRPC server")
+		log.Println("error Connecting to gRPC server listening from api-gateway: ", err.Error())
 		return
 	}
 	grp := grpc.NewServer()
 	pb.RegisterAdminAirlineServer(grp, handler)
 	if err != nil {
-		log.Println("error connecting to gRPC server")
+		log.Println("error connecting to gRPC server listening from api-gateway: ", err.Error())
 		return
 	}
 
-	log.Printf("listening on gRPC server %v", cfg.ADMINPORT)
 	err = grp.Serve(lis)
 	if err != nil {
-		log.Println("error connecting to gRPC server")
+		log.Println("error connecting to gRPC server listening from api-gateway: ", err.Error())
 		return
 	}
+	log.Printf("listening on gRPC server listening from api-gateway %v", cfg.ADMINPORT)
 	return
 }
 
 func NewBookingGrpcServer(cfg *config.ConfigParams, handler *bookingHandlers.BookingHandler) {
-	log.Println("connecting to Booking gRPC server")
+	log.Println("connecting to gRPC server listening from booking-service on port: ", cfg.ADMINBOOKINGPORT)
 	addr := fmt.Sprintf(":%s", cfg.ADMINBOOKINGPORT)
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Println("error listening to booking service")
+		log.Println("error listening to booking service: ", err.Error())
 		return
 	}
 	grpcServer := grpc.NewServer()
 	pb.RegisterAdminServiceServer(grpcServer, handler)
 	err = grpcServer.Serve(lis)
 	if err != nil {
-		log.Println("error connecting to booking  grpc server")
+		log.Println("error connecting to booking grpc server: ", err.Error())
 		return
 	}
+	log.Printf("listening on gRPC server listening from booking-service %v", cfg.ADMINBOOKINGPORT)
 }
 
 func (s *Server) ServerStart() error {

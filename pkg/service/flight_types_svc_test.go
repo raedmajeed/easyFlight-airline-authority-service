@@ -18,7 +18,6 @@ func TestCreateFlightType(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
-	// Create a mock Redis client
 	redis, _ := redismock.NewClientMock()
 
 	type args struct {

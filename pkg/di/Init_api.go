@@ -9,7 +9,6 @@ import (
 	"github.com/raedmajeed/admin-servcie/pkg/db"
 	"github.com/raedmajeed/admin-servcie/pkg/repository"
 	"github.com/raedmajeed/admin-servcie/pkg/service"
-	"log"
 	"os"
 )
 
@@ -19,7 +18,6 @@ func InitApi(cfg *config.ConfigParams, redis *redis.Client) {
 	if err != nil {
 		os.Exit(2)
 	}
-	log.Println("here")
 	kfWrite := config.NewKafkaWriterConnect(cfg)
 	repo := repository.NewAdminAirlineRepository(DB)
 	svc := service.NewAdminAirlineService(repo, redis, cfg, *kfWrite)
