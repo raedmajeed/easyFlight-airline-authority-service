@@ -27,7 +27,7 @@ jobs:
         run: docker build . --file Dockerfile --tag airline-service:21
 
       - name: Tag the Docker Image
-        run: docker tag airline-service:16 raedmajeed/airline-service:21
+        run: docker tag airline-service:21 raedmajeed/airline-service:21
 
       - name: DockerHub Login
         run: |
