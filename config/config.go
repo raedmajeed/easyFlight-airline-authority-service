@@ -1,6 +1,7 @@
 package config
 
 import (
+	"log"
 	"os"
 
 	"github.com/go-redis/redis/v8"
@@ -39,6 +40,8 @@ func Configuration() (*ConfigParams, error, *redis.Client) {
 	cfg.BUSINESSSURGE = os.Getenv("BUSINESSSURGE")
 	cfg.ADMINBOOKINGPORT = os.Getenv("ADMINBOOKINGPORT")
 	cfg.KAFKABROKER = os.Getenv("KAFKABROKER")
+
+	log.Println("airline-service env -> ", cfg)
 
 	redis2 := connectToRedis(&cfg)
 	return &cfg, nil, redis2

@@ -69,12 +69,12 @@ func NewBookingGrpcServer(cfg *config.ConfigParams, handler *bookingHandlers.Boo
 	}
 	grpcServer := grpc.NewServer()
 	pb.RegisterAdminServiceServer(grpcServer, handler)
+	log.Printf("listening on gRPC server listening from booking-service %v", cfg.ADMINBOOKINGPORT)
 	err = grpcServer.Serve(lis)
 	if err != nil {
 		log.Println("error connecting to booking grpc server: ", err.Error())
 		return
 	}
-	log.Printf("listening on gRPC server listening from booking-service %v", cfg.ADMINBOOKINGPORT)
 }
 
 func (s *Server) ServerStart() error {

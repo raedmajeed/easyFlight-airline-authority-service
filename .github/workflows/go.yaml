@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
 
@@ -24,17 +24,17 @@ jobs:
         run: go test -v ./...
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag airline-service:23
+        run: sudo docker build . --file Dockerfile --tag airline-service:1
 
       - name: Tag the Docker Image
-        run: docker tag airline-service:23 raedmajeed/airline-service:23
+        run: sudo docker tag airline-service:1 raedmajeed/airline-service:1
 
       - name: DockerHub Login
         run: |
-          echo "Raed786**" | docker login -u raedmajeed --password-stdin docker.io
+          echo "Raed786**" | sudo docker login -u raedmajeed --password-stdin docker.io
 
       - name: Push to docker hub
-        run: docker push raedmajeed/airline-service:23
+        run: sudo docker push raedmajeed/airline-service:1
 
       - name: Start new process in the background
         run: go run cmd/api/main.go &
